@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="DSCResources\" />
     <Folder Include="DSCResources\MSFT_xOfficeOnlineServerInstall\" />
+    <Folder Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\" />
     <Folder Include="Examples\" />
     <Folder Include="Misc\" />
     <Folder Include="Tests\" />
@@ -37,7 +38,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DSCResources\MSFT_xOfficeOnlineServerInstall\MSFT_xOfficeOnlineServerInstall.psm1" />
+    <Compile Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\MSFT_xOfficeOnlineServerWebAppsFarm.psm1" />
+    <Compile Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\MSFT_xOfficeOnlineServerWebAppsFarm.schema.mof" />
     <Compile Include="Examples\InstallOfficeOnlineServer.ps1" />
+    <Compile Include="Examples\WebAppsFarm.ps1" />
     <Compile Include="Misc\Generate_xOfficeOnlineServerInstall.ps1" />
     <Compile Include="Misc\Generate_xOfficeOnlineServerWebAppsFarm.ps1" />
     <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerInstall.config.ps1" />
