@@ -38,6 +38,7 @@
     <Compile Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\MSFT_xOfficeOnlineServerWebAppsFarm.psm1" />
     <Compile Include="Examples\InstallOfficeOnlineServer.ps1" />
     <Compile Include="Misc\Generate_xOfficeOnlineServerInstall.ps1" />
+    <Compile Include="Misc\Generate_xOfficeOnlineServerWebAppsFarm.ps1" />
     <Compile Include="xOfficeOnlineServer.psd1" />
   </ItemGroup>
   <ItemGroup>

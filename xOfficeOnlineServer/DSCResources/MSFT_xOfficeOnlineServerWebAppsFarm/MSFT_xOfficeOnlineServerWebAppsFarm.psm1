@@ -9,62 +9,64 @@ function Get-TargetResource
 		$InternalURL
 	)
 
-	#Write-Verbose "Use this cmdlet to deliver information about command processing."
-
-	#Write-Debug "Use this cmdlet to write debug information while troubleshooting."
-
-
-	<#
+    try
+    {
+        $officeWebAppsFarm = Get-OfficeWebAppsFarm -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Verbose $_        
+    }
+	
 	$returnValue = @{
-		AllowCEIP = [System.Boolean]
-		AllowHttp = [System.Boolean]
-		AllowHttpSecureStoreConnections = [System.Boolean]
-		CacheLocation = [System.String]
-		CacheSizeInGB = [System.Int32]
-		CertificateName = [System.String]
-		ClipartEnabled = [System.Boolean]
-		DocumentInfoCacheSize = [System.Int32]
-		EditingEnabled = [System.Boolean]
-		ExcelAllowExternalData = [System.Boolean]
-		ExcelConnectionLifetime = [System.Int32]
-		ExcelExternalDataCacheLifetime = [System.Int32]
-		ExcelPrivateBytesMax = [System.Int32]
-		ExcelRequestDurationMax = [System.Int32]
-		ExcelSessionTimeout = [System.Int32]
-		ExcelUdfsAllowed = [System.Boolean]
-		ExcelWarnOnDataRefresh = [System.Boolean]
-		ExcelWorkbookSizeMax = [System.Int32]
-		ExcelMemoryCacheThreshold = [System.Int32]
-		ExcelUnusedObjectAgeMax = [System.Int32]
-		ExcelCachingUnusedFiles = [System.Boolean]
-		ExcelAbortOnRefreshOnOpenFail = [System.Boolean]
-		ExcelAutomaticVolatileFunctionCacheLifetime = [System.Int32]
-		ExcelConcurrentDataRequestsPerSessionMax = [System.Int32]
-		ExcelDefaultWorkbookCalcMode = [System.String]
-		ExcelRestExternalDataAllowed = [System.Boolean]
-		ExcelChartAndImageSizeMax = [System.Int32]
-		ExternalURL = [System.String]
-		FarmOU = [System.String]
-		InternalURL = [System.String]
-		LogLocation = [System.String]
-		LogRetentionInDays = [System.Int32]
-		LogVerbosity = [System.String]
-		MaxMemoryCacheSizeInMB = [System.Int32]
-		MaxTranslationCharacterCount = [System.Int32]
-		OpenFromUncEnabled = [System.Boolean]
-		OpenFromUrlEnabled = [System.Boolean]
-		OpenFromUrlThrottlingEnabled = [System.Boolean]
-		Proxy = [System.String]
-		RecycleActiveProcessCount = [System.Int32]
-		RenderingLocalCacheLocation = [System.String]
-		SSLOffloaded = [System.Boolean]
-		TranslationEnabled = [System.Boolean]
-		TranslationServiceAddress = [System.String]
-		TranslationServiceAppId = [System.String]
+		AllowCEIP = $officeWebAppsFarm.AllowCEIP
+		AllowHttp = $officeWebAppsFarm.AllowHTTP
+		AllowHttpSecureStoreConnections = $officeWebAppsFarm.AllowHttpSecureStoreConnections
+		CacheLocation = $officeWebAppsFarm.CacheLocation
+		CacheSizeInGB = $officeWebAppsFarm.CacheSizeInGB
+		CertificateName = $officeWebAppsFarm.CertificateName
+		ClipartEnabled = $officeWebAppsFarm.ClipartEnabled
+		DocumentInfoCacheSize = $officeWebAppsFarm.DocumentInfoCacheSize
+		EditingEnabled = $officeWebAppsFarm.EditingEnabled
+		ExcelAllowExternalData = $officeWebAppsFarm.ExcelAllowExternalData
+		ExcelConnectionLifetime = $officeWebAppsFarm.ExcelConnectionLifetime
+		ExcelExternalDataCacheLifetime = $officeWebAppsFarm.ExcelExternalDataCacheLifetime
+		ExcelPrivateBytesMax = $officeWebAppsFarm.ExcelPrivateBytesMax
+		ExcelRequestDurationMax = $officeWebAppsFarm.ExcelRequestDurationMax
+		ExcelSessionTimeout = $officeWebAppsFarm.ExcelSessionTimeout
+		ExcelUdfsAllowed = $officeWebAppsFarm.ExcelUdfsAllowed
+		ExcelWarnOnDataRefresh = $officeWebAppsFarm.ExcelWarnOnDataRefresh
+		ExcelWorkbookSizeMax = $officeWebAppsFarm.ExcelWorkbookSizeMax
+		ExcelMemoryCacheThreshold = $officeWebAppsFarm.ExcelMemoryCacheThreshold
+		ExcelUnusedObjectAgeMax = $officeWebAppsFarm.ExcelChartAndImageSizeMax
+		ExcelCachingUnusedFiles = $officeWebAppsFarm.ExcelCachingUnusedFiles
+		ExcelAbortOnRefreshOnOpenFail = $officeWebAppsFarm.ExcelAbortOnRefreshOnOpenFail
+		ExcelAutomaticVolatileFunctionCacheLifetime = $officeWebAppsFarm.ExcelAutomaticVolatileFunctionCacheLifeTime
+		ExcelConcurrentDataRequestsPerSessionMax = $officeWebAppsFarm.ExcelConcurrentDataRequestsPerSessionMax
+		ExcelDefaultWorkbookCalcMode = $officeWebAppsFarm.ExcelDefaultWorkbookCalcMode
+		ExcelRestExternalDataEnabled = $officeWebAppsFarm.ExcelRestExternalDataEnabled
+		ExcelChartAndImageSizeMax = $officeWebAppsFarm.ExcelChartAndImageSizeMax
+		ExternalURL = $officeWebAppsFarm.ExternalURL
+		FarmOU = $officeWebAppsFarm.FarmOU
+		InternalURL = $officeWebAppsFarm.InternalURL
+		LogLocation = $officeWebAppsFarm.LogLocation
+		LogRetentionInDays = $officeWebAppsFarm.LogRetentionInDays
+		LogVerbosity = $officeWebAppsFarm.LogVerbosity
+		MaxMemoryCacheSizeInMB = $officeWebAppsFarm.MaxMemoryCacheSizeInMB
+		MaxTranslationCharacterCount = $officeWebAppsFarm.MaxTranslationCharacterCount
+		OpenFromUncEnabled = $officeWebAppsFarm.OpenFromUncEnabled
+		OpenFromUrlEnabled = $officeWebAppsFarm.OpenFromUrlEnabled
+		OpenFromUrlThrottlingEnabled = $officeWebAppsFarm.OpenFromUrlThrottlingEnabled
+		Proxy = $officeWebAppsFarm.Proxy
+		RecycleActiveProcessCount = $officeWebAppsFarm.RecycleActiveProcessCount
+		RenderingLocalCacheLocation = $officeWebAppsFarm.RenderingLocalCacheLocation
+		SSLOffloaded = $officeWebAppsFarm.SSLOffloaded
+		TranslationEnabled = $officeWebAppsFarm.TranslationEnabled
+		TranslationServiceAddress = $officeWebAppsFarm.TranslationServiceAddress
+		TranslationServiceAppId = $officeWebAppsFarm.TranslationServiceAppId
 	}
 
-	$returnValue
-	#>
+	$returnValue	
 }
 
 
@@ -149,7 +151,7 @@ function Set-TargetResource
 		$ExcelDefaultWorkbookCalcMode,
 
 		[System.Boolean]
-		$ExcelRestExternalDataAllowed,
+		$ExcelRestExternalDataEnabled,
 
 		[System.Int32]
 		$ExcelChartAndImageSizeMax,
@@ -210,14 +212,25 @@ function Set-TargetResource
 		$TranslationServiceAppId
 	)
 
-	#Write-Verbose "Use this cmdlet to deliver information about command processing."
+    try
+    {
+        $officeWebAppsFarm = Get-OfficeWebAppsFarm -ErrorAction Stop
+    }
+    catch
+    {
+        Write-Verbose $_        
+    }
 
-	#Write-Debug "Use this cmdlet to write debug information while troubleshooting."
-
-	#Include this line if the resource requires a system reboot.
-	#$global:DSCMachineStatus = 1
-
-
+    if(-not $officeWebAppsFarm)
+    {
+        Write-Verbose "Installing new WebAppsFarm"
+        New-OfficeWebAppsFarm @PSBoundParameters
+    }
+    Else
+    {
+        Write-Verbose "WebAppsFarm found setting parameters on farm"
+        Set-OfficeWebAppsFarm @PSBoundParameters
+    }
 }
 
 
@@ -303,7 +316,7 @@ function Test-TargetResource
 		$ExcelDefaultWorkbookCalcMode,
 
 		[System.Boolean]
-		$ExcelRestExternalDataAllowed,
+		$ExcelRestExternalDataEnabled,
 
 		[System.Int32]
 		$ExcelChartAndImageSizeMax,
@@ -382,7 +395,7 @@ function Test-TargetResource
 
     If($PSBoundParameters['InternalURL'] -and  $PSBoundParameters['InternalURL'] -ne $officeWebAppsFarm.InternalURL.OriginalString)
     {
-        "InternalURL not in a desired state. Expected: $($PSBoundParameters1['InternalURL']) Actual: $($officeWebAppsFarm.InternalURL.OriginalString)"
+        Write-Verbose "InternalURL not in a desired state. Expected: $($PSBoundParameters['InternalURL']) Actual: $($officeWebAppsFarm.InternalURL.OriginalString)"
         return $false
     }
 
@@ -679,6 +692,4 @@ function Test-TargetResource
 
 }
 
-
 Export-ModuleMember -Function *-TargetResource
-
