@@ -29,17 +29,21 @@
   <ItemGroup>
     <Folder Include="DSCResources\" />
     <Folder Include="DSCResources\MSFT_xOfficeOnlineServerInstall\" />
+    <Folder Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\" />
     <Folder Include="Examples\" />
     <Folder Include="Misc\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DSCResources\MSFT_xOfficeOnlineServerInstall\MSFT_xOfficeOnlineServerInstall.psm1" />
+    <Compile Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\MSFT_xOfficeOnlineServerWebAppsFarm.psm1" />
     <Compile Include="Examples\InstallOfficeOnlineServer.ps1" />
     <Compile Include="Misc\Generate_xOfficeOnlineServerInstall.ps1" />
+    <Compile Include="Misc\Generate_xOfficeOnlineServerWebAppsFarm.ps1" />
     <Compile Include="xOfficeOnlineServer.psd1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DSCResources\MSFT_xOfficeOnlineServerInstall\MSFT_xOfficeOnlineServerInstall.schema.mof" />
+    <Content Include="DSCResources\MSFT_xOfficeOnlineServerWebAppsFarm\MSFT_xOfficeOnlineServerWebAppsFarm.schema.mof" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
