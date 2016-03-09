@@ -394,10 +394,9 @@ function Test-TargetResource
     }
 
     If($PSBoundParameters['InternalURL'])
-    { Write-Verbose "internalUrl"
+    { 
         $InternalURLFromParams = Add-TrailingSlash -Uri $InternalURL
-        Write-Verbose $InternalURL
-        Write-Verbose "formated $InternalURLFromParams"
+        
         If($InternalURLFromParams -ne $officeWebAppsFarm.InternalURL.AbsoluteUri)
         {
             Write-Verbose "InternalURL not in a desired state. Expected: $InternalURLFromParams Actual: $($officeWebAppsFarm.InternalURL.AbsoluteUri)"
