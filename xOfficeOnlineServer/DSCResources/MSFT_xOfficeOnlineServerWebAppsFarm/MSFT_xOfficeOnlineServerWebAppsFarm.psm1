@@ -387,22 +387,33 @@ function Test-TargetResource
         return $false
     }
 
-    If($PSBoundParameters['FarmOU'] -and  $PSBoundParameters['FarmOU'] -ne $officeWebAppsFarm.FarmOU)
+    If($PSBoundParameters['FarmOU'] -and  ((Compare-FarmOu -FarmObj $officeWebAppsFarm -OuName $FarmOU) -ne $true))
     {
         Write-Verbose "FarmOU not in a desired state. Expected: $($PSBoundParameters['FarmOU']) Actual: $($officeWebAppsFarm.FarmOU)"
         return $false
     }
 
-    If($PSBoundParameters['InternalURL'] -and  $PSBoundParameters['InternalURL'] -ne $officeWebAppsFarm.InternalURL.OriginalString)
-    {
-        Write-Verbose "InternalURL not in a desired state. Expected: $($PSBoundParameters['InternalURL']) Actual: $($officeWebAppsFarm.InternalURL.OriginalString)"
-        return $false
+    If($PSBoundParameters['InternalURL'])
+    { Write-Verbose "internalUrl"
+        $InternalURLFromParams = Add-TrailingSlash -Uri $InternalURL
+        Write-Verbose $InternalURL
+        Write-Verbose "formated $InternalURLFromParams"
+        If($InternalURLFromParams -ne $officeWebAppsFarm.InternalURL.AbsoluteUri)
+        {
+            Write-Verbose "InternalURL not in a desired state. Expected: $InternalURLFromParams Actual: $($officeWebAppsFarm.InternalURL.AbsoluteUri)"
+            return $false
+        }
     }
 
-    If($PSBoundParameters['ExternalURL'] -and  $PSBoundParameters['ExternalURL'] -ne $officeWebAppsFarm.ExternalURL.OriginalString)
-    {
-        Write-Verbose "ExternalURL not in a desired state. Expected: $($PSBoundParameters['ExternalURL']) Actual: $($officeWebAppsFarm.ExternalURL.OriginalString)"
-        return $false
+    If($PSBoundParameters['ExternalURL'])
+    { 
+        $externalURLFromParams = Add-TrailingSlash -Uri $InternalURL
+    
+        If($externalURLFromParams -ne $officeWebAppsFarm.ExternalURL.AbsoluteUri)
+        {
+            Write-Verbose "InternalURL not in a desired state. Expected: $externalURLFromParams Actual: $($officeWebAppsFarm.ExternalURL.AbsoluteUri)"
+            return $false
+        }
     }
 
     If($PSBoundParameters['AllowHTTP'] -and  $PSBoundParameters['AllowHTTP'] -ne $officeWebAppsFarm.AllowHTTP)
