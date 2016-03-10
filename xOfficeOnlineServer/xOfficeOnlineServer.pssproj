@@ -33,6 +33,9 @@
     <Folder Include="DSCResources\Library\" />
     <Folder Include="Examples\" />
     <Folder Include="Misc\" />
+    <Folder Include="Tests\" />
+    <Folder Include="Tests\Integration\" />
+    <Folder Include="Tests\Unit\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DSCResources\Library\Helper.psm1" />
@@ -42,6 +45,10 @@
     <Compile Include="Examples\NewFarm.ps1" />
     <Compile Include="Misc\Generate_xOfficeOnlineServerInstall.ps1" />
     <Compile Include="Misc\Generate_xOfficeOnlineServerWebAppsFarm.ps1" />
+    <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerInstall.config.ps1" />
+    <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerInstall.Integration.tests.ps1" />
+    <Compile Include="Tests\Unit\MSFT_xOfficeOnlineServerInstall.tests.ps1" />
+    <Compile Include="Tests\Unit\MSFT_xOfficeOnlineServerWebAppsFarm.tests.ps1" />
     <Compile Include="xOfficeOnlineServer.psd1" />
   </ItemGroup>
   <ItemGroup>
