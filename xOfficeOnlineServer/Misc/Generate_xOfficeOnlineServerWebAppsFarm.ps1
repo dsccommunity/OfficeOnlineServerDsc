@@ -2,6 +2,8 @@ $props = @()
 $props += New-xDscResourceProperty -Name AllowCEIP -Type Boolean -Attribute Write -Description 'Enables Customer Experience Improvement Program (CEIP) reporting on all servers in the Office Web Apps Server farm'
 $props += New-xDscResourceProperty -Name AllowHttp -Type Boolean -Attribute Write -Description 'Indicates that IIS sites should be provisioned on port 80 for HTTP access. Use AllowHTTP only in environments where all computers require IPSEC (full encryption) or in test environments that do not contain sensitive files.'
 $props += New-xDscResourceProperty -Name AllowHttpSecureStoreConnections -Type Boolean -Attribute Write -Description 'Indicates that secure store connections can be made by using non-SSL connections (such as HTTP). The default is False.'
+#This parameter exist but there is no documentation on it
+#$props += New-xDscResourceProperty -Name AllowOutboundHttp -Type Boolean -Attribute Write -Description
 $props += New-xDscResourceProperty -Name CacheLocation -Type String -Attribute Write -Description 'Specifies the location of the global disk cache that is used to store rendered image files.'
 $props += New-xDscResourceProperty -Name CacheSizeInGB -Type Sint32 -Attribute Write -Description 'Specifies the maximum size of the global disk cache in gigabytes.'
 $props += New-xDscResourceProperty -Name CertificateName -Type String -Attribute Write -Description 'Specifies the friendly name of the certificate that Office Web Apps Server uses to create HTTPS bindings.'
