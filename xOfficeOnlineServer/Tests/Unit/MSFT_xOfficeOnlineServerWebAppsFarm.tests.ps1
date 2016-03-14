@@ -287,7 +287,40 @@ try
 
         #region Function Set-TargetResource
         Describe "$($Global:DSCResourceName)\Set-TargetResource" {
-            # TODO: Complete Tests...
+            
+            Context 'Farm does not exist but should' {
+
+                Mock Get-OfficeWebAppsFarm
+                Mock New-OfficeWebAppsFarm
+
+                It 'Should call New and not throw' {
+
+                    { Set-TargetResource -InternalURL $internalURL -verbose} | Should Not Throw 
+                }
+
+                It 'Should call expected mocks' {
+
+                    Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
+                    Assert-MockCalled New-OfficeWebAppsFarm -Times 1
+                }
+
+            }
+
+            Context 'Farm does exist but not in a desired state' {
+                Mock Get-OfficeWebAppsFarm -MockWith { $mockWebFarm }
+                Mock Set-OfficeWebAppsFarm
+
+                It 'Should call Set and not throw' {
+
+                    {Set-TargetResource -InternalURL $internalURL -verbose} | Should Not Throw 
+                }
+
+                It 'Should call expected mocks' {
+
+                    Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
+                    Assert-MockCalled Set-OfficeWebAppsFarm -Times 1
+                }
+            }
         }
         #endregion
 
