@@ -1,13 +1,13 @@
 function Get-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$InternalURL
-	)
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $InternalURL
+    )
 
     try
     {
@@ -17,7 +17,7 @@ function Get-TargetResource
     {
         Write-Verbose $_        
     }
-	
+
 	$returnValue = @{
 		AllowCEIP = $officeWebAppsFarm.AllowCEIP
 		AllowHttp = $officeWebAppsFarm.AllowHTTP
@@ -68,154 +68,170 @@ function Get-TargetResource
         RemovePersonalInformationFromLogs = $officeWebAppsFarm.RemovePersonalInformationFromLogs
         ExcelUseEffectiveUserName = $officeWebAppsFarm.ExcelUseEffectiveUserName
         AllowOutboundHttp = $officeWebAppsFarm.AllowOutboundHttp
+        S2SCertificateName = $officeWebAppsFarm.S2SCertificateName
 	}
 
-	$returnValue	
+    $returnValue
 }
 
 
 function Set-TargetResource
 {
-	[CmdletBinding()]
-	param
-	(
-		[System.Boolean]
-		$AllowCEIP,
+    [CmdletBinding()]
+    param
+    (
+        [System.Boolean]
+        $AllowCEIP,
 
-		[System.Boolean]
-		$AllowHttp,
+        [System.Boolean]
+        $AllowHttp,
 
-		[System.Boolean]
-		$AllowHttpSecureStoreConnections,
+        [System.Boolean]
+        $AllowHttpSecureStoreConnections,
 
-		[System.String]
-		$CacheLocation,
+        [System.String]
+        $CacheLocation,
 
-		[System.Int32]
-		$CacheSizeInGB,
+        [System.Int32]
+        $CacheSizeInGB,
 
-		[System.String]
-		$CertificateName,
+        [System.String]
+        $CertificateName,
 
-		[System.Boolean]
-		$ClipartEnabled,
+        [System.Boolean]
+        $ClipartEnabled,
 
-		[System.Int32]
-		$DocumentInfoCacheSize,
+        [System.Int32]
+        $DocumentInfoCacheSize,
 
-		[System.Boolean]
-		$EditingEnabled,
+        [System.Boolean]
+        $EditingEnabled,
 
-		[System.Boolean]
-		$ExcelAllowExternalData,
+        [System.Boolean]
+        $ExcelAllowExternalData,
 
-		[System.Int32]
-		$ExcelConnectionLifetime,
+        [System.Int32]
+        $ExcelConnectionLifetime,
 
-		[System.Int32]
-		$ExcelExternalDataCacheLifetime,
+        [System.Int32]
+        $ExcelExternalDataCacheLifetime,
 
-		[System.Int32]
-		$ExcelPrivateBytesMax,
+        [System.Int32]
+        $ExcelPrivateBytesMax,
 
-		[System.Int32]
-		$ExcelRequestDurationMax,
+        [System.Int32]
+        $ExcelRequestDurationMax,
 
-		[System.Int32]
-		$ExcelSessionTimeout,
+        [System.Int32]
+        $ExcelSessionTimeout,
 
-		[System.Boolean]
-		$ExcelUdfsAllowed,
+        [System.Boolean]
+        $ExcelUdfsAllowed,
 
-		[System.Boolean]
-		$ExcelWarnOnDataRefresh,
+        [System.Boolean]
+        $ExcelWarnOnDataRefresh,
 
-		[System.Int32]
-		$ExcelWorkbookSizeMax,
+        [System.Int32]
+        $ExcelWorkbookSizeMax,
 
-		[System.Int32]
-		$ExcelMemoryCacheThreshold,
+        [System.Int32]
+        $ExcelMemoryCacheThreshold,
 
-		[System.Int32]
-		$ExcelUnusedObjectAgeMax,
+        [System.Int32]
+        $ExcelUnusedObjectAgeMax,
 
-		[System.Boolean]
-		$ExcelCachingUnusedFiles,
+        [System.Boolean]
+        $ExcelCachingUnusedFiles,
 
-		[System.Boolean]
-		$ExcelAbortOnRefreshOnOpenFail,
+        [System.Boolean]
+        $ExcelAbortOnRefreshOnOpenFail,
 
-		[System.Int32]
-		$ExcelAutomaticVolatileFunctionCacheLifetime,
+        [System.Int32]
+        $ExcelAutomaticVolatileFunctionCacheLifetime,
 
-		[System.Int32]
-		$ExcelConcurrentDataRequestsPerSessionMax,
+        [System.Int32]
+        $ExcelConcurrentDataRequestsPerSessionMax,
 
-		[System.String]
-		$ExcelDefaultWorkbookCalcMode,
+        [System.String]
+        $ExcelDefaultWorkbookCalcMode,
 
-		[System.Boolean]
-		$ExcelRestExternalDataEnabled,
+        [System.Boolean]
+        $ExcelRestExternalDataEnabled,
 
-		[System.Int32]
-		$ExcelChartAndImageSizeMax,
+        [System.Int32]
+        $ExcelChartAndImageSizeMax,
 
-		[System.String]
-		$ExternalURL,
+        [System.String]
+        $ExternalURL,
 
-		[System.String]
-		$FarmOU,
+        [System.String]
+        $FarmOU,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$InternalURL,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $InternalURL,
 
-		[System.String]
-		$LogLocation,
+        [System.String]
+        $LogLocation,
 
-		[System.Int32]
-		$LogRetentionInDays,
+        [System.Int32]
+        $LogRetentionInDays,
 
-		[System.String]
-		$LogVerbosity,
+        [System.String]
+        $LogVerbosity,
 
-		[System.Int32]
-		$MaxMemoryCacheSizeInMB,
+        [System.Int32]
+        $MaxMemoryCacheSizeInMB,
 
-		[System.Int32]
-		$MaxTranslationCharacterCount,
+        [System.Int32]
+        $MaxTranslationCharacterCount,
 
-		[System.Boolean]
-		$OpenFromUncEnabled,
+        [System.Boolean]
+        $OpenFromUncEnabled,
 
-		[System.Boolean]
-		$OpenFromUrlEnabled,
+        [System.Boolean]
+        $OpenFromUrlEnabled,
 
-		[System.Boolean]
-		$OpenFromUrlThrottlingEnabled,
+        [System.Boolean]
+        $OpenFromUrlThrottlingEnabled,
 
-		[System.String]
-		$Proxy,
+        [System.String]
+        $Proxy,
 
-		[System.Int32]
-		$RecycleActiveProcessCount,
+        [System.Int32]
+        $RecycleActiveProcessCount,
 
-		[System.String]
-		$RenderingLocalCacheLocation,
+        [System.String]
+        $RenderingLocalCacheLocation,
 
-		[System.Boolean]
-		$SSLOffloaded,
+        [System.Boolean]
+        $SSLOffloaded,
 
-		[System.Boolean]
-		$TranslationEnabled,
+        [System.Boolean]
+        $TranslationEnabled,
 
-		[System.String]
-		$TranslationServiceAddress,
+        [System.String]
+        $TranslationServiceAddress,
 
-		[System.String]
-		$TranslationServiceAppId
-	)
-    
+        [System.String]
+        $TranslationServiceAppId,
+
+        [System.Boolean]
+        $AllowOutboundHttp,
+
+        [System.Boolean]
+        $ExcelUseEffectiveUserName,
+
+        [System.String]
+        $S2SCertificateName,
+
+        [System.Boolean]
+        $RemovePersonalInformationFromLogs,
+
+        [System.Boolean]
+        $PicturePasteDisabled
+    )
+
     $PSBoundParameters.Add('Force',$true)
 
     try
@@ -242,146 +258,161 @@ function Set-TargetResource
 
 function Test-TargetResource
 {
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[System.Boolean]
-		$AllowCEIP,
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [System.Boolean]
+        $AllowCEIP,
 
-		[System.Boolean]
-		$AllowHttp,
+        [System.Boolean]
+        $AllowHttp,
 
-		[System.Boolean]
-		$AllowHttpSecureStoreConnections,
+        [System.Boolean]
+        $AllowHttpSecureStoreConnections,
 
-		[System.String]
-		$CacheLocation,
+        [System.String]
+        $CacheLocation,
 
-		[System.Int32]
-		$CacheSizeInGB,
+        [System.Int32]
+        $CacheSizeInGB,
 
-		[System.String]
-		$CertificateName,
+        [System.String]
+        $CertificateName,
 
-		[System.Boolean]
-		$ClipartEnabled,
+        [System.Boolean]
+        $ClipartEnabled,
 
-		[System.Int32]
-		$DocumentInfoCacheSize,
+        [System.Int32]
+        $DocumentInfoCacheSize,
 
-		[System.Boolean]
-		$EditingEnabled,
+        [System.Boolean]
+        $EditingEnabled,
 
-		[System.Boolean]
-		$ExcelAllowExternalData,
+        [System.Boolean]
+        $ExcelAllowExternalData,
 
-		[System.Int32]
-		$ExcelConnectionLifetime,
+        [System.Int32]
+        $ExcelConnectionLifetime,
 
-		[System.Int32]
-		$ExcelExternalDataCacheLifetime,
+        [System.Int32]
+        $ExcelExternalDataCacheLifetime,
 
-		[System.Int32]
-		$ExcelPrivateBytesMax,
+        [System.Int32]
+        $ExcelPrivateBytesMax,
 
-		[System.Int32]
-		$ExcelRequestDurationMax,
+        [System.Int32]
+        $ExcelRequestDurationMax,
 
-		[System.Int32]
-		$ExcelSessionTimeout,
+        [System.Int32]
+        $ExcelSessionTimeout,
 
-		[System.Boolean]
-		$ExcelUdfsAllowed,
+        [System.Boolean]
+        $ExcelUdfsAllowed,
 
-		[System.Boolean]
-		$ExcelWarnOnDataRefresh,
+        [System.Boolean]
+        $ExcelWarnOnDataRefresh,
 
-		[System.Int32]
-		$ExcelWorkbookSizeMax,
+        [System.Int32]
+        $ExcelWorkbookSizeMax,
 
-		[System.Int32]
-		$ExcelMemoryCacheThreshold,
+        [System.Int32]
+        $ExcelMemoryCacheThreshold,
 
-		[System.Int32]
-		$ExcelUnusedObjectAgeMax,
+        [System.Int32]
+        $ExcelUnusedObjectAgeMax,
 
-		[System.Boolean]
-		$ExcelCachingUnusedFiles,
+        [System.Boolean]
+        $ExcelCachingUnusedFiles,
 
-		[System.Boolean]
-		$ExcelAbortOnRefreshOnOpenFail,
+        [System.Boolean]
+        $ExcelAbortOnRefreshOnOpenFail,
 
-		[System.Int32]
-		$ExcelAutomaticVolatileFunctionCacheLifetime,
+        [System.Int32]
+        $ExcelAutomaticVolatileFunctionCacheLifetime,
 
-		[System.Int32]
-		$ExcelConcurrentDataRequestsPerSessionMax,
+        [System.Int32]
+        $ExcelConcurrentDataRequestsPerSessionMax,
 
-		[System.String]
-		$ExcelDefaultWorkbookCalcMode,
+        [System.String]
+        $ExcelDefaultWorkbookCalcMode,
 
-		[System.Boolean]
-		$ExcelRestExternalDataEnabled,
+        [System.Boolean]
+        $ExcelRestExternalDataEnabled,
 
-		[System.Int32]
-		$ExcelChartAndImageSizeMax,
+        [System.Int32]
+        $ExcelChartAndImageSizeMax,
 
-		[System.String]
-		$ExternalURL,
+        [System.String]
+        $ExternalURL,
 
-		[System.String]
-		$FarmOU,
+        [System.String]
+        $FarmOU,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$InternalURL,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $InternalURL,
 
-		[System.String]
-		$LogLocation,
+        [System.String]
+        $LogLocation,
 
-		[System.Int32]
-		$LogRetentionInDays,
+        [System.Int32]
+        $LogRetentionInDays,
 
-		[System.String]
-		$LogVerbosity,
+        [System.String]
+        $LogVerbosity,
 
-		[System.Int32]
-		$MaxMemoryCacheSizeInMB,
+        [System.Int32]
+        $MaxMemoryCacheSizeInMB,
 
-		[System.Int32]
-		$MaxTranslationCharacterCount,
+        [System.Int32]
+        $MaxTranslationCharacterCount,
 
-		[System.Boolean]
-		$OpenFromUncEnabled,
+        [System.Boolean]
+        $OpenFromUncEnabled,
 
-		[System.Boolean]
-		$OpenFromUrlEnabled,
+        [System.Boolean]
+        $OpenFromUrlEnabled,
 
-		[System.Boolean]
-		$OpenFromUrlThrottlingEnabled,
+        [System.Boolean]
+        $OpenFromUrlThrottlingEnabled,
 
-		[System.String]
-		$Proxy,
+        [System.String]
+        $Proxy,
 
-		[System.Int32]
-		$RecycleActiveProcessCount,
+        [System.Int32]
+        $RecycleActiveProcessCount,
 
-		[System.String]
-		$RenderingLocalCacheLocation,
+        [System.String]
+        $RenderingLocalCacheLocation,
 
-		[System.Boolean]
-		$SSLOffloaded,
+        [System.Boolean]
+        $SSLOffloaded,
 
-		[System.Boolean]
-		$TranslationEnabled,
+        [System.Boolean]
+        $TranslationEnabled,
 
-		[System.String]
-		$TranslationServiceAddress,
+        [System.String]
+        $TranslationServiceAddress,
 
-		[System.String]
-		$TranslationServiceAppId
-	)
+        [System.String]
+        $TranslationServiceAppId,
+
+        [System.Boolean]
+        $AllowOutboundHttp,
+
+        [System.Boolean]
+        $ExcelUseEffectiveUserName,
+
+        [System.String]
+        $S2SCertificateName,
+
+        [System.Boolean]
+        $RemovePersonalInformationFromLogs,
+
+        [System.Boolean]
+        $PicturePasteDisabled
+    )
 
     try
     {
@@ -711,7 +742,8 @@ function Test-TargetResource
 
     #if the code made it this far all conditions must be true
     return $true
-
 }
 
+
 Export-ModuleMember -Function *-TargetResource
+

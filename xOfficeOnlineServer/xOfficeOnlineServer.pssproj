@@ -48,6 +48,8 @@
     <Compile Include="Misc\Generate_xOfficeOnlineServerWebAppsFarm.ps1" />
     <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerInstall.config.ps1" />
     <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerInstall.Integration.tests.ps1" />
+    <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerWebAppsFarm.config.ps1" />
+    <Compile Include="Tests\Integration\MSFT_xOfficeOnlineServerWebAppsFarm.Integration.tests.ps1" />
     <Compile Include="Tests\Unit\MSFT_xOfficeOnlineServerInstall.tests.ps1" />
     <Compile Include="Tests\Unit\MSFT_xOfficeOnlineServerWebAppsFarm.tests.ps1" />
     <Compile Include="xOfficeOnlineServer.psd1" />
