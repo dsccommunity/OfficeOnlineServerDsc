@@ -22,11 +22,11 @@ $Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsFarm' # Example MSF
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
-    #& git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
+    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
 else
 {
-    #& git @('-C',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'),'pull')
+    & git @('-C',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'),'pull')
 }
 Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 $TestEnvironment = Initialize-TestEnvironment `
@@ -230,7 +230,6 @@ try
 
                     $TestResult | Should Be $false
                 }
-
             }
 
             Context 'Farm exist with expected values' {
@@ -249,7 +248,6 @@ try
 
                     Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
                 }
-
             }
 
             Context 'Farm exist with different values' {
@@ -303,7 +301,6 @@ try
                     Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
                     Assert-MockCalled New-OfficeWebAppsFarm -Times 1
                 }
-
             }
 
             Context 'Farm does exist but not in a desired state' {

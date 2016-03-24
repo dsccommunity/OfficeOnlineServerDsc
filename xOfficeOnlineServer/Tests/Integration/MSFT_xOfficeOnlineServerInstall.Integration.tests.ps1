@@ -49,7 +49,6 @@ Describe 'Environment' {
         It 'Should have Web-Asp-Net45 installed' {
             $aspDotNET45 | Should Be $true
         }
-
     }
 }
 
