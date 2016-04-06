@@ -5,6 +5,8 @@
 NotApartOfAFarm = It does not appear that this machine is part of an Office Online Server farm.
 ChangingAppMachineConfig = Changing App Maching Configuration.
 SetAppMachine = The Office Web App Machine has been Set.
+RemoveAppMachine = The Office Web App Machine has been removed.
+FailedRemove = Failed to remove the Web App Machine.
 '@
 }
 
@@ -83,42 +85,31 @@ function Set-TargetResource
     if($Ensure -eq "Absent")
     {
         Remove-OfficeWebAppsMachine
+
+        Write-Verbose ( $LocalizedData.RemoveAppMachine )
     }
     else
     {
-        $officeWebAppsMachine = $null
+        # Due to issues with Set-OfficeWebAppsMachine not changing machine roles,
+        # always remove the machine and re-add.
+
+        try
+        {
+            Remove-OfficeWebAppsMachine 
+        }
+        catch
+        {
+            Write-Verbose ( $LocalizedData.FailedRemove )
+        }
 
         If($null -eq $Roles)
         {
             $Roles += "All" 
-        }
+        }             
 
-        try
-        {
-            $officeWebAppsMachine = Get-OfficeWebAppsMachine
+        New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
 
-            Write-Verbose ( $LocalizedData.ChangingAppMachineConfig )
-
-            Set-OfficeWebAppsMachine -Master $MachineToJoin -Roles $Roles
-
-            Write-Verbose ( $LocalizedData.SetAppMachine )
-        }
-        catch
-        {
-            # catch when not appart of the farm and redirect output to returned hash table
-            if($_.toString() -like "It does not appear that this machine is part of an Office Online Server farm.")
-            {
-                Write-Verbose ( $LocalizedData.NotApartOfAFarm )                
-
-                New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
-
-                Write-Verbose ( $LocalizedData.SetAppMachine )
-            }
-            else
-            {
-                throw
-            }
-        }
+        Write-Verbose ( $LocalizedData.SetAppMachine )
     }
 }
 
