@@ -4,7 +4,7 @@ configuration WebAppMachine
 
     node localhost
     {
-        xOfficeWebAppsMachine WebAppMachine
+        xOfficeOnlineServerWebAppsMachine WebAppMachine
         {
             Ensure = "Present"
             MachineToJoin = "WIN-S40H6PF9JJN"
