@@ -1,9 +1,0 @@
-
-[ClassVersion("1.0.0.0"), FriendlyName("xOfficeOnlineServerWebAppsMachine")]
-class MSFT_xOfficeOnlineServerWebAppsMachine : OMI_BaseResource
-{
-	[Write, Description("Ensures the server is Present or Absent from the Office Web Apps Farm."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
-	[Write, Description("Specifies one or more server roles, separated by commas, to assign to the new server. If no roles are specified, then the server is assigned all roles.")] String Roles[];
-	[Key, Description("Specifies the name of any server that is already a member of the Office Web Apps Server farm.")] String MachineToJoin;
-};
-
