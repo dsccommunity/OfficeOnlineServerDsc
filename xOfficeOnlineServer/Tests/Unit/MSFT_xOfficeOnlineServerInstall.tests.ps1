@@ -51,36 +51,36 @@ try
         # TODO: Optopnal Load Mock for use in Pester tests here...
         #endregion
 
-		#test parameters
-		$installPath = 'C:\InstallFiles\setup.exe'
+        #test parameters
+        $installPath = 'C:\InstallFiles\setup.exe'
 
         #region Function Get-TargetResource
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
             Context 'Office Online Server is not installed' {
-				Mock Test-Path -MockWith {$false}
+                Mock Test-Path -MockWith {$false}
 
-				It 'Installed should be FALSE' {
-					$Result = Get-TargetResource -Path $installPath
-					$Result.Installed | Should Be $false
-				}
+                It 'Installed should be FALSE' {
+                    $Result = Get-TargetResource -Path $installPath
+                    $Result.Installed | Should Be $false
+                }
 
-				It 'Should call expected mocks' {
-					Assert-MockCalled -CommandName Test-Path -Exactly 1
-				}
-			}
+                It 'Should call expected mocks' {
+                    Assert-MockCalled -CommandName Test-Path -Exactly 1
+                }
+            }
 
-			Context 'Office Online Server is installed' {
-				Mock Test-Path -MockWith {$true}
+            Context 'Office Online Server is installed' {
+                Mock Test-Path -MockWith {$true}
 
-				It 'Installed should be TRUE' {
-					$Result = Get-TargetResource -Path $installPath
-					$Result.Installed | Should Be $true
-				}
+                It 'Installed should be TRUE' {
+                    $Result = Get-TargetResource -Path $installPath
+                    $Result.Installed | Should Be $true
+                }
 
-				It 'Should call expected mocks' {
-					Assert-MockCalled -CommandName Test-Path -Exactly 1
-				}				
-			}
+                It 'Should call expected mocks' {
+                    Assert-MockCalled -CommandName Test-Path -Exactly 1
+                }                
+            }
         }
         #endregion
 
