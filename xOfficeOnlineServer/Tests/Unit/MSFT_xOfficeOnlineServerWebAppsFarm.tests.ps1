@@ -160,6 +160,10 @@ try
             AllowHttpSecureStoreConnections             = $true
         }
 
+        function Get-OfficeWebAppsFarm {}
+        function New-OfficeWebAppsFarm {}
+        function Set-OfficeWebAppsFarm {}
+
         #region Function Get-TargetResource
         Describe "$($Global:DSCResourceName)\Get-TargetResource" {
 
