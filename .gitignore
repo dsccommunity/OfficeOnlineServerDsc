@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/xOfficeOnlineServer/xOfficeOnlineServer.sln
+/xOfficeOnlineServer/.vs/xOfficeOnlineServer/v14/.suo
