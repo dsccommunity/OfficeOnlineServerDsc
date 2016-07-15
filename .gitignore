@@ -1,6 +1,8 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/xOfficeOnlineServer/xOfficeOnlineServer.sln
-/xOfficeOnlineServer/.vs/xOfficeOnlineServer/v14/.suo
+﻿*.suo
+*.user
+*.coverage
+.vs
+.psproj
+.sln
+Modules/SharePointDsc/DscResource.Tests
+Modules/SharePointDsc/DscResource.Tests/*
