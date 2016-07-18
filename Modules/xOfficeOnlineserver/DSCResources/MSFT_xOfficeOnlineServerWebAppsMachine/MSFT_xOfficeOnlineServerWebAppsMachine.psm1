@@ -33,9 +33,11 @@ function Get-TargetResource
     catch
     {
         # catch when not appart of the farm and redirect output to returned hash table
-        if($_.toString() -like "It does not appear that this machine is part of an Office Online Server farm.")
+        $notInFarmError = "It does not appear that this machine is part of an Office " + `
+                          "Online Server farm."
+        if($_.toString() -like $notInFarmError)
         {
-            Write-Verbose ( $LocalizedData.NotApartOfAFarm )
+            Write-Verbose -Message $LocalizedData.NotApartOfAFarm
         }
         else
         {
@@ -46,21 +48,21 @@ function Get-TargetResource
     if($null -eq $officeWebAppsMachine)
     {
         $returnValue = @{
-            Ensure = [System.String]"Absent"
-            Roles = [System.String[]]""
-            MachineToJoin = [System.String]""
+            Ensure = "Absent"
+            Roles = $null
+            MachineToJoin = $null
         }
     }
     else
     {
         $returnValue = @{
-            Ensure = [System.String]"Present"
+            Ensure = "Present"
             Roles = [System.String[]]$officeWebAppsMachine.Roles
             MachineToJoin = [System.String]$officeWebAppsMachine.MasterMachineName
         }
     }
 
-    $returnValue
+    return $returnValue
 }
 
 function Set-TargetResource
@@ -86,7 +88,7 @@ function Set-TargetResource
     {
         Remove-OfficeWebAppsMachine
 
-        Write-Verbose ( $LocalizedData.RemoveAppMachine )
+        Write-Verbose -Message $LocalizedData.RemoveAppMachine 
     }
     else
     {
@@ -99,17 +101,17 @@ function Set-TargetResource
         }
         catch
         {
-            Write-Verbose ( $LocalizedData.FailedRemove )
+            Write-Verbose -Message $LocalizedData.FailedRemove
         }
 
-        If($null -eq $Roles)
+        if ($null -eq $Roles)
         {
             $Roles += "All" 
         }             
 
         New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
 
-        Write-Verbose ( $LocalizedData.SetAppMachine )
+        Write-Verbose -Message $LocalizedData.SetAppMachine
     }
 }
 
@@ -138,16 +140,20 @@ function Test-TargetResource
         $Roles += "All" 
     }
 
+    $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
+
     if( ($results.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
             -and ($results.MachineToJoin -eq $MachineToJoin) `
-            -and ( $null -eq (Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles ) ) )  # If present and all value match return true
+            -and ( $null -eq $roleCompare))
     {
+        # If present and all value match return true
         return $true
     }
-    elseif(($results.Ensure -eq "Absent") -and ($Ensure -eq "Absent")) # if absent no need to check all values
+    elseif(($results.Ensure -eq "Absent") -and ($Ensure -eq "Absent")) 
     {
-         return $true
+        # if absent no need to check all values
+        return $true
     }
     else
     {

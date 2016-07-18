@@ -1,55 +1,29 @@
-<#
-.Synopsis
-   Template for creating DSC Resource Unit Tests
-.DESCRIPTION
-   To Use:
-     1. Copy to \Tests\Unit\ folder and rename <ResourceName>.tests.ps1 (e.g. MSFT_xFirewall.tests.ps1)
-     2. Customize TODO sections.
+[CmdletBinding()]
+param(
+    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\Office15.WACServer\OfficeWebApps.psm1" -Resolve)
+)
 
-.NOTES
-   Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
-   Future and therefore should not be altered if possible.
-#>
+$Global:DSCModuleName      = 'xOfficeOnlineServer'
+$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsFarm'
+$Global:CurrentWACCmdletModule = $WACCmdletModule
 
-
-# TODO: Customize these parameters...
-$Global:DSCModuleName      = 'xOfficeOnlineServer' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsFarm' # Example MSFT_xFirewall
-# /TODO
-
-#region HEADER
-[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\xOfficeOnlineServer" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
     & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
-}
-else
-{
-    & git @('-C',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'),'pull')
 }
 Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Global:DSCModuleName `
     -DSCResourceName $Global:DSCResourceName `
     -TestType Unit 
-#endregion
 
-# TODO: Other Optional Init Code Goes Here...
-
-# Begin Testing
 try
 {
-
-    #region Pester Tests
-
-    # The InModuleScope command allows you to perform white-box unit testing on the internal
-    # (non-exported) code of a Script Module.
     InModuleScope $Global:DSCResourceName {
 
-        #region Pester Test Initialization
-        # TODO: Optopnal Load Mock for use in Pester tests here...
-        #endregion
+        Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\xOfficeOnlineServer\xOfficeOnlineServer.psd1")
         $internalURL = "http://webfarm.contoso.com/"
         $externalURL = "http://external.contoso.com/"
         $proxy = 'http://proxy.contoso.com/'
@@ -59,10 +33,8 @@ try
             InternalURL                                 = @{AbsoluteUri = $internalURL}
             ExternalURL                                 = @{AbsoluteUri = $externalURL}
             AllowHTTP                                   = $True
-            #AllowOutboundHttp                           = $False
             SSLOffloaded                                = $False
             CertificateName                             = 'Farm Cert'
-            #S2SCertificateName                          = $null
             EditingEnabled                              = $True
             LogLocation                                 = 'C:\Logs'
             LogRetentionInDays                          = 7
@@ -75,7 +47,6 @@ try
             ClipartEnabled                              = $False
             TranslationEnabled                          = $False
             MaxTranslationCharacterCount                = 125000
-            #TranslationServiceAppId                     = $null
             TranslationServiceAddress                   = 'http://tsa.contoso1.com/'
             RenderingLocalCacheLocation                 = 'C:\ProgramData\Microsoft\OfficeWebApps\Working\waccache'
             RecycleActiveProcessCount                   = 5
@@ -87,7 +58,6 @@ try
             ExcelConnectionLifetime                     = 1800
             ExcelExternalDataCacheLifetime              = 300
             ExcelAllowExternalData                      = $True
-            #ExcelUseEffectiveUserName                   = $False
             ExcelWarnOnDataRefresh                      = $True
             ExcelUdfsAllowed                            = $False
             ExcelMemoryCacheThreshold                   = 90
@@ -102,8 +72,6 @@ try
             OpenFromUrlEnabled                          = $False
             OpenFromUncEnabled                          = $True
             OpenFromUrlThrottlingEnabled                = $True
-            #PicturePasteDisabled                        = $True
-            #RemovePersonalInformationFromLogs           = $False
             AllowHttpSecureStoreConnections             = $False
         }
 
@@ -112,10 +80,8 @@ try
             InternalURL                                 = 'http://webfarm1.contoso.com/'
             ExternalURL                                 = 'http://webfarm1.contoso.com/'
             AllowHTTP                                   = $false
-            #AllowOutboundHttp                           = $true
             SSLOffloaded                                = $true
             CertificateName                             = 'Farm Cert1'
-            #S2SCertificateName                          = $null
             EditingEnabled                              = $false
             LogLocation                                 = 'C:\Logs1'
             LogRetentionInDays                          = 8
@@ -140,7 +106,6 @@ try
             ExcelConnectionLifetime                     = 1801
             ExcelExternalDataCacheLifetime              = 301
             ExcelAllowExternalData                      = $false
-            #ExcelUseEffectiveUserName                   = $true
             ExcelWarnOnDataRefresh                      = $false
             ExcelUdfsAllowed                            = $true
             ExcelMemoryCacheThreshold                   = 180
@@ -155,46 +120,47 @@ try
             OpenFromUrlEnabled                          = $true
             OpenFromUncEnabled                          = $false
             OpenFromUrlThrottlingEnabled                = $false
-            #PicturePasteDisabled                        = $false
-            #RemovePersonalInformationFromLogs           = $true
             AllowHttpSecureStoreConnections             = $true
         }
 
-        function Get-OfficeWebAppsFarm {}
-        function New-OfficeWebAppsFarm {}
-        function Set-OfficeWebAppsFarm {}
+        Describe "xOfficeOnlineServerWebAppsFarm" {
 
-        #region Function Get-TargetResource
-        Describe "$($Global:DSCResourceName)\Get-TargetResource" {
+            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\xOfficeOnlineServer" -Resolve)
+            Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+            
 
+            Mock -CommandName New-OfficeWebAppsFarm -MockWith { }
+            Mock -CommandName Set-OfficeWebAppsFarm -MockWith { }
+            Mock -CommandName Test-xOosFarmOu -MockWith { return $true }
 
-
-            Context 'Farm does not exist' {
-
-                Mock Get-OfficeWebAppsFarm
-
-                It 'Should return NULL values' {
-
-                    $GetResult = Get-TargetResource -InternalURL $internalURL                    
-
-                    foreach($Key in $GetResult.Keys)
-                    {
-                        $GetResult[$key] | Should be $null
-                    }
+            Context "A farm does not exist on the local macine, but should" {
+                $testParams = @{
+                    InternalUrl = $internalURL
                 }
 
-                It 'Should call expected mocks' {
+                It "returns no internal URL from the get method" {
+                    (Get-TargetResource @testParams).InternalUrl | Should BeNullOrEmpty
+                }
 
-                    Assert-MockCalled Get-OfficeWebAppsFarm -Exactly 1
+                It "returns false from the test method" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                It "creates the farm in the set method" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled New-OfficeWebAppsFarm
                 }
             }
 
-            Context 'Farm does exist' {
+            Context "A correctly configured farm is found locally" {
 
-                Mock Get-OfficeWebAppsFarm {$mockWebFarm}
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                    return $mockWebFarm
+                }
 
-                It 'Should return expected values' {
-                    $GetResult = Get-TargetResource -InternalURL $internalURL
+                It "returns the current values from the get method" {
+                    $GetResult = Get-TargetResource -InternalURL $mockWebFarm.InternalUrl
 
                     foreach($key in $mockWebFarm.Keys)
                     {
@@ -202,139 +168,34 @@ try
                     }
                 }
 
-                It 'Should call expected mocks' {
+                It "returns true from the test method" {
+                    Test-TargetResource @mockWebFarm | Should Be $true
+                }
+            }
 
-                    Assert-MockCalled Get-OfficeWebAppsFarm -Exactly 1
+            Context "An incorrectly configured farm is found locally" {
+
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                    return $mockWebFarmFalse
+                }
+
+                It "returns the current values from the get method" {
+                    (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl).InternalUrl | Should Not BeNullOrEmpty
+                }
+
+                It "returns false from the test method" {
+                    Test-TargetResource @mockWebFarm | Should Be $false
+                }
+
+                It "updates the farm in the set method" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled Set-OfficeWebAppsFarm
                 }
             }
         }
-        #endregion
-
-
-        #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)\Test-TargetResource" {
-                $TestParams = $mockWebFarm.Clone()
-                $TestParams.Remove('FarmOU')
-                $TestParams.Add('FarmOU','Farm1')
-                $TestParams.Add('Verbose',$true) 
-                $TestParams.Remove('InternalURL')
-                $TestParams.Add('InternalURL','http://webfarm.contoso.com')
-                $TestParams.Remove('Proxy')
-                $TestParams.Add('Proxy',$proxy)
-                $TestParams.Remove('ExternalURL')
-                $TestParams.Add('ExternalURL',$externalURL)
-
-            Context 'Farm does not exist but should' {
-
-                Mock Get-OfficeWebAppsFarm
-
-                It 'Should return false' {
-
-                    $TestResult = Test-TargetResource -InternalURL $internalURL
-
-                    $TestResult | Should Be $false
-                }
-            }
-
-            Context 'Farm exist with expected values' {
-                Mock Get-OfficeWebAppsFarm { $mockWebFarm }
-                Mock Compare-FarmOu { $true }
-
-                It 'Should return true' {
-                    {   
-                        $TestResult = Test-TargetResource @TestParams
-
-                        $TestResult | Should Be $true
-                    } | Should Not Throw
-                }
-
-                It 'Should call expected mocks' {
-
-                    Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
-                }
-            }
-
-            Context 'Farm exist with different values' {
-
-                Mock Get-OfficeWebAppsFarm { $mockWebFarm }
-                Mock Compare-FarmOu { $false }
-                $FalseTestParams = @{InternalURL = $internalURL}
-                $FalseTestParams.Add('Verbose',$true) 
-                                
-                foreach($key in $mockWebFarm.Keys)
-                {
-                    $FalseParams = $FalseTestParams.Clone()
-
-                    If($key -ne 'InternalURL')
-                    {
-                        $FalseParams.Add($key,$mockWebFarmFalse[$key])                                                             
-                    }
-                    Else
-                    {                        
-                        $FalseParams.Remove('InternalURL')
-                        $FalseParams.Add($key, $mockWebFarmFalse[$key])
-                    }
-
-                    It "Should return false testing: $key" {
-
-                        $TestResult = Test-TargetResource @FalseParams
-
-                        $TestResult | Should Be $false
-                    }
-                } 
-            }
-        }
-        #endregion
-
-
-        #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)\Set-TargetResource" {
-            
-            Context 'Farm does not exist but should' {
-
-                Mock Get-OfficeWebAppsFarm
-                Mock New-OfficeWebAppsFarm
-
-                It 'Should call New and not throw' {
-
-                    { Set-TargetResource -InternalURL $internalURL -verbose} | Should Not Throw 
-                }
-
-                It 'Should call expected mocks' {
-
-                    Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
-                    Assert-MockCalled New-OfficeWebAppsFarm -Times 1
-                }
-            }
-
-            Context 'Farm does exist but not in a desired state' {
-                Mock Get-OfficeWebAppsFarm -MockWith { $mockWebFarm }
-                Mock Set-OfficeWebAppsFarm
-
-                It 'Should call Set and not throw' {
-
-                    {Set-TargetResource -InternalURL $internalURL -verbose} | Should Not Throw 
-                }
-
-                It 'Should call expected mocks' {
-
-                    Assert-MockCalled Get-OfficeWebAppsFarm -Times 1
-                    Assert-MockCalled Set-OfficeWebAppsFarm -Times 1
-                }
-            }
-        }
-        #endregion
-
-        # TODO: Pester Tests for any Helper Cmdlets
-
     }
-    #endregion
 }
 finally
 {
-    #region FOOTER
     Restore-TestEnvironment -TestEnvironment $TestEnvironment
-    #endregion
-
-    # TODO: Other Optional Cleanup Code Goes Here...
 }

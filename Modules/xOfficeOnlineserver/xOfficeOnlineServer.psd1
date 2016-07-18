@@ -69,7 +69,8 @@ NestedModules = @("$PSScriptRoot\DSCResources\Library\Helper.psm1")
 FunctionsToExport = '*'
 
 # Cmdlets to export from this module
-CmdletsToExport = '*'
+CmdletsToExport = ('Test-xOosFarmOu',
+                   'Test-xOosParameterState')
 
 # Variables to export from this module
 VariablesToExport = '*'

@@ -1,0 +1,11 @@
+{
+    "version": "0.3.0",
+    "configurations": [
+        {
+            "name": "Debug current file",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${file}"
+        }
+    ]
+}

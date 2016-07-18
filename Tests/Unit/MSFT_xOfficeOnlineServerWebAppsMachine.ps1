@@ -1,25 +1,9 @@
-<#
-.Synopsis
-   Template for creating DSC Resource Unit Tests
-.DESCRIPTION
-   To Use
-     1. Copy to TestsUnit folder and rename ResourceName.tests.ps1 (e.g. MSFT_xFirewall.tests.ps1)
-     2. Customize TODO sections.
-
-.NOTES
-   Code in HEADER and FOOTER regions are standard and may be moved into DSCResource.Tools in
-   Future and therefore should not be altered if possible.
-#>
-
-
-# TODO: Customize these parameters...
-$Global:DSCModuleName      = 'MSFT_xOfficeOnlineServerWebAppsMachine' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsMachine' # Example MSFT_xFirewall
-# /TODO
+$Global:DSCModuleName      = 'xOfficeOnlineServer'
+$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsMachine'
 
 #region HEADER
 # Unit Test Template Version 1.1.0
-[String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\xOfficeOnlineServer" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {

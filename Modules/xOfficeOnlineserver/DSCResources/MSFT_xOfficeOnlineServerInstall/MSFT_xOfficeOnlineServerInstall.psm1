@@ -1,4 +1,7 @@
-﻿Function Get-TargetResource
+﻿$Script:UninstallPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+$script:InstallKeyPattern = "Office1(5)|(6).WacServer"
+
+function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
@@ -9,18 +12,27 @@
         $Path
     )
 
-    $wacRegPathExist = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office16.WacServer
+    Write-Verbose -Message "Getting details of installation of Office Online Server"
+
+    $matchPath = "HKEY_LOCAL_MACHINE\\$($Script:UninstallPath.Replace('\','\\'))" + `
+                 "\\$script:InstallKeyPattern"
+    $wacPath = Get-ChildItem -Path "HKLM:\$Script:UninstallPath" | Where-Object -FilterScript {
+        $_.Name -match $matchPath
+    }
+    $productInstalled = $false
+    if($null -ne $wacPath)
+    {
+        $productInstalled = $true
+    }
     
-    $returnValue = @{
-        Installed = $wacRegPathExist
+    return @{
+        Installed = $productInstalled
         Path = $Path
     }
-
-    $returnValue    
 }
 
 
-Function Set-TargetResource
+function Set-TargetResource
 {
     [CmdletBinding()]
     param
@@ -30,23 +42,27 @@ Function Set-TargetResource
         $Path
     )
 
-    Start-Process -FilePath $Path -ArgumentList '/config .\files\setupsilent\config.xml' -Wait
+    Write-Verbose -Message "Starting installation of Office Online Server"
 
-    Write-Verbose "Checking for Office Online Server Uninstall key to verify successful installation"
-    $wacRegPathExist = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office16.WacServer
+    $installer = Start-Process -FilePath $Path `
+                               -ArgumentList '/config .\files\setupsilent\config.xml' `
+                               -Wait `
+                               -PassThru
 
-    If($wacRegPathExist)
-    {
-        Write-Verbose "Office Online Server successfully installed."
-    }
-    Else
-    {
-        throw "Office Online Server failed installation. Checked $($env:TEMP)\Wac Server Setup.log for details"
+    switch ($installer.ExitCode) {
+        0 { 
+            Write-Verbose -Message "Installation of Office Online Server succeeded."
+         }
+        Default {
+            throw ("Office Online Server installation failed. Exit code " + `
+                   "'$($installer.ExitCode)' was returned. Check " + `
+                   "$($env:TEMP)\Wac Server Setup.log for further information")
+        }
     }
 }
 
 
-Function Test-TargetResource
+function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
@@ -56,21 +72,10 @@ Function Test-TargetResource
         [System.String]
         $Path
     )
+    Write-Verbose -Message "testing for installation of Office Online Server"
+    $result = Get-TargetResource @PSBoundParameters
 
-    $wacRegPathExist = Test-Path -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office16.WacServer
-
-    If($wacRegPathExist)
-    {
-        Write-Verbose "Office Online Server Unistall key found"
-        return $true
-    }
-    Else
-    {
-        Write-Verbose "Office Online Server registgry key not found"
-        return $false
-    }
+    return $result.Installed
 }
 
-
 Export-ModuleMember -Function *-TargetResource
-
