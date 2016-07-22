@@ -4,5 +4,5 @@
 .vs
 .psproj
 .sln
-Modules/xOfficeOnlineServer/DscResource.Tests
-Modules/xOfficeOnlineServer/DscResource.Tests/*
+Modules/OfficeOnlineServerDsc/DscResource.Tests
+Modules/OfficeOnlineServerDsc/DscResource.Tests/*
