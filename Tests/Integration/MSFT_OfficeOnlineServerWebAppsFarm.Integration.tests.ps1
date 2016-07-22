@@ -14,7 +14,7 @@
 
 # TODO: Customize these parameters...
 $Global:DSCModuleName      = 'OfficeOnlineServerDsc' # Example xNetworking
-$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsFarm' # Example MSFT_xFirewall
+$Global:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsFarm' # Example MSFT_xFirewall
 # /TODO
 
 #region HEADER

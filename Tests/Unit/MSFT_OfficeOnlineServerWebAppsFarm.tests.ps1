@@ -4,7 +4,7 @@ param(
 )
 
 $Global:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsFarm'
+$Global:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsFarm'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
 [String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve

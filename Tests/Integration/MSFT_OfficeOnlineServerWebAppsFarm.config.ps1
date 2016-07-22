@@ -23,7 +23,7 @@ $webAppsFarm = @{
     AllowCEIP = $true    
 }
 
-configuration MSFT_xOfficeOnlineServerWebAppsFarm_config {
+configuration MSFT_OfficeOnlineServerWebAppsFarm_config {
     
     Import-DscResource -ModuleName OfficeOnlineServerDsc
     node localhost {

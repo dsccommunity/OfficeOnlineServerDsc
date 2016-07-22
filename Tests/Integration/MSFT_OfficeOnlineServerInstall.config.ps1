@@ -11,11 +11,11 @@
 
 
 
-configuration MSFT_xOfficeOnlineServerInstall_config {
+configuration MSFT_OfficeOnlineServerInstall_config {
     Import-DscResource -ModuleName 'OfficeOnlineServerDsc'
     node localhost {
         # TODO: Modify ResourceFriendlyName (e.g. xFirewall Integration_Test)
-        xOfficeOnlineServerInstall Integration_Test {
+        OfficeOnlineServerInstall Integration_Test {
             Path = 'C:\InstallBits\setup.exe'
         }
     }

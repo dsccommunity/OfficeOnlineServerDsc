@@ -1,5 +1,5 @@
 $Global:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsMachine'
+$Global:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsMachine'
 
 #region HEADER
 # Unit Test Template Version 1.1.0
