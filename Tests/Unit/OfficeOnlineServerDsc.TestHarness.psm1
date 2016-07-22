@@ -1,4 +1,4 @@
-function Invoke-xOosUnitTestSuite() {
+function Invoke-xOosDscUnitTestSuite() {
     param
     (
         [parameter(Mandatory = $false)] [System.String]  $testResultsFile,
@@ -42,7 +42,7 @@ function Invoke-xOosUnitTestSuite() {
         $testsToRun += @(@{
             'Path' = (Join-Path -Path $repoDir -ChildPath "\Tests\Unit")
             'Parameters' = @{ 
-                'SharePointCmdletModule' = (Join-Path $repoDir "\Tests\Unit\Stubs\$_\OfficeWebApps.psm1")
+                'WACCmdletModule' = (Join-Path $repoDir "\Tests\Unit\Stubs\$_\OfficeWebApps.psm1")
             }
         })
     }

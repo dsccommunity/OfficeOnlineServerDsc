@@ -6,6 +6,18 @@
             "type": "PowerShell",
             "request": "launch",
             "program": "${file}"
+        },
+        {
+            "name": "Run core DSC resource tests only",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/.vscode/RunGlobalTestsOnly.ps1"
+        },
+        {
+            "name": "Run all tests",
+            "type": "PowerShell",
+            "request": "launch",
+            "program": "${workspaceRoot}/.vscode/RunAllTests.ps1"
         }
     ]
 }

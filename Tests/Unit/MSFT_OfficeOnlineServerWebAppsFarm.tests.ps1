@@ -123,7 +123,7 @@ try
             AllowHttpSecureStoreConnections             = $true
         }
 
-        Describe "xOfficeOnlineServerWebAppsFarm [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+        Describe "OfficeOnlineServerWebAppsFarm [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue

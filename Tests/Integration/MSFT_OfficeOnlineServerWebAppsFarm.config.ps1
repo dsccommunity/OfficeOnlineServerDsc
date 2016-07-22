@@ -28,7 +28,7 @@ configuration MSFT_OfficeOnlineServerWebAppsFarm_config {
     Import-DscResource -ModuleName OfficeOnlineServerDsc
     node localhost {
         
-        xOfficeOnlineServerWebAppsFarm Integration_Test
+        OfficeOnlineServerWebAppsFarm Integration_Test
         {
             InternalURL        = $webAppsFarm.InternalURL
             ExternalURL        = $webAppsFarm.ExternalURL

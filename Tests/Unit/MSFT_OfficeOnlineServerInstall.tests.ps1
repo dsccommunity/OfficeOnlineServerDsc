@@ -3,7 +3,7 @@ param(
     [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\Office15.WACServer\OfficeWebApps.psm1" -Resolve)
 )
 
-$Global:DSCModuleName      = 'xOfficeOnlineServer'
+$Global:DSCModuleName      = 'OfficeOnlineServerDsc'
 $Global:DSCResourceName    = 'MSFT_OfficeOnlineServerInstall'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
@@ -22,7 +22,7 @@ $TestEnvironment = Initialize-TestEnvironment `
 try
 {
     InModuleScope $Global:DSCResourceName {
-        Describe "xOfficeOnlineServerInstall [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+        Describe "OfficeOnlineServerInstall [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
