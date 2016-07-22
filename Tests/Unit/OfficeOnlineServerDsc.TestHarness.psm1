@@ -1,4 +1,4 @@
-function Invoke-xOosDscUnitTestSuite() {
+function Invoke-OosDscUnitTestSuite() {
     param
     (
         [parameter(Mandatory = $false)] [System.String]  $testResultsFile,
