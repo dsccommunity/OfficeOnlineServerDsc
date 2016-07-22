@@ -1,7 +1,22 @@
+function Get-OosDscInstalledProductVersion
+{
+    [CmdletBinding()]
+    [OutputType([Version])]
+    param()
+    $module = Get-Module -Name OfficeWebApps
+
+    if ($null -eq $module)
+    {
+        throw ("The OfficeWebApps module could not be found. Ensure that Office Online " + `
+               "Server 2016 or Office Web Apps 2013 are installed.")
+    }
+    $file = Get-Item -Path $module.Path
+    return [Version]::Parse($file.VersionInfo.ProductVersion)
+}
+
 function Test-OosDscFarmOu
 {
     [cmdletbinding()]
-
     param
     (
         [parameter(Mandatory = $true)]

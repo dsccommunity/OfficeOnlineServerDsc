@@ -123,11 +123,43 @@ try
             AllowHttpSecureStoreConnections             = $true
         }
 
+        $v16onlyParams = @("AllowOutboundHttp", "S2SCertificateName", "OnlinePictureEnabled", `
+                          "OnlineVideoEnabled", "OfficeAddinEnabled", `
+                          "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
+                          "ExcelMemoryCacheThreshold", "ExcelUnusedObjectAgeMax", `
+                          "ExcelCachingUnusedFiles", "ExcelAbortOnRefreshOnOpenFail", `
+                          "ExcelAutomaticVolatileFunctionCacheLifeTime", `
+                          "ExcelConcurrentDataRequestsPerSessionMax", `
+                          "ExcelDefaultWorkbookCalcMode", "ExcelRestExternalDataEnabled", `
+                          "ExcelChartAndImageSizeMax")
+
+        foreach ($param in $v16onlyParams) {
+            if ($mockWebFarm.ContainsKey($param) -eq $true) {
+                $mockWebFarm.Remove($param)
+            }
+            if ($mockWebFarmFalse.ContainsKey($param) -eq $true) {
+                $mockWebFarmFalse.Remove($param)
+            }
+        }
+
         Describe "OfficeOnlineServerWebAppsFarm [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+
+            if ($Global:CurrentWACCmdletModule.Contains("15") -eq $true)
+            {
+                Mock -CommandName Get-OosDscInstalledProductVersion -MockWith {
+                    return [Version]::Parse("15.0.0.0")
+                }
+            }
+            if ($Global:CurrentWACCmdletModule.Contains("16") -eq $true)
+            {
+                Mock -CommandName Get-OosDscInstalledProductVersion -MockWith {
+                    return [Version]::Parse("16.0.0.0")
+                }
+            }
             
 
             Mock -CommandName New-OfficeWebAppsFarm -MockWith { }

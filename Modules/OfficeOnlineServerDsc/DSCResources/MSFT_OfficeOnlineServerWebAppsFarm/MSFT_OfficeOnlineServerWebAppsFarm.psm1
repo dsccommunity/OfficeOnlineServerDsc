@@ -1,3 +1,13 @@
+$script:v16onlyParams = @("AllowOutboundHttp", "S2SCertificateName", "OnlinePictureEnabled", `
+                          "OnlineVideoEnabled", "OfficeAddinEnabled", `
+                          "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
+                          "ExcelMemoryCacheThreshold", "ExcelUnusedObjectAgeMax", `
+                          "ExcelCachingUnusedFiles", "ExcelAbortOnRefreshOnOpenFail", `
+                          "ExcelAutomaticVolatileFunctionCacheLifeTime", `
+                          "ExcelConcurrentDataRequestsPerSessionMax", `
+                          "ExcelDefaultWorkbookCalcMode", "ExcelRestExternalDataEnabled", `
+                          "ExcelChartAndImageSizeMax")
+
 function Get-TargetResource
 {
     [CmdletBinding()]
@@ -155,6 +165,8 @@ function Get-TargetResource
         [System.Boolean]
         $PicturePasteDisabled
     )
+
+    Test-OosDscV16Support -Parameters $PSBoundParameters
 
     try
     {
@@ -379,6 +391,8 @@ function Set-TargetResource
         $PicturePasteDisabled
     )
 
+    Test-OosDscV16Support -Parameters $PSBoundParameters
+
     try
     {
         $officeWebAppsFarm = Get-OfficeWebAppsFarm -ErrorAction Stop
@@ -559,6 +573,8 @@ function Test-TargetResource
         $PicturePasteDisabled
     )
 
+    Test-OosDscV16Support -Parameters $PSBoundParameters
+
     try
     {
         $officeWebAppsFarm = Get-OfficeWebAppsFarm -ErrorAction Stop
@@ -649,6 +665,37 @@ function Test-TargetResource
                                     )
 }
 
+function Test-OosDscV16Support()
+{
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param(
+        [Parameter(Mandatory=$true)]
+        [Object]
+        $Parameters
+    )
+
+    $version = Get-OosDscInstalledProductVersion
+    switch ($version.Major) {
+        15 {  
+            Write-Verbose -Message "Office Web Apps 2013 install detected. Checking parameter use."
+            foreach($param in $script:v16onlyParams)
+            {
+                if ($Parameters.ContainsKey($param) -eq $true)
+                {
+                    throw "The parameter '$param' is not supported on Office Web Apps Server 2013"
+                }
+            }
+        }
+        16 {
+            Write-Verbose -Message ("Office Online Server 2016 install detected. All " + `
+                                    "parameters are enabled")
+        }
+        Default {
+
+        }
+    }
+}
 
 Export-ModuleMember -Function *-TargetResource
 
