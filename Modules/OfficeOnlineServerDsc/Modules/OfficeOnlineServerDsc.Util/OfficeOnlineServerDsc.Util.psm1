@@ -1,4 +1,4 @@
-function Test-xOosFarmOu
+function Test-OosDscFarmOu
 {
     [cmdletbinding()]
 
@@ -29,7 +29,7 @@ function Test-xOosFarmOu
     }
 }
 
-function Test-xOosParameterState() {
+function Test-OosDscParameterState() {
     [CmdletBinding()]
     param
     (

@@ -132,7 +132,7 @@ try
 
             Mock -CommandName New-OfficeWebAppsFarm -MockWith { }
             Mock -CommandName Set-OfficeWebAppsFarm -MockWith { }
-            Mock -CommandName Test-xOosFarmOu -MockWith { return $true }
+            Mock -CommandName Test-OosDscFarmOu -MockWith { return $true }
 
             Context "A farm does not exist on the local macine, but should" {
                 $testParams = @{

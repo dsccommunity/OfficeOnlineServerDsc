@@ -571,7 +571,7 @@ function Test-TargetResource
 
     If($PSBoundParameters.ContainsKey('FarmOU'))
     {
-        if ((Test-xOosFarmOu -ExistingOU $officeWebAppsFarm.FarmOU -DesiredOU $FarmOU) -ne $true)
+        if ((Test-OosDscFarmOu -ExistingOU $officeWebAppsFarm.FarmOU -DesiredOU $FarmOU) -ne $true)
         {
             Write-Verbose -Message ("FarmOU not in a desired state. " + `
                                     "Expected: '$($PSBoundParameters['FarmOU'])'. " + `
@@ -594,7 +594,7 @@ function Test-TargetResource
     {
         $Proxy += "/"
     }
-    return Test-xOosParameterState -CurrentValues $currentValues `
+    return Test-OosDscParameterState -CurrentValues $currentValues `
                                    -DesiredValues $PSBoundParameters `
                                    -ValuesToCheck @(
                                        "InternalURL",

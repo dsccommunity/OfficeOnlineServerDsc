@@ -69,8 +69,8 @@ NestedModules = @("modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util
 FunctionsToExport = '*'
 
 # Cmdlets to export from this module
-CmdletsToExport = ('Test-xOosFarmOu',
-                   'Test-xOosParameterState')
+CmdletsToExport = ('Test-OosDscFarmOu',
+                   'Test-OosDscParameterState')
 
 # Variables to export from this module
 VariablesToExport = '*'

@@ -4,7 +4,7 @@ configuration WebAppsFarm
 
     node localhost
     {
-        xOfficeOnlineServerWebAppsFarm FirstFarm
+        OfficeOnlineServerWebAppsFarm FirstFarm
         {
             InternalURL = 'http://webfarm.contoso.com/'
             AllowHttp = $true

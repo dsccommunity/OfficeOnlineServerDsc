@@ -16,7 +16,7 @@
             Ensure = 'Present'
         }
 
-        xOfficeOnlineServerInstall Install
+        OfficeOnlineServerInstall Install
         {
             Path = 'C:\InstallBits\Setup.exe'
             DependsOn = '[WindowsFeature]Web-Server','[WindowsFeature]Web-Asp-Net45'
