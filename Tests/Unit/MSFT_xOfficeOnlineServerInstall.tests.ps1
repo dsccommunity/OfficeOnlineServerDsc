@@ -1,5 +1,11 @@
+[CmdletBinding()]
+param(
+    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\Office15.WACServer\OfficeWebApps.psm1" -Resolve)
+)
+
 $Global:DSCModuleName      = 'xOfficeOnlineServer'
 $Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerInstall'
+$Global:CurrentWACCmdletModule = $WACCmdletModule
 
 [String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\xOfficeOnlineServer" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
@@ -16,7 +22,11 @@ $TestEnvironment = Initialize-TestEnvironment `
 try
 {
     InModuleScope $Global:DSCResourceName {
-        Describe "xOfficeOnlineServerInstall" {
+        Describe "xOfficeOnlineServerInstall [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+
+            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\xOfficeOnlineServer" -Resolve)
+            Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
 
             Context "Office online server is not installed, but should be" {
                 $testParams = @{
@@ -110,6 +120,10 @@ try
             }
         }
     }
+}
+catch
+{
+    $_
 }
 finally
 {

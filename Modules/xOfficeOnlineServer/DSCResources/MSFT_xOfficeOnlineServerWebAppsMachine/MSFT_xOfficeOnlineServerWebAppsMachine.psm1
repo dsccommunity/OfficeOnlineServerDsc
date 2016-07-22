@@ -72,7 +72,7 @@ function Set-TargetResource
     (
         [ValidateSet("Present","Absent")]
         [System.String]
-        $Ensure,
+        $Ensure = "Present",
 
         [System.String[]]
         $Roles,
@@ -123,7 +123,7 @@ function Test-TargetResource
     (
         [ValidateSet("Present","Absent")]
         [System.String]
-        $Ensure,
+        $Ensure = "Present",
 
         [System.String[]]
         $Roles,

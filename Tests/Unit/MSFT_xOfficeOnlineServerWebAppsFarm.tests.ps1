@@ -50,7 +50,7 @@ try
             TranslationServiceAddress                   = 'http://tsa.contoso1.com/'
             RenderingLocalCacheLocation                 = 'C:\ProgramData\Microsoft\OfficeWebApps\Working\waccache'
             RecycleActiveProcessCount                   = 5
-            AllowCEIP                                   = $True
+            AllowCEIP                                   = $true
             ExcelRequestDurationMax                     = 300
             ExcelSessionTimeout                         = 450
             ExcelWorkbookSizeMax                        = 10
@@ -123,7 +123,7 @@ try
             AllowHttpSecureStoreConnections             = $true
         }
 
-        Describe "xOfficeOnlineServerWebAppsFarm" {
+        Describe "xOfficeOnlineServerWebAppsFarm [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\Modules\xOfficeOnlineServer" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
@@ -188,7 +188,7 @@ try
                 }
 
                 It "updates the farm in the set method" {
-                    Set-TargetResource @testParams
+                    Set-TargetResource @mockWebFarm
                     Assert-MockCalled Set-OfficeWebAppsFarm
                 }
             }

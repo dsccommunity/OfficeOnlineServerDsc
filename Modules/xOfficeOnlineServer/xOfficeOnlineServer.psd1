@@ -63,7 +63,7 @@ Copyright = '(c) 2016 Microsoft. All rights reserved.'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-NestedModules = @("$PSScriptRoot\DSCResources\Library\Helper.psm1")
+NestedModules = @("modules\xOfficeOnlineServer.Util\xOfficeOnlineServer.Util.psm1")
 
 # Functions to export from this module
 FunctionsToExport = '*'
