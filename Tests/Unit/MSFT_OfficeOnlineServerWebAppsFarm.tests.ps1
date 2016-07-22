@@ -30,8 +30,8 @@ try
 
         $mockWebFarm = @{
             FarmOU                                      = 'ldap://OU=Farm1'
-            InternalURL                                 = @{AbsoluteUri = $internalURL}
-            ExternalURL                                 = @{AbsoluteUri = $externalURL}
+            InternalURL                                 = [System.Uri]::new($internalURL)
+            ExternalURL                                 = [System.Uri]::new($externalURL)
             AllowHTTP                                   = $True
             SSLOffloaded                                = $False
             CertificateName                             = 'Farm Cert'
@@ -39,7 +39,7 @@ try
             LogLocation                                 = 'C:\Logs'
             LogRetentionInDays                          = 7
             LogVerbosity                                = 'Verbose'
-            Proxy                                       = @{AbsoluteUri = $proxy}
+            Proxy                                       = [System.Uri]::new($proxy)
             CacheLocation                               = 'C:\ProgramData\Microsoft\OfficeWebApps\Working\d'
             MaxMemoryCacheSizeInMB                      = 75
             DocumentInfoCacheSize                       = 5000
