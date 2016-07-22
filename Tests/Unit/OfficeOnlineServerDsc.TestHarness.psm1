@@ -6,7 +6,7 @@ function Invoke-xOosUnitTestSuite() {
         [parameter(Mandatory = $false)] [System.Boolean] $CalculateTestCoverage = $true
     )
 
-    Write-Verbose -Message "Commencing xOfficeOnlineServer unit tests"
+    Write-Verbose -Message "Commencing OfficeOnlineServerDsc unit tests"
 
     $repoDir = Join-Path $PSScriptRoot "..\..\" -Resolve
 
@@ -15,7 +15,7 @@ function Invoke-xOosUnitTestSuite() {
         Write-Warning -Message ("Code coverage statistics are being calculated. This will slow the " + `
                                 "start of the tests by several minutes while the code matrix is " + `
                                 "built. Please be patient")
-        Get-ChildItem "$repoDir\modules\xOfficeOnlineServer\**\*.psm1" -Recurse | ForEach-Object { 
+        Get-ChildItem "$repoDir\modules\OfficeOnlineServerDsc\**\*.psm1" -Recurse | ForEach-Object { 
             if ($_.FullName -notlike "*\DSCResource.Tests\*") {
                 $testCoverageFiles += $_.FullName    
             }
@@ -28,7 +28,7 @@ function Invoke-xOosUnitTestSuite() {
         $testResultSettings.Add("OutputFormat", "NUnitXml" )
         $testResultSettings.Add("OutputFile", $testResultsFile)
     }
-    Import-Module "$repoDir\modules\xOfficeOnlineServer\xOfficeOnlineServer.psd1"
+    Import-Module "$repoDir\modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1"
     
     
     $versionsToTest = (Get-ChildItem (Join-Path $repoDir "\Tests\Unit\Stubs\")).Name

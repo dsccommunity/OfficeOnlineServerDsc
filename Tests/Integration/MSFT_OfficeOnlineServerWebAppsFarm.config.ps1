@@ -25,7 +25,7 @@ $webAppsFarm = @{
 
 configuration MSFT_xOfficeOnlineServerWebAppsFarm_config {
     
-    Import-DscResource -ModuleName xOfficeOnlineServer
+    Import-DscResource -ModuleName OfficeOnlineServerDsc
     node localhost {
         
         xOfficeOnlineServerWebAppsFarm Integration_Test

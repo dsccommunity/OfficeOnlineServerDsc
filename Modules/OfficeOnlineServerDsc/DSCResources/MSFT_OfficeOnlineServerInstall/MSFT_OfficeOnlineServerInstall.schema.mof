@@ -1,6 +1,6 @@
 
-[ClassVersion("1.0.0.0"), FriendlyName("xOfficeOnlineServerInstall")]
-class MSFT_xOfficeOnlineServerInstall : OMI_BaseResource
+[ClassVersion("1.0.0.0"), FriendlyName("OfficeOnlineServerInstall")]
+class MSFT_OfficeOnlineServerInstall : OMI_BaseResource
 {
     [Read, Description("Specifies if Office Online Server is installed.")] Boolean Installed;
     [Key, Description("Path to setup.exe")] String Path;

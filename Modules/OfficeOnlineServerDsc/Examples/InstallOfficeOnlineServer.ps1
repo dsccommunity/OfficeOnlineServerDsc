@@ -1,6 +1,6 @@
 ﻿Configuration InstallOOS
 {
-    Import-DscResource -ModuleName xOfficeOnlineServer
+    Import-DscResource -ModuleName OfficeOnlineServerDsc
 
     node localhost
     {

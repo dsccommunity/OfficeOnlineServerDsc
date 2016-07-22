@@ -1,6 +1,6 @@
 configuration WebAppMachine
 {
-    Import-DscResource -ModuleName xOfficeOnlineServer
+    Import-DscResource -ModuleName OfficeOnlineServerDsc
 
     node localhost
     {

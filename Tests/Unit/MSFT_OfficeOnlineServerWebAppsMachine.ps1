@@ -1,9 +1,9 @@
-$Global:DSCModuleName      = 'xOfficeOnlineServer'
+$Global:DSCModuleName      = 'OfficeOnlineServerDsc'
 $Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsMachine'
 
 #region HEADER
 # Unit Test Template Version 1.1.0
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\xOfficeOnlineServer" -Resolve
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {

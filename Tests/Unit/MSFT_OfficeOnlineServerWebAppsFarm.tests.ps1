@@ -3,11 +3,11 @@ param(
     [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\Office15.WACServer\OfficeWebApps.psm1" -Resolve)
 )
 
-$Global:DSCModuleName      = 'xOfficeOnlineServer'
+$Global:DSCModuleName      = 'OfficeOnlineServerDsc'
 $Global:DSCResourceName    = 'MSFT_xOfficeOnlineServerWebAppsFarm'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\xOfficeOnlineServer" -Resolve
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
@@ -23,7 +23,7 @@ try
 {
     InModuleScope $Global:DSCResourceName {
 
-        Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\xOfficeOnlineServer\xOfficeOnlineServer.psd1")
+        Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1")
         $internalURL = "http://webfarm.contoso.com/"
         $externalURL = "http://external.contoso.com/"
         $proxy = 'http://proxy.contoso.com/'
@@ -125,7 +125,7 @@ try
 
         Describe "xOfficeOnlineServerWebAppsFarm [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
-            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\xOfficeOnlineServer" -Resolve)
+            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
             

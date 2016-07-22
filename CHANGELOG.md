@@ -1,5 +1,5 @@
-# Change log for xOfficeOnlineServer
+# Change log for OfficeOnlineServerDsc
 
 ### 0.1
 
- * First releast of xOfficeOnlineServer
+ * First releast of OfficeOnlineServerDsc

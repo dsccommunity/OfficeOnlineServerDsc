@@ -1,6 +1,6 @@
-# xOfficeOnlineServer
+# OfficeOnlineServerDsc
 
-The xOfficeOnlineServer module provides DSC resources that can be used to install Office Online 
+The OfficeOnlineServerDsc module provides DSC resources that can be used to install Office Online 
 Server (formerly known as Office Web App Server). 
 
 Please leave comments, feature requests, and bug reports in the issues tab for this module.
@@ -14,15 +14,15 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 
 ## Installation
 
-To manually install the module, download the source code and unzip the contents of the \Modules\xOfficeOnlineServer directory to the $env:ProgramFiles\WindowsPowerShell\Modules folder 
+To manually install the module, download the source code and unzip the contents of the \Modules\OfficeOnlineServerDsc directory to the $env:ProgramFiles\WindowsPowerShell\Modules folder 
 
 To install from the PowerShell gallery using PowerShellGet (in PowerShell 5.0) run the following command:
 
-    Find-Module -Name xOfficeOnlineServer -Repository PSGallery | Install-Module
+    Find-Module -Name OfficeOnlineServerDsc -Repository PSGallery | Install-Module
 
 To confirm installation, run the below command and ensure you see the SharePoint DSC resoures available:
 
-    Get-DscResource -Module xOfficeOnlineServer
+    Get-DscResource -Module OfficeOnlineServerDsc
 
 ## Requirements 
 
