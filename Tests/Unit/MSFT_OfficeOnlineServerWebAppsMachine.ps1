@@ -1,203 +1,188 @@
+[CmdletBinding()]
+param(
+    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\Office15.WACServer\OfficeWebApps.psm1" -Resolve)
+)
+
 $Global:DSCModuleName      = 'OfficeOnlineServerDsc'
 $Global:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsMachine'
+$Global:CurrentWACCmdletModule = $WACCmdletModule
 
-#region HEADER
-# Unit Test Template Version 1.1.0
 [String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
     & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
-
 Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Global:DSCModuleName `
     -DSCResourceName $Global:DSCResourceName `
     -TestType Unit 
-#endregion HEADER
 
-# Begin Testing
 try
 {
     InModuleScope $Global:DSCResourceName {
-        #region Pester Test Initialization
 
-        function Remove-OfficeWebAppsMachine  {}
-        function New-OfficeWebAppsMachine {}
-        function Get-OfficeWebAppsMachine {}
+        Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1")
 
-        #endregion Pester Test Initialization
+        Describe "OfficeOnlineServerWebAppsFarm [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+            
+            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
+            Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
 
-        #region Function Get-TargetResource
-        Describe "$($Global:DSCResourceName)Get-TargetResource" {
-            It "Should throw when module is not found" {
-                Mock -CommandName Import-Module -MockWith { Throw "Failed to import module" }
+            Mock -CommandName New-OfficeWebAppsMachine -MockWith {}
+            Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
 
-                { Get-TargetResource -MachineToJoin $env:COMPUTERNAME } | should throw "Failed to import module"
+            Context "The Office Online Server PowerShell module can not be found" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                }
 
+                Mock -CommandName Import-Module -MockWith { 
+                    throw "Failed to import module" 
+                } -ParameterFilter { 
+                    $Name -eq "OfficeWebApps" 
+                }
+
+                it "throws an exception from the get method" {
+                    { Get-TargetResource $testParams } | should throw
+                }
+
+                it "throws an exception from the test method" {
+                    { Test-TargetResource $testParams } | should throw
+                }
+
+                it "throws an exception from the set method" {
+                    { Set-TargetResource $testParams } | should throw
+                }
             }
 
-            It "Should return absent if Web Apps Machine is not found" {
-                Mock -CommandName Import-Module -MockWith {}
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { throw "It does not appear that this machine is part of an Office Online Server farm." }
-
-                $results = Get-TargetResource -MachineToJoin $env:COMPUTERNAME
-
-                $results.Ensure | should be 'Absent'
-                $results.Roles | should be ''
-                $results.MachineToJoin | should be ''
+            Mock -CommandName Import-Module -MockWith { } -ParameterFilter {
+                $Name -eq "OfficeWebApps" 
             }
 
-            It "Should return present if Web Apps Machine is found" {
-                Mock -CommandName Import-Module -MockWith {}
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { @{ Roles = "all"; MasterMachineName = "Machine1"} }
+            Context "The local server is not connect to a farm, but should be" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                }
 
-                $results = Get-TargetResource -MachineToJoin $env:COMPUTERNAME
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
+                    throw "It does not appear that this machine is part of an Office Online Server farm." 
+                }
 
-                $results.Ensure | should be 'Present'
-                $results.Roles | should be 'all'
-                $results.MachineToJoin | should be 'Machine1'
+                it "should return absent from the get method" {
+                    (Get-TargetResource @testParams).Ensure | Should Be "Absent"
+                }
+
+                it "should return false from the test method" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                it "should join the server to the farm in the set method" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName New-OfficeWebAppsMachine
+                }
             }
 
-            It "Should throw if Get-OfficeWebAppsMachine throws an error other then server not foud" {
-                Mock -CommandName Import-Module -MockWith {}
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { throw "Unexpected error" }
+            Context "The local server is connected to a farm and should be" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                }
 
-                { Get-TargetResource -MachineToJoin $env:COMPUTERNAME } | should throw "Unexpected error"
-            }
-        }
-        #endregion Function Get-TargetResource
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
+                    @{ 
+                        Roles = "all"; 
+                        MasterMachineName = $testParams.MachineToJoin
+                    } 
+                }
 
+                it "should return present from the get method" {
+                    (Get-TargetResource @testParams).Ensure | Should Be "Present"
+                }
 
-        #region Function Test-TargetResource
-        Describe "$($Global:DSCResourceName)Test-TargetResource" {
-            It "Should return true when ensure is present and all properties match" {
-                Mock -CommandName Get-TargetResource -MockWith { @{ Ensure = "Present"; Roles = "All"; MachineToJoin = $env:COMPUTERNAME } }
-
-                $result = Test-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME
-
-                $result | should be $true
-            }
-
-            It "Should return false when ensure is present and machine to join does not match" {
-                Mock -CommandName Get-TargetResource -MockWith { @{ Ensure = "Present"; Roles = "All"; MachineToJoin = $env:COMPUTERNAME } }
-
-                $result = Test-TargetResource -Ensure "Present" -MachineToJoin "NotThisMachine"
-
-                $result | should be $false
+                it "should return true from the test method" {
+                    Test-TargetResource @testParams | Should Be $true
+                }
             }
 
-            It "Should return false when ensure is present and roles does not match" {
-                Mock -CommandName Get-TargetResource -MockWith { @{ Ensure = "Present"; Roles = "All"; MachineToJoin = $env:COMPUTERNAME } }
+            Context "The local server is connected to a farm, but the roles are incorrect" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                }
 
-                $result = Test-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME -Roles "FrontEnd"
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
+                    @{ 
+                        Roles = "FrontEnd"; 
+                        MasterMachineName = $testParams.MachineToJoin
+                    } 
+                }
 
-                $result | should be $false
+                it "should return present from the get method" {
+                    (Get-TargetResource @testParams).Ensure | Should Be "Present"
+                }
+
+                it "should return false from the test method" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                it "should join the server to the farm in the set method" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName New-OfficeWebAppsMachine
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsMachine
+                }
             }
 
-            It "Should return false when ensure is present and roles and machine to join does not match" {
-                Mock -CommandName Get-TargetResource -MockWith { @{ Ensure = "Present"; Roles = "All"; MachineToJoin = $env:COMPUTERNAME } }
+            Context "The local server is connected to to a farm, but it should not be" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                    Ensure = "Absent"
+                }
 
-                $result = Test-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME -Roles "NotThisMachine"
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
+                    @{ 
+                        Roles = "all"; 
+                        MasterMachineName = $testParams.MachineToJoin
+                    } 
+                }
 
-                $result | should be $false
+                it "should return present from the get method" {
+                    (Get-TargetResource @testParams).Ensure | Should Be "Present"
+                }
+
+                it "should return false from the test method" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                it "should join the server to the farm in the set method" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsMachine
+                }
             }
 
-            It "Should return true when ensure is absent" {
-                Mock -CommandName Get-TargetResource -MockWith { @{ Ensure = "Absent"; Roles = ""; MachineToJoin = "" } }
+            Context "The local server is not connected to a farm and should not be" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                    Ensure = "Absent"
+                }
 
-                $result = Test-TargetResource -Ensure "Absent" -MachineToJoin $env:COMPUTERNAME
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
+                    throw "It does not appear that this machine is part of an Office Online Server farm." 
+                }
 
-                $result | should be $true
-            }
+                it "should return absent from the get method" {
+                    (Get-TargetResource @testParams).Ensure | Should Be "Absent"
+                }
 
-            It "Should return false when ensure does not match" {
-                Mock -CommandName Get-TargetResource -MockWith { @{ Ensure = "Absent"; Roles = ""; MachineToJoin = "" } }
-
-                $result = Test-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME
-
-                $result | should be $false
-            }
-        }
-        #endregion Function Test-TargetResource
-
-
-        #region Function Set-TargetResource
-        Describe "$($Global:DSCResourceName)Set-TargetResource" {
-            It "Should throw when module is not found" {
-                Mock -CommandName Import-Module -MockWith { Throw "Failed to import module" }
-
-                { Set-TargetResource -Ensure "Absent" -MachineToJoin $env:COMPUTERNAME } | should throw "Failed to import module"
-
-            }
-
-            It "Should remove the Web Apps Machine when ensure is set to absent" {
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {} -Verifiable
-                Mock -CommandName Import-Module -MockWith {}
-
-                Set-TargetResource -Ensure "Absent" -MachineToJoin $env:COMPUTERNAME
-
-                Assert-MockCalled -CommandName Remove-OfficeWebAppsMachine -Times 1
-            }
-
-            It "Should throw if it fails to remove the Web Apps Machine" {
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { throw "I failed" } 
-                Mock -CommandName Import-Module -MockWith {}
-
-                { Set-TargetResource -Ensure "Absent" -MachineToJoin $env:COMPUTERNAME } | should throw "I failed"
-            }
-
-            It "Should attempt to remove the Web Apps Machine when ensure is set to present" {
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {} -Verifiable
-                Mock -CommandName Import-Module -MockWith {}
-
-                Set-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME
-
-                Assert-MockCalled -CommandName Remove-OfficeWebAppsMachine -Times 1
-            }
-
-            It "Should not throw if removing the Web Apps Machine fails when ensure is set to present" {
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { throw "I failed" } 
-                Mock -CommandName Import-Module -MockWith {}
-                Mock -CommandName New-OfficeWebAppsMachine -MockWith {} -Verifiable
-
-                $results = $null
-                $results = Set-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME
-
-                Assert-MockCalled -CommandName New-OfficeWebAppsMachine -Times 1
-                $results | should be $null
-            }
-
-            It "Should add a new Web App Machine when ensure is set to present" {
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {} 
-                Mock -CommandName Import-Module -MockWith {}
-                Mock -CommandName New-OfficeWebAppsMachine -MockWith {} -Verifiable
-
-                $results = $null
-                $results = Set-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME
-
-                Assert-MockCalled -CommandName New-OfficeWebAppsMachine -Times 1
-                $results | should be $null
-            }
-
-            It "Should throw if it fails to add a nwe Web App Machine when ensure is set to present" {
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {} 
-                Mock -CommandName Import-Module -MockWith {}
-                Mock -CommandName New-OfficeWebAppsMachine -MockWith { throw "I failed" } -Verifiable
-
-                { Set-TargetResource -Ensure "Present" -MachineToJoin $env:COMPUTERNAME } | should throw "I failed"
+                it "should return true from the test method" {
+                    Test-TargetResource @testParams | Should Be $true
+                }
             }
         }
-        #endregion Function Set-TargetResource
-
-        #endregion Exported Function Unit Tests
     }
 }
 finally
 {
-    #region FOOTER
     Restore-TestEnvironment -TestEnvironment $TestEnvironment
-    #endregion
 }
 

@@ -16,6 +16,13 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure = "Present",
+
+        [System.String[]]
+        $Roles,
+
         [parameter(Mandatory = $true)]
         [System.String]
         $MachineToJoin
@@ -140,8 +147,15 @@ function Test-TargetResource
         $Roles += "All" 
     }
 
-    $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
-
+    if ($null -eq $results.Roles)
+    {
+        $roleCompare = $null
+    }
+    else 
+    {
+        $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
+    }
+    
     if( ($results.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
             -and ($results.MachineToJoin -eq $MachineToJoin) `
