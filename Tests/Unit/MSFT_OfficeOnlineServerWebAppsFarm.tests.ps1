@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\Office15.WACServer\OfficeWebApps.psm1" -Resolve)
+    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Global:DSCModuleName      = 'OfficeOnlineServerDsc'
