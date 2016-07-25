@@ -171,6 +171,10 @@ try
                     InternalUrl = $internalURL
                 }
 
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                    throw "It does not appear that this machine is part of an Office Online Server Farm."
+                }
+
                 It "returns no internal URL from the get method" {
                     (Get-TargetResource @testParams).InternalUrl | Should BeNullOrEmpty
                 }
@@ -221,6 +225,31 @@ try
 
                 It "updates the farm in the set method" {
                     Set-TargetResource @mockWebFarm
+                    Assert-MockCalled Set-OfficeWebAppsFarm
+                }
+            }
+
+            Context "A farm with an incorrect OU exists locally" {
+                
+                $mockBadOu = $mockWebFarm
+                $mockBadOu.FarmOu = 'ldap://OU=WrongOU'
+
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                    return $mockWebFarm
+                }
+
+                Mock Test-OosDscFarmOu { return $false }
+
+                It "returns the current values from the get method" {
+                    (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl).InternalUrl | Should Not BeNullOrEmpty
+                }
+
+                It "returns false from the test method" {
+                    Test-TargetResource @mockBadOu | Should Be $false
+                }
+
+                It "updates the farm in the set method" {
+                    Set-TargetResource @mockBadOu
                     Assert-MockCalled Set-OfficeWebAppsFarm
                 }
             }

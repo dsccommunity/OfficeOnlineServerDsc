@@ -174,7 +174,7 @@ function Get-TargetResource
     }
     catch
     {
-        Write-Verbose $_        
+        Write-Verbose -Message $_        
     }
 
     $returnValue = @{
@@ -399,7 +399,7 @@ function Set-TargetResource
     }
     catch
     {
-        Write-Verbose $_        
+        Write-Verbose -Message $_        
     }
 
     if(-not $officeWebAppsFarm)
@@ -581,7 +581,7 @@ function Test-TargetResource
     }
     catch
     {
-        Write-Verbose $_
+        Write-Verbose -Message $_
         return $false
     }
 

@@ -2,7 +2,7 @@
 {
     # culture="en-US"
     ConvertFrom-StringData -StringData @'
-NotApartOfAFarm = It does not appear that this machine is part of an Office Online Server farm.
+NotApartOfAFarm = It does not appear that this machine is part of an Office Online Server/Office Web Apps farm.
 ChangingAppMachineConfig = Changing App Maching Configuration.
 SetAppMachine = The Office Web App Machine has been Set.
 RemoveAppMachine = The Office Web App Machine has been removed.
@@ -40,9 +40,9 @@ function Get-TargetResource
     catch
     {
         # catch when not appart of the farm and redirect output to returned hash table
-        $notInFarmError = "It does not appear that this machine is part of an Office " + `
-                          "Online Server farm."
-        if($_.toString() -like $notInFarmError)
+        $notInFarmError = "It does not appear that this machine is part of an " + `
+                          "(Office Online)|(Office Web Apps) Server farm\."
+        if($_.toString() -match $notInFarmError)
         {
             Write-Verbose -Message $LocalizedData.NotApartOfAFarm
         }
