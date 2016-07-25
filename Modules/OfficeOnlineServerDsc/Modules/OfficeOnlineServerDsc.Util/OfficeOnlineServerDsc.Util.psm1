@@ -3,15 +3,15 @@ function Get-OosDscInstalledProductVersion
     [CmdletBinding()]
     [OutputType([Version])]
     param()
-    $module = Get-Module -Name OfficeWebApps
 
-    if ($null -eq $module)
-    {
-        throw ("The OfficeWebApps module could not be found. Ensure that Office Online " + `
-               "Server 2016 or Office Web Apps 2013 are installed.")
-    }
-    $file = Get-Item -Path $module.Path
-    return [Version]::Parse($file.VersionInfo.ProductVersion)
+    return Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | `
+        Select-Object DisplayName, DisplayVersion | `
+        Where-Object {
+            $_.DisplayName -eq "Microsoft Office Web Apps Server 2013" -or `
+            $_.DisplayName -eq "Microsoft Office Online Server"
+        } | ForEach-Object -Process {
+            return [Version]::Parse($_.DisplayVersion)
+        } | Select-Object -First 1
 }
 
 function Test-OosDscFarmOu
