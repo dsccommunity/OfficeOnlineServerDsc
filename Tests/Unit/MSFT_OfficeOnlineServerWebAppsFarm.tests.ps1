@@ -24,14 +24,14 @@ try
     InModuleScope $Global:DSCResourceName {
 
         Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1")
-        $internalURL = "http://webfarm.contoso.com/"
-        $externalURL = "http://external.contoso.com/"
-        $proxy = 'http://proxy.contoso.com/'
+        $internalURL = "http://webfarm.contoso.com"
+        $externalURL = "http://external.contoso.com"
+        $proxy = 'http://proxy.contoso.com'
 
         $mockWebFarm = @{
             FarmOU                                      = 'ldap://OU=Farm1'
-            InternalURL                                 = [System.Uri]::new($internalURL)
-            ExternalURL                                 = [System.Uri]::new($externalURL)
+            InternalURL                                 = [System.Uri]::new($internalURL.TrimEnd('/') + "/")
+            ExternalURL                                 = [System.Uri]::new($externalURL.TrimEnd('/') + "/")
             AllowHTTP                                   = $True
             SSLOffloaded                                = $False
             CertificateName                             = 'Farm Cert'
@@ -251,6 +251,23 @@ try
                 It "updates the farm in the set method" {
                     Set-TargetResource @mockBadOu
                     Assert-MockCalled Set-OfficeWebAppsFarm
+                }
+            }
+
+            if ($Global:CurrentWACCmdletModule.Contains("15") -eq $true)
+            {
+                Context "Errors are thrown when incorrect parameters are used for Office Web Apps 2013" {
+                    It "throws in the get method" {
+                        { Get-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
+                    }
+
+                    It "throws in the test method" {
+                        { Test-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
+                    }
+
+                    It "throws in the set method" {
+                        { Set-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
+                    }
                 }
             }
         }
