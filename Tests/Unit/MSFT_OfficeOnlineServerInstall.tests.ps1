@@ -22,7 +22,7 @@ $TestEnvironment = Initialize-TestEnvironment `
 try
 {
     InModuleScope $Global:DSCResourceName {
-        Describe "OfficeOnlineServerInstall [Simulating $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+        Describe "OfficeOnlineServerInstall [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
