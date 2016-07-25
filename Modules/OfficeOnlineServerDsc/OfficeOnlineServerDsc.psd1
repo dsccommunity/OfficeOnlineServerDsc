@@ -18,7 +18,7 @@ ModuleVersion = '0.1.0.0'
 GUID = '7514bb93-d3e4-40b2-98e7-3404e9674c1c'
 
 # Author of this module
-Author = 'Jason Walker'
+Author = 'Jason Walker and Brian Farnhill'
 
 # Company or vendor of this module
 CompanyName = 'Microsoft'
