@@ -4,8 +4,7 @@ The OfficeOnlineServerDsc module provides the ability to install Office Online S
 
 Please leave comments, feature requests, and bug reports in the issues tab for this module.
 
-If you would like to modify SharePointDsc module, please feel free.  
-As specified in the license, you may copy or modify this resource as long as they are used on the Windows Platform.
+If you would like to modify OfficeOnlineServerDsc module, please feel free.  
 Please refer to the [Contribution Guidelines](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md) for information about style guides, testing and patterns for contributing to DSC resources.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
@@ -19,7 +18,7 @@ To install from the PowerShell gallery using PowerShellGet (in PowerShell 5.0) r
 
     Find-Module -Name OfficeOnlineServerDsc -Repository PSGallery | Install-Module
 
-To confirm installation, run the below command and ensure you see the SharePoint DSC resoures available:
+To confirm installation, run the below command and ensure you see the Office Online Server DSC resoures available:
 
     Get-DscResource -Module OfficeOnlineServerDsc
 
