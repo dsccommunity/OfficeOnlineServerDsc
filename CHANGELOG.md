@@ -2,4 +2,4 @@
 
 ### 0.1.0.0
 
- * First releast of OfficeOnlineServerDsc
+ * First release of OfficeOnlineServerDsc

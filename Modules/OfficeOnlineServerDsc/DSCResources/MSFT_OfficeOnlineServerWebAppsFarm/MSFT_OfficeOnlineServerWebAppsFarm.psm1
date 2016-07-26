@@ -665,7 +665,7 @@ function Test-TargetResource
                                     )
 }
 
-function Test-OosDscV16Support()
+function Test-OosDscV16Support
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]

@@ -1,7 +1,6 @@
 # OfficeOnlineServerDsc
 
-The OfficeOnlineServerDsc module provides DSC resources that can be used to install Office Online 
-Server (formerly known as Office Web App Server). 
+The OfficeOnlineServerDsc module provides the ability to install Office Online Server (formerly known as Office Web App Server). 
 
 Please leave comments, feature requests, and bug reports in the issues tab for this module.
 

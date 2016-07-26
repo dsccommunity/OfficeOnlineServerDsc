@@ -18,16 +18,16 @@ ModuleVersion = '0.1.0.0'
 GUID = '7514bb93-d3e4-40b2-98e7-3404e9674c1c'
 
 # Author of this module
-Author = 'Jason Walker and Brian Farnhill'
+Author = 'Microsoft Corporation'
 
 # Company or vendor of this module
-CompanyName = 'Microsoft'
+CompanyName = 'Microsoft Corporation'
 
 # Copyright statement for this module
 Copyright = '(c) 2016 Microsoft. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'The OfficeOnlineServerDsc module provides the ability to install Office Online Server (formerly known as Office Web App Server).'
 
 # Minimum version of the Windows PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -93,6 +93,31 @@ CmdletsToExport = ('Get-OosDscInstalledProductVersion',
 
 # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
 # DefaultCommandPrefix = ''
+
+PrivateData = @{
+
+    PSData = @{
+
+        # Tags applied to this module. These help with module discovery in online galleries.
+        Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'preview')
+
+        # A URL to the license for this module.
+        LicenseUri = 'https://github.com/PowerShell/OfficeOnlineServerDsc/blob/master/LICENSE'
+
+        # A URL to the main website for this project.
+        ProjectUri = 'https://github.com/PowerShell/OfficeOnlineServerDsc'
+
+        # A URL to an icon representing this module.
+        # IconUri = ''
+
+        # ReleaseNotes of this module
+        ReleaseNotes = '
+ * First release of OfficeOnlineServerDsc
+'
+
+    } # End of PSData hashtable
+
+} # End of PrivateData hashtable
 
 }
 

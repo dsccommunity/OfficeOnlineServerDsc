@@ -1,5 +1,4 @@
 version: 0.1.0.{build}
-image: WMF 5
 
 install:
     - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe   
