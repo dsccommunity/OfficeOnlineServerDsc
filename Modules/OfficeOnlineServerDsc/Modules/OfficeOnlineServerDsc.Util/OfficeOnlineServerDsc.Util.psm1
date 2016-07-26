@@ -202,3 +202,4 @@ function Test-OosDscParameterState() {
     return $returnValue
 }
 
+Export-ModuleMember -Function *

@@ -66,7 +66,7 @@ Copyright = '(c) 2016 Microsoft. All rights reserved.'
 NestedModules = @("modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util.psm1")
 
 # Functions to export from this module
-FunctionsToExport = '*'
+# FunctionsToExport = '*'
 
 # Cmdlets to export from this module
 CmdletsToExport = ('Get-OosDscInstalledProductVersion',
@@ -74,10 +74,10 @@ CmdletsToExport = ('Get-OosDscInstalledProductVersion',
                    'Test-OosDscParameterState')
 
 # Variables to export from this module
-VariablesToExport = '*'
+# VariablesToExport = '*'
 
 # Aliases to export from this module
-AliasesToExport = '*'
+# AliasesToExport = '*'
 
 # List of all modules packaged with this module
 # ModuleList = @()
