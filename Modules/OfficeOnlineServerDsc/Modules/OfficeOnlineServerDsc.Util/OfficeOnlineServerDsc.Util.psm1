@@ -46,6 +46,7 @@ function Test-OosDscFarmOu
 
 function Test-OosDscParameterState() {
     [CmdletBinding()]
+    [OutputType([System.Boolean])]
     param
     (
         [parameter(Mandatory = $true, Position=1)]  

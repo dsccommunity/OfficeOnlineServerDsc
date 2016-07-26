@@ -34,7 +34,7 @@ function Invoke-OosDscUnitTestSuite() {
     $versionsToTest = (Get-ChildItem (Join-Path $repoDir "\Tests\Unit\Stubs\")).Name
     
     # Import the first stub found so that there is a base module loaded before the tests start
-    $firstVersion = $versionsToTest | Select -First 1
+    $firstVersion = $versionsToTest | Select-Object -First 1
     Import-Module (Join-Path $repoDir "\Tests\Unit\Stubs\$firstVersion\OfficeWebApps.psm1") -WarningAction SilentlyContinue
 
     $testsToRun = @()
