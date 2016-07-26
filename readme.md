@@ -5,8 +5,7 @@ Server (formerly known as Office Web App Server).
 
 Please leave comments, feature requests, and bug reports in the issues tab for this module.
 
-If you would like to modify SharePointDsc module, please feel free.  
-As specified in the license, you may copy or modify this resource as long as they are used on the Windows Platform.
+If you would like to modify OfficeOnlineServerDsc module, please feel free.  
 Please refer to the [Contribution Guidelines](https://github.com/PowerShell/DscResources/blob/master/CONTRIBUTING.md) for information about style guides, testing and patterns for contributing to DSC resources.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
