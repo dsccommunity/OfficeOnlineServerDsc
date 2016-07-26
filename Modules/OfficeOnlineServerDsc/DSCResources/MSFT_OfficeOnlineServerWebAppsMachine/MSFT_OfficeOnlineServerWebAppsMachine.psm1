@@ -39,7 +39,7 @@ function Get-TargetResource
     }
     catch
     {
-        # catch when not appart of the farm and redirect output to returned hash table
+        # catch when not a part of the farm and redirect output to returned hash table
         $notInFarmError = "It does not appear that this machine is part of an " + `
                           "(Office Online)|(Office Web Apps) Server farm\."
         if($_.toString() -match $notInFarmError)
@@ -113,7 +113,7 @@ function Set-TargetResource
 
         if ($null -eq $Roles)
         {
-            $Roles += "All" 
+            $Roles = @("All")
         }             
 
         New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
