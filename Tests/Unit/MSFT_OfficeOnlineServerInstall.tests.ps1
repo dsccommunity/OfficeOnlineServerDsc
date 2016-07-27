@@ -3,8 +3,8 @@ param(
     [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
-$Global:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Global:DSCResourceName    = 'MSFT_OfficeOnlineServerInstall'
+$Script:DSCModuleName      = 'OfficeOnlineServerDsc'
+$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerInstall'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
 [String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
@@ -15,13 +15,13 @@ if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource
 }
 Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 $TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $Global:DSCModuleName `
-    -DSCResourceName $Global:DSCResourceName `
+    -DSCModuleName $Script:DSCModuleName `
+    -DSCResourceName $Script:DSCResourceName `
     -TestType Unit 
 
 try
 {
-    InModuleScope $Global:DSCResourceName {
+    InModuleScope $Script:DSCResourceName {
         Describe "OfficeOnlineServerInstall [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
