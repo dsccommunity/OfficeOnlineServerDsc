@@ -52,7 +52,7 @@ function Get-TargetResource
         }
     }
 
-    if($null -eq $officeWebAppsMachine)
+    if ($null -eq $officeWebAppsMachine)
     {
         $returnValue = @{
             Ensure = "Absent"
@@ -91,7 +91,7 @@ function Set-TargetResource
 
     Import-Module -Name OfficeWebApps -ErrorAction Stop
 
-    if($Ensure -eq "Absent")
+    if ($Ensure -eq "Absent")
     {
         Remove-OfficeWebAppsMachine
 
@@ -142,9 +142,9 @@ function Test-TargetResource
 
     $results = Get-TargetResource -MachineToJoin $MachineToJoin
 
-    If($null -eq $Roles)
+    if ($null -eq $Roles)
     {
-        $Roles += "All" 
+        $Roles = @("All")
     }
 
     if ($null -eq $results.Roles)
@@ -156,7 +156,7 @@ function Test-TargetResource
         $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
     }
     
-    if( ($results.Ensure -eq "Present") `
+    if (($results.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
             -and ($results.MachineToJoin -eq $MachineToJoin) `
             -and ( $null -eq $roleCompare))

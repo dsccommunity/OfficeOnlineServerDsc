@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
@@ -42,15 +42,15 @@ try
                     }
                 }
 
-                it "returns that it is not installed from the get method" {
+                it "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Installed | Should Be $false
                 }
 
-                it "returns false from the test method" {
+                it "Returns false from the test method" {
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                it "starts the install from the set method" {
+                it "Starts the install from the set method" {
                     Set-TargetResource @testParams
                     Assert-MockCalled Start-Process
                 }
@@ -69,11 +69,11 @@ try
                     )
                 }
 
-                it "returns that it is installed from the get method" {
+                it "Returns that it is installed from the get method" {
                     (Get-TargetResource @testParams).Installed | Should Be $true
                 }
 
-                it "returns true from the test method" {
+                it "Returns true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }
@@ -91,11 +91,11 @@ try
                     )
                 }
 
-                it "returns that it is installed from the get method" {
+                it "Returns that it is installed from the get method" {
                     (Get-TargetResource @testParams).Installed | Should Be $true
                 }
 
-                it "returns true from the test method" {
+                it "Returns true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }
@@ -114,16 +114,12 @@ try
                     }
                 }
 
-                it "starts the install from the set method" {
+                it "Starts the install from the set method" {
                     { Set-TargetResource @testParams } | Should Throw
                 }
             }
         }
     }
-}
-catch
-{
-    $_
 }
 finally
 {

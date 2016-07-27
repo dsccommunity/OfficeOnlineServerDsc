@@ -17,29 +17,28 @@ $TestEnvironment = Initialize-TestEnvironment `
     -DSCResourceName $Script:DSCResourceName `
     -TestType Integration 
 
-
-$webServerInstalled = (Get-WindowsFeature -Name Web-Server).Installed
-$aspDotNET45 = (Get-WindowsFeature -Name 'Web-Asp-Net45').Installed
-Describe 'Environment' {
-    Context 'Windows Features' {
-
-        It 'Should have Web-Server installed' {
-            $webServerInstalled | Should Be $true
-        }
-
-        It 'Should have Web-Asp-Net45 installed' {
-            $aspDotNET45 | Should Be $true
-        }
-    }
-}
-
-if($webServerInstalled -eq $false -or $aspDotNET45 -eq $false)
-{
-    break
-}
-
 try
 {
+    $webServerInstalled = (Get-WindowsFeature -Name Web-Server).Installed
+    $aspDotNET45 = (Get-WindowsFeature -Name 'Web-Asp-Net45').Installed
+    Describe 'Environment' {
+        Context 'Windows Features' {
+
+            It 'Should have Web-Server installed' {
+                $webServerInstalled | Should Be $true
+            }
+
+            It 'Should have Web-Asp-Net45 installed' {
+                $aspDotNET45 | Should Be $true
+            }
+        }
+    }
+
+    if($webServerInstalled -eq $false -or $aspDotNET45 -eq $false)
+    {
+        break
+    }
+
     $ConfigFile = Join-Path -Path $PSScriptRoot -ChildPath "$($Script:DSCResourceName).config.ps1"
     . $ConfigFile
 
@@ -53,7 +52,7 @@ try
             } | Should not throw
         }
 
-        It 'should be able to call Get-DscConfiguration without throwing' {
+        It 'Should be able to call Get-DscConfiguration without throwing' {
             { Get-DscConfiguration -Verbose -ErrorAction Stop } | Should Not throw
         }
 

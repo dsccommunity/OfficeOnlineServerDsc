@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
@@ -45,15 +45,15 @@ try
                     $Name -eq "OfficeWebApps" 
                 }
 
-                it "throws an exception from the get method" {
+                it "Throws an exception from the get method" {
                     { Get-TargetResource $testParams } | should throw
                 }
 
-                it "throws an exception from the test method" {
+                it "Throws an exception from the test method" {
                     { Test-TargetResource $testParams } | should throw
                 }
 
-                it "throws an exception from the set method" {
+                it "Throws an exception from the set method" {
                     { Set-TargetResource $testParams } | should throw
                 }
             }
@@ -71,15 +71,15 @@ try
                     throw "It does not appear that this machine is part of an Office Online Server farm." 
                 }
 
-                it "should return absent from the get method" {
+                it "Should return absent from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
                 }
 
-                it "should return false from the test method" {
+                it "Should return false from the test method" {
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                it "should join the server to the farm in the set method" {
+                it "Should join the server to the farm in the set method" {
                     Set-TargetResource @testParams
                     Assert-MockCalled -CommandName New-OfficeWebAppsMachine
                 }
@@ -97,11 +97,11 @@ try
                     } 
                 }
 
-                it "should return present from the get method" {
+                it "Should return present from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"
                 }
 
-                it "should return true from the test method" {
+                it "Should return true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }
@@ -118,15 +118,15 @@ try
                     } 
                 }
 
-                it "should return present from the get method" {
+                it "Should return present from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"
                 }
 
-                it "should return false from the test method" {
+                it "Should return false from the test method" {
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                it "should join the server to the farm in the set method" {
+                it "Should join the server to the farm in the set method" {
                     Set-TargetResource @testParams
                     Assert-MockCalled -CommandName New-OfficeWebAppsMachine
                     Assert-MockCalled -CommandName Remove-OfficeWebAppsMachine
@@ -146,15 +146,15 @@ try
                     } 
                 }
 
-                it "should return present from the get method" {
+                it "Should return present from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"
                 }
 
-                it "should return false from the test method" {
+                it "Should return false from the test method" {
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                it "should join the server to the farm in the set method" {
+                it "Should join the server to the farm in the set method" {
                     Set-TargetResource @testParams
                     Assert-MockCalled -CommandName Remove-OfficeWebAppsMachine
                 }
@@ -170,11 +170,11 @@ try
                     throw "It does not appear that this machine is part of an Office Online Server farm." 
                 }
 
-                it "should return absent from the get method" {
+                it "Should return absent from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
                 }
 
-                it "should return true from the test method" {
+                it "Should return true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }

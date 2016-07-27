@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
@@ -175,15 +175,15 @@ try
                     throw "It does not appear that this machine is part of an Office Online Server Farm."
                 }
 
-                It "returns no internal URL from the get method" {
+                It "Returns no internal URL from the get method" {
                     (Get-TargetResource @testParams).InternalUrl | Should BeNullOrEmpty
                 }
 
-                It "returns false from the test method" {
+                It "Returns false from the test method" {
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                It "creates the farm in the set method" {
+                It "Creates the farm in the set method" {
                     Set-TargetResource @testParams
                     Assert-MockCalled New-OfficeWebAppsFarm
                 }
@@ -195,16 +195,16 @@ try
                     return $mockWebFarm
                 }
 
-                It "returns the current values from the get method" {
-                    $GetResult = Get-TargetResource -InternalURL $mockWebFarm.InternalUrl
+                It "Returns the current values from the get method" {
+                    $getResult = Get-TargetResource -InternalURL $mockWebFarm.InternalUrl
 
                     foreach($key in $mockWebFarm.Keys)
                     {
-                        $GetResult[$key] | Should Be $mockWebFarm[$key]
+                        $getResult[$key] | Should Be $mockWebFarm[$key]
                     }
                 }
 
-                It "returns true from the test method" {
+                It "Returns true from the test method" {
                     Test-TargetResource @mockWebFarm | Should Be $true
                 }
             }
@@ -215,15 +215,15 @@ try
                     return $mockWebFarmFalse
                 }
 
-                It "returns the current values from the get method" {
+                It "Returns the current values from the get method" {
                     (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl).InternalUrl | Should Not BeNullOrEmpty
                 }
 
-                It "returns false from the test method" {
+                It "Returns false from the test method" {
                     Test-TargetResource @mockWebFarm | Should Be $false
                 }
 
-                It "updates the farm in the set method" {
+                It "Updates the farm in the set method" {
                     Set-TargetResource @mockWebFarm
                     Assert-MockCalled Set-OfficeWebAppsFarm
                 }
@@ -240,15 +240,15 @@ try
 
                 Mock Test-OosDscFarmOu { return $false }
 
-                It "returns the current values from the get method" {
+                It "Returns the current values from the get method" {
                     (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl).InternalUrl | Should Not BeNullOrEmpty
                 }
 
-                It "returns false from the test method" {
+                It "Returns false from the test method" {
                     Test-TargetResource @mockBadOu | Should Be $false
                 }
 
-                It "updates the farm in the set method" {
+                It "Updates the farm in the set method" {
                     Set-TargetResource @mockBadOu
                     Assert-MockCalled Set-OfficeWebAppsFarm
                 }
@@ -257,15 +257,15 @@ try
             if ($Global:CurrentWACCmdletModule.Contains("15") -eq $true)
             {
                 Context "Errors are thrown when incorrect parameters are used for Office Web Apps 2013" {
-                    It "throws in the get method" {
+                    It "Throws in the get method" {
                         { Get-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
                     }
 
-                    It "throws in the test method" {
+                    It "Throws in the test method" {
                         { Test-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
                     }
 
-                    It "throws in the set method" {
+                    It "Throws in the set method" {
                         { Set-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
                     }
                 }

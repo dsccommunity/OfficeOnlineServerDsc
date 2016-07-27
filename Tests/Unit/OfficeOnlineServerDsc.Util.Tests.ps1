@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Global:CurrentWACCmdletModule = $WACCmdletModule
@@ -11,7 +11,7 @@ if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource
 {
     & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
-#Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
+
 Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc\Modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util.psm1" -Resolve)
 
 InModuleScope "OfficeOnlineServerDsc.Util" {

@@ -407,7 +407,7 @@ function Set-TargetResource
         Write-Verbose "Installing new WebAppsFarm"
         New-OfficeWebAppsFarm @PSBoundParameters -Force
     }
-    Else
+    else
     {
         Write-Verbose "WebAppsFarm found setting parameters on farm"
         Set-OfficeWebAppsFarm @PSBoundParameters -Force
@@ -585,7 +585,7 @@ function Test-TargetResource
         return $false
     }
 
-    If($PSBoundParameters.ContainsKey('FarmOU'))
+    if($PSBoundParameters.ContainsKey('FarmOU'))
     {
         if ((Test-OosDscFarmOu -ExistingOU $officeWebAppsFarm.FarmOU -DesiredOU $FarmOU) -ne $true)
         {

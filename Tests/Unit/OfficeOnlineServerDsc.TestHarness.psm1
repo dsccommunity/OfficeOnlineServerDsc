@@ -1,7 +1,7 @@
 function Invoke-OosDscUnitTestSuite() {
     param
     (
-        [parameter(Mandatory = $false)] [System.String]  $testResultsFile,
+        [parameter(Mandatory = $false)] [System.String]  $TestResultsFile,
         [parameter(Mandatory = $false)] [System.String]  $DscTestsPath,
         [parameter(Mandatory = $false)] [System.Boolean] $CalculateTestCoverage = $true
     )
@@ -24,9 +24,9 @@ function Invoke-OosDscUnitTestSuite() {
     
 
     $testResultSettings = @{ }
-    if ([string]::IsNullOrEmpty($testResultsFile) -eq $false) {
+    if ([String]::IsNullOrEmpty($TestResultsFile) -eq $false) {
         $testResultSettings.Add("OutputFormat", "NUnitXml" )
-        $testResultSettings.Add("OutputFile", $testResultsFile)
+        $testResultSettings.Add("OutputFile", $TestResultsFile)
     }
     Import-Module "$repoDir\modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1"
     
@@ -53,8 +53,14 @@ function Invoke-OosDscUnitTestSuite() {
             'Parameters' = @{ }
         }
     }
-    $Global:VerbosePreference = "SilentlyContinue"
-    $results = Invoke-Pester -Script $testsToRun -CodeCoverage $testCoverageFiles -PassThru @testResultSettings
-
+    $previousVerbosePreference = $Global:VerbosePreference 
+    try {
+        $Global:VerbosePreference = "SilentlyContinue"
+        $results = Invoke-Pester -Script $testsToRun -CodeCoverage $testCoverageFiles -PassThru @testResultSettings    
+    }
+    finally {
+        $Global:VerbosePreference = $previousVerbosePreference
+    }
+    
     return $results
 }

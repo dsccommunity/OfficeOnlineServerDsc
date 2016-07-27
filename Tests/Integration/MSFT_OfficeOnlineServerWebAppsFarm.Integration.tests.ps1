@@ -31,17 +31,17 @@ try
             } | Should not throw
         }
 
-        It 'should be able to call Get-DscConfiguration without throwing' {
+        It 'Should be able to call Get-DscConfiguration without throwing' {
             { Get-DscConfiguration -Verbose -ErrorAction Stop } | Should Not throw
         }
 
         It 'Should have set the resource and all the parameters should match' {
 
-            $Result = Get-OfficeWebAppsFarm
+            $result = Get-OfficeWebAppsFarm
 
             foreach($key in $webAppsFarm.keys)
             {
-                $Result.$key | Should Be $webAppsFarm[$key]
+                $result.$key | Should Be $webAppsFarm[$key]
             }
         }
     }
