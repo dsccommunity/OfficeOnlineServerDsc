@@ -1,3 +1,9 @@
+<#
+.SYNOPSIS
+
+This cmdlet determines the version number of Office Web Apps that is installed locally
+
+#>
 function Get-OosDscInstalledProductVersion
 {
     [CmdletBinding()]
@@ -14,6 +20,21 @@ function Get-OosDscInstalledProductVersion
         } | Select-Object -First 1
 }
 
+
+<#
+.SYNOPSIS
+
+This cmdlet determines if the OU of the farm matches the OU of the current deployment
+
+.PARAMETER DesiredOU
+
+The name of the OU that the farm should be in
+
+.PARAMETER ExistingOU
+
+The name of the OU that the farm currently is in
+
+#>
 function Test-OosDscFarmOu
 {
     [cmdletbinding()]
@@ -44,6 +65,25 @@ function Test-OosDscFarmOu
     }
 }
 
+<#
+.SYNOPSIS
+
+This method is used to compare current and desired values for any DSC resource
+
+.PARAMETER CurrentValues
+
+This is hashtable of the current values that are applied to the resource
+
+.PARAMETER DesiredValues 
+
+This is a PSBoundParametersDictionary of the desired values for the resource
+
+.PARAMETER ValuesToCheck
+
+This is a list of which properties in the desired values list should be checkked.
+If this is empty then all values in DesiredValues are checked.
+
+#>
 function Test-OosDscParameterState() {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
@@ -97,7 +137,6 @@ function Test-OosDscParameterState() {
                 if ($DesiredValues.GetType().Name -eq "HashTable" -or `
                     $DesiredValues.GetType().Name -eq "PSBoundParametersDictionary") 
                 {
-                    
                     $CheckDesiredValue = $DesiredValues.ContainsKey($_)
                 } 
                 else 
