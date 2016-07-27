@@ -42,15 +42,15 @@ try
                     }
                 }
 
-                it "Returns that it is not installed from the get method" {
+                It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Installed | Should Be $false
                 }
 
-                it "Returns false from the test method" {
+                It "Returns false from the test method" {
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                it "Starts the install from the set method" {
+                It "Starts the install from the set method" {
                     Set-TargetResource @testParams
                     Assert-MockCalled Start-Process
                 }
@@ -69,11 +69,11 @@ try
                     )
                 }
 
-                it "Returns that it is installed from the get method" {
+                It "Returns that it is installed from the get method" {
                     (Get-TargetResource @testParams).Installed | Should Be $true
                 }
 
-                it "Returns true from the test method" {
+                It "Returns true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }
@@ -91,11 +91,11 @@ try
                     )
                 }
 
-                it "Returns that it is installed from the get method" {
+                It "Returns that it is installed from the get method" {
                     (Get-TargetResource @testParams).Installed | Should Be $true
                 }
 
-                it "Returns true from the test method" {
+                It "Returns true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }
@@ -114,7 +114,7 @@ try
                     }
                 }
 
-                it "Starts the install from the set method" {
+                It "Starts the install from the set method" {
                     { Set-TargetResource @testParams } | Should Throw
                 }
             }
