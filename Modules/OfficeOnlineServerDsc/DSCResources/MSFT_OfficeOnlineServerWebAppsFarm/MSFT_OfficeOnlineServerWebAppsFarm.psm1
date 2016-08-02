@@ -692,7 +692,8 @@ function Test-OosDscV16Support
                                     "parameters are enabled")
         }
         Default {
-            throw "This module only supports Office Web Apps 2013 and Office Online Server 2016"
+            throw ("This module only supports Office Web Apps 2013 (v15) and Office " + `
+                   "Online Server 2016 (v16). Detected version was $($version.Major)")
         }
     }
 }
