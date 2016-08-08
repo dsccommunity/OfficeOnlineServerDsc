@@ -17,6 +17,11 @@ function Get-TargetResource
         $Path
     )
 
+    if ($Ensure -eq "Absent") 
+    {
+        throw "Uninstallation is not supported by OfficeOnlineServer Dsc"
+    }
+
     Write-Verbose -Message "Getting details of installation of Office Online Server"
 
     $matchPath = "HKEY_LOCAL_MACHINE\\$($Script:UninstallPath.Replace('\','\\'))" + `
@@ -51,6 +56,11 @@ function Set-TargetResource
         [System.String]
         $Path
     )
+
+    if ($Ensure -eq "Absent") 
+    {
+        throw "Uninstallation is not supported by OfficeOnlineServer Dsc"
+    }
 
     Write-Verbose -Message "Starting installation of Office Online Server"
 
@@ -87,6 +97,12 @@ function Test-TargetResource
         [System.String]
         $Path
     )
+
+    if ($Ensure -eq "Absent") 
+    {
+        throw "Uninstallation is not supported by OfficeOnlineServer Dsc"
+    }
+    
     Write-Verbose -Message "Testing for installation of Office Online Server"
     $result = Get-TargetResource @PSBoundParameters
 
