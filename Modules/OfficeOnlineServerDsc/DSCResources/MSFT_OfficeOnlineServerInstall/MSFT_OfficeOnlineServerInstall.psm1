@@ -9,6 +9,11 @@ function Get-TargetResource
     (
         [parameter(Mandatory = $true)]
         [System.String]
+        [ValidateSet("Present", "Absent")]
+        $Ensure,
+
+        [parameter(Mandatory = $true)]
+        [System.String]
         $Path
     )
 
@@ -19,14 +24,14 @@ function Get-TargetResource
     $wacPath = Get-ChildItem -Path "HKLM:\$Script:UninstallPath" | Where-Object -FilterScript {
         $_.Name -match $matchPath
     }
-    $productInstalled = $false
+    $ensure = "Absent"
     if($null -ne $wacPath)
     {
-        $productInstalled = $true
+        $ensure = "Present"
     }
     
     return @{
-        Installed = $productInstalled
+        Ensure = $ensure
         Path = $Path
     }
 }
@@ -37,6 +42,11 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        [ValidateSet("Present", "Absent")]
+        $Ensure,
+
         [parameter(Mandatory = $true)]
         [System.String]
         $Path
@@ -70,12 +80,17 @@ function Test-TargetResource
     (
         [parameter(Mandatory = $true)]
         [System.String]
+        [ValidateSet("Present", "Absent")]
+        $Ensure,
+
+        [parameter(Mandatory = $true)]
+        [System.String]
         $Path
     )
-    Write-Verbose -Message "testing for installation of Office Online Server"
+    Write-Verbose -Message "Testing for installation of Office Online Server"
     $result = Get-TargetResource @PSBoundParameters
 
-    return $result.Installed
+    return ($result.Ensure -eq $Ensure)
 }
 
 Export-ModuleMember -Function *-TargetResource
