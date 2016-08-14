@@ -29,14 +29,15 @@ function Get-TargetResource
     $wacPath = Get-ChildItem -Path "HKLM:\$Script:UninstallPath" | Where-Object -FilterScript {
         $_.Name -match $matchPath
     }
-    $ensure = "Absent"
+
+    $localEnsure = "Absent"
     if($null -ne $wacPath)
     {
-        $ensure = "Present"
+        $localEnsure = "Present"
     }
     
     return @{
-        Ensure = $ensure
+        Ensure = $localEnsure
         Path = $Path
     }
 }
