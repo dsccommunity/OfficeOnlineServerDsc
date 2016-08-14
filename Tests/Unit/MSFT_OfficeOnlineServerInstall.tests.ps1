@@ -44,7 +44,7 @@ try
                 }
 
                 It "Returns that it is not installed from the get method" {
-                    (Get-TargetResource @testParams).Installed | Should Be $false
+                    (Get-TargetResource @testParams).Ensure | Should Be "Absent"
                 }
 
                 It "Returns false from the test method" {
@@ -72,7 +72,7 @@ try
                 }
 
                 It "Returns that it is installed from the get method" {
-                    (Get-TargetResource @testParams).Installed | Should Be $true
+                    (Get-TargetResource @testParams).Ensure | Should Be "Present"
                 }
 
                 It "Returns true from the test method" {
@@ -95,7 +95,7 @@ try
                 }
 
                 It "Returns that it is installed from the get method" {
-                    (Get-TargetResource @testParams).Installed | Should Be $true
+                    (Get-TargetResource @testParams).Ensure | Should Be "Present"
                 }
 
                 It "Returns true from the test method" {
