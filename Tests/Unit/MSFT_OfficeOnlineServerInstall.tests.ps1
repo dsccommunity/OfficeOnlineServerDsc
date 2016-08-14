@@ -30,6 +30,7 @@ try
 
             Context "Office online server is not installed, but should be" {
                 $testParams = @{
+                    Ensure = "Present"
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
@@ -58,6 +59,7 @@ try
 
             Context "Office online server 2016 is installed and should be" {
                 $testParams = @{
+                    Ensure = "Present"
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
@@ -80,6 +82,7 @@ try
 
             Context "Office Web Apps 2013 is installed and should be" {
                 $testParams = @{
+                    Ensure = "Present"
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
@@ -102,6 +105,7 @@ try
 
             Context "Office online server is not installed, but should be" {
                 $testParams = @{
+                    Ensure = "Present"
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
