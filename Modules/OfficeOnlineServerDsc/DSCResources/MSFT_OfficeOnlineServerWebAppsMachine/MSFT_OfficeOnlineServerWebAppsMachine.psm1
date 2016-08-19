@@ -168,9 +168,6 @@ function Test-TargetResource
         $computer = $MachineToJoin
     }
 
-    $domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
-    $fqdn = "$MachineToJoin.$domain"
-
     if (($results.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
             -and (($results.MachineToJoin -eq $fqdn) -or ($results.MachineToJoin -eq $computer)) `
