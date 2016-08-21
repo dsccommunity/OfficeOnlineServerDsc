@@ -156,9 +156,21 @@ function Test-TargetResource
         $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
     }
     
+    if ($MachineToJoin.Contains(".") -eq $true)
+    {
+        $fqdn = $MachineToJoin
+        $computer = $MachineToJoin.Substring(0, $MachineToJoin.IndexOf("."))
+    }
+    else 
+    {
+        $domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
+        $fqdn = "$MachineToJoin.$domain"
+        $computer = $MachineToJoin
+    }
+
     if (($results.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
-            -and ($results.MachineToJoin -eq $MachineToJoin) `
+            -and (($results.MachineToJoin -eq $fqdn) -or ($results.MachineToJoin -eq $computer)) `
             -and ( $null -eq $roleCompare))
     {
         # If present and all value match return true
