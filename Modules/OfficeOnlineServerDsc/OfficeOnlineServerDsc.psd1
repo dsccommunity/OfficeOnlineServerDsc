@@ -12,7 +12,7 @@
 # RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '0.1.0.0'
+ModuleVersion = '0.2.0.0'
 
 # ID used to uniquely identify this module
 GUID = '7514bb93-d3e4-40b2-98e7-3404e9674c1c'
@@ -112,7 +112,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
- * First release of OfficeOnlineServerDsc
+ * Fixed a bug that caused OfficeOnlineServerWebAppsMachine to fail a test when the machine to join 
+ was specified using a fully qualified domain name (FQDN)
 '
 
     } # End of PSData hashtable
