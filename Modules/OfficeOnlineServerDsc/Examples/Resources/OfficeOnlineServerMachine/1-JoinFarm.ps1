@@ -12,7 +12,7 @@
 
         Import-DscResource -ModuleName OfficeOnlineServerDsc
 
-        OfficeOnlineServerWebAppsMachine JoinFarm
+        OfficeOnlineServerMachine JoinFarm
         {
             MachineToJoin = "office1.contoso.com"
             Roles = "All"

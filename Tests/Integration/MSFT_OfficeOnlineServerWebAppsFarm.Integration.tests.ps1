@@ -1,5 +1,5 @@
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc' 
-$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsFarm' 
+$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerFarm' 
 
 [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path))
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `

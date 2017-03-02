@@ -4,7 +4,7 @@ param(
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsMachine'
+$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerMachine'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
 [String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
@@ -22,7 +22,7 @@ $TestEnvironment = Initialize-TestEnvironment `
 try
 {
     InModuleScope $Script:DSCResourceName {
-        Describe "OfficeOnlineServerWebAppsMachine [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+        Describe "OfficeOnlineServerMachine [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
             
             Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue

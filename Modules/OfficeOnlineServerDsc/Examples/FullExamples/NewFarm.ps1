@@ -58,7 +58,7 @@
             DependsOn = $prereqDependencies
         }
 
-        OfficeOnlineServerWebAppsFarm LocalFarm
+        OfficeOnlineServerFarm LocalFarm
         {
             InternalURL    = "https://officeonline.contoso.com"
             EditingEnabled = $true
