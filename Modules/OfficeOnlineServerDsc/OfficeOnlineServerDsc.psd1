@@ -30,7 +30,7 @@ Copyright = '(c) 2016 Microsoft. All rights reserved.'
 Description = 'The OfficeOnlineServerDsc module provides the ability to install Office Online Server (formerly known as Office Web App Server).'
 
 # Minimum version of the Windows PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '4.0'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
