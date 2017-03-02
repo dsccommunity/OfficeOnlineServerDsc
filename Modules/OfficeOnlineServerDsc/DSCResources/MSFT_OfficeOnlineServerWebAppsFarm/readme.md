@@ -1,4 +1,4 @@
-**Description**
+# Description
 
 The OfficeOnlineServerWebAppsFarm resource is used to create a new farm for either
 Office Web Apps 2013 or Office Online Server 2016. It requries that the binaries

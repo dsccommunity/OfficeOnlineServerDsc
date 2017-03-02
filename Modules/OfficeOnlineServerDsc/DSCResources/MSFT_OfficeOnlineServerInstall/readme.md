@@ -1,4 +1,4 @@
-**Description**
+# Description
 
 The OfficeOnlineServerInstall DSC resource is used to manage the installation
 of the main binaries used for either Office Web Apps 2013 or Office Online
