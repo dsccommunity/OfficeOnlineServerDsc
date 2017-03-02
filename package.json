@@ -1,0 +1,27 @@
+{
+  "name": "officeonlinedsc",
+  "version": "1.4.0",
+  "description": "The OfficeOnlineDsc PowerShell module provides DSC resources that can be used to deploy and manage a Office Web Apps 2013 and Office Online Server 2016",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "through2": "^2.0.1",
+    "markdownlint": "^0.2.0"
+  },
+  "devDependencies": {
+    "gulp-concat": "^2.6.0"
+  },
+  "scripts": {
+    "test": "powershell -File .vscode\\RunPesterTests.ps1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PowerShell/OfficeOnlineDsc.git"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PowerShell/OfficeOnlineDsc/issues"
+  },
+  "homepage": "https://github.com/PowerShell/OfficeOnlineDsc#readme"
+}
