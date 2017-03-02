@@ -1,13 +1,13 @@
 [CmdletBinding()]
 param(
-    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
 $Script:DSCResourceName    = 'MSFT_OfficeOnlineServerWebAppsMachine'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
@@ -23,7 +23,7 @@ try
 {
     InModuleScope $Script:DSCResourceName {
 
-        Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1")
+        Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
 
         Describe "OfficeOnlineServerWebAppsFarm [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
             

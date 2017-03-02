@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
@@ -23,7 +23,7 @@ try
 {
     InModuleScope $Script:DSCResourceName {
 
-        Import-Module (Join-Path ((Resolve-Path $PSScriptRoot\..\..).Path) "Modules\OfficeOnlineServerDsc\OfficeOnlineServerDsc.psd1")
+        Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
         $internalURL = "http://webfarm.contoso.com"
         $externalURL = "http://external.contoso.com"
         $proxy = 'http://proxy.contoso.com'
