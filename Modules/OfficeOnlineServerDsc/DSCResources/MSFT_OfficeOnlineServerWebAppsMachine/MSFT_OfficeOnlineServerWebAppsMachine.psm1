@@ -141,6 +141,7 @@ function Test-TargetResource
         $MachineToJoin
     )
 
+    Write-Verbose -Message "Testing settings for local Office Online Server"
     $results = Get-TargetResource -MachineToJoin $MachineToJoin
 
     if ($null -eq $Roles)
