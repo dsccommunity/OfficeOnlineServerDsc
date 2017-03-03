@@ -7,10 +7,10 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [System.String]
         [ValidateSet("Present", "Absent")]
-        $Ensure,
+        $Ensure = "Present",
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -48,10 +48,10 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [System.String]
         [ValidateSet("Present", "Absent")]
-        $Ensure,
+        $Ensure = "Present",
 
         [parameter(Mandatory = $true)]
         [System.String]
@@ -89,10 +89,10 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [parameter(Mandatory = $true)]
+        [parameter(Mandatory = $false)]
         [System.String]
         [ValidateSet("Present", "Absent")]
-        $Ensure,
+        $Ensure = "Present",
 
         [parameter(Mandatory = $true)]
         [System.String]

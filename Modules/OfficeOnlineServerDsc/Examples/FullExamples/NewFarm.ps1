@@ -52,16 +52,16 @@
             return "[WindowsFeature]WindowsFeature-$_"
         }
 
-        OosInstall InstallBinaries
+        OfficeOnlineServerInstall InstallBinaries
         {
             Path      = "C:\Installer\setup.exe"
             DependsOn = $prereqDependencies
         }
 
-        OosFarm LocalFarm
+        OfficeOnlineServerFarm LocalFarm
         {
             InternalURL    = "https://officeonline.contoso.com"
             EditingEnabled = $true
-            DependsOn      = "[OosInstall]InstallBinaries" 
+            DependsOn      = "[OfficeOnlineServerInstall]InstallBinaries" 
         }
     }
