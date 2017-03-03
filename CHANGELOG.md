@@ -3,6 +3,9 @@
 ## 1.0
 
 * Added documentation to the module to finalise for release
+* Renamed resources to shorten names before release
+  * 'OfficeOnlineServerWebAppsFarm' becomes 'OfficeOnlineServerFarm'
+  * 'OfficeOnlineServerWebAppsMachine' becomes 'OfficeOnlineServerMachine'
 
 ## 0.2
 
