@@ -1,0 +1,233 @@
+﻿.NAME
+    OfficeOnlineServerFarm
+
+# Description
+    
+    The OfficeOnlineServerFarm resource is used to create a new farm for either
+    Office Web Apps 2013 or Office Online Server 2016. It requries that the binaries
+    have already been installed, but when this is run it will establish a new farm. This
+    means that this resource only needs to be used on the first server in a deployment,
+    all other servers should use the OfficeOnlineServerMachine resource to join
+    the farm.
+    
+.PARAMETER AllowCEIP
+    Write - Boolean
+    Enables Customer Experience Improvement Program (CEIP) reporting on all servers in the Office Web Apps Server farm
+
+.PARAMETER AllowHttp
+    Write - Boolean
+    Indicates that IIS sites should be provisioned on port 80 for HTTP access. Use AllowHTTP only in environments where all computers require IPSEC (full encryption) or in test environments that do not contain sensitive files.
+
+.PARAMETER AllowHttpSecureStoreConnections
+    Write - Boolean
+    Indicates that secure store connections can be made by using non-SSL connections (such as HTTP). The default is False.
+
+.PARAMETER CacheLocation
+    Write - String
+    Specifies the location of the global disk cache that is used to store rendered image files.
+
+.PARAMETER CacheSizeInGB
+    Write - Sint32
+    Specifies the maximum size of the global disk cache in gigabytes.
+
+.PARAMETER CertificateName
+    Write - String
+    Specifies the friendly name of the certificate that Office Web Apps Server uses to create HTTPS bindings.
+
+.PARAMETER ClipartEnabled
+    Write - Boolean
+    Enables support for inserting clip art from Office.com into Office documents. This feature requires server-to-web communication, configured either directly or by using a proxy that you specify by using the Proxy parameter.
+
+.PARAMETER DocumentInfoCacheSize
+    Write - Sint32
+    Specifies the maximum number of document conversion records that are stored in a memory cache.
+
+.PARAMETER EditingEnabled
+    Write - Boolean
+    Enables support for editing in the browser. The default is False. Only set to True if you have the appropriate licensing to use the editing functionality.
+
+.PARAMETER ExcelAllowExternalData
+    Write - Boolean
+    Enables the refresh of supported external data in Excel Web App workbooks where workbooks contain connections to external data. The default is True.
+
+.PARAMETER ExcelConnectionLifetime
+    Write - Sint32
+    Specifies the duration, in seconds, of external data connections for Excel Web App. The default is 1800 seconds.
+
+.PARAMETER ExcelExternalDataCacheLifetime
+    Write - Sint32
+    Specifes the duration, in seconds, of the external data cache lifetime in Excel Web App. The default is 300 seconds.
+
+.PARAMETER ExcelPrivateBytesMax
+    Write - Sint32
+    Specifies the maximum private bytes, in megabytes, used by Excel Web App. When set to -1, the maximum private bytes use 50 percent of physical memory on the computer.
+
+.PARAMETER ExcelRequestDurationMax
+    Write - Sint32
+    Specifies the maximum duration, in seconds, for a single request in a session. After this time elapses, the request times out.
+
+.PARAMETER ExcelSessionTimeout
+    Write - Sint32
+    Specifies the time, in seconds, that a session remains active in Excel Web App when there is no user activity.
+
+.PARAMETER ExcelUdfsAllowed
+    Write - Boolean
+    Activates user-defined functions for use with Web Excel.
+
+.PARAMETER ExcelWarnOnDataRefresh
+    Write - Boolean
+    Turns off or on the warning dialog displayed when data refreshes in Excel Web App.
+
+.PARAMETER ExcelWorkbookSizeMax
+    Write - Sint32
+    Specifies the maximum size, in megabytes, of a workbook that can be loaded.
+
+.PARAMETER ExcelMemoryCacheThreshold
+    Write - Sint32
+    The percentage of the Maximum Private Bytes that can be allocated to inactive objects. When the memory cache threshold is exceeded, cached objects that are not currently in use are released.
+
+.PARAMETER ExcelUnusedObjectAgeMax
+    Write - Sint32
+    The maximum time (in minutes) that inactive objects remain in the memory cache. Inactive objects are objects that are not used in a session.
+
+.PARAMETER ExcelCachingUnusedFiles
+    Write - Boolean
+    Enable caching of files that are no longer in use by Web Excel sessions.
+
+.PARAMETER ExcelAbortOnRefreshOnOpenFail
+    Write - Boolean
+    Specifies that the loading of a Web Excel file automatically fails if an automatic data refresh operation fails when the file is opened.
+
+.PARAMETER ExcelAutomaticVolatileFunctionCacheLifetime
+    Write - Sint32
+    Specifies the maximum time, in seconds, that a computed value for a volatile function is cached for automatic recalculations.
+
+.PARAMETER ExcelConcurrentDataRequestsPerSessionMax
+    Write - Sint32
+    Specifies the maximum number of concurrent external data requests allowed in each session. If a session must issue more than this number of requests, additional requests must be queued. The scope of this setting is the logical server.
+
+.PARAMETER ExcelDefaultWorkbookCalcMode
+    Write - String
+    Specifies the calculation mode of workbooks.  Settings other than File override the workbook settings.
+
+.PARAMETER ExcelRestExternalDataEnabled
+    Write - Boolean
+    Specifies whether requests from the Representational State Transfer (REST) Application Programming Interface (API) are permitted to refresh external data connections.
+
+.PARAMETER ExcelChartAndImageSizeMax
+    Write - Sint32
+    Specifies the maximum size, in megabytes, of a chart or image that can be opened.
+
+.PARAMETER ExternalURL
+    Write - String
+    Specifies the URL root that clients use to access the Office Web Apps Server farm from the Internet. In the case of a load-balanced, multiserver Office Web Apps Server farm, the external URL is bound to the IP address of the external-facing load balancer.
+
+.PARAMETER FarmOU
+    Write - String
+    Specifies the name of the Active Directory organizational unit (OU) that servers must be a member of to join the Office Web Apps Server farm. Use this parameter to prevent unauthorized servers (that is, servers that are not in the OU) from joining an Office Web Apps Server farm.
+
+.PARAMETER InternalURL
+    Key - String
+    Specifies the URL root that clients use to access the Office Web Apps Server farm from the intranet.
+
+.PARAMETER LogLocation
+    Write - String
+    Specifies the location on the local computer where activity logs are stored.
+
+.PARAMETER LogRetentionInDays
+    Write - Sint32
+    Specifies the number of days that log entries are stored. Log entries older than the configured date are trimmed.
+
+.PARAMETER LogVerbosity
+    Write - String
+    Specifies how much information is stored in the trace log files.
+
+.PARAMETER MaxMemoryCacheSizeInMB
+    Write - Sint32
+    Specifies, in megabytes, the maximum amount of memory that the rendering cache can use.
+
+.PARAMETER MaxTranslationCharacterCount
+    Write - Sint32
+    Specifies the maximum amount of characters a document can have in order to be translated.
+
+.PARAMETER OpenFromUncEnabled
+    Write - Boolean
+    Turns on or off the ability to use Online Viewers to view Office files from a UNC path.
+
+.PARAMETER OpenFromUrlEnabled
+    Write - Boolean
+    Turns on or off the ability to use Online Viewers to view Office files from a URL or UNC path.
+
+.PARAMETER OpenFromUrlThrottlingEnabled
+    Write - Boolean
+    Throttles the number of open from URL requests from any given server in a time period. The default throttling values, which are not configurable, make sure that an Office Web Apps Server farm will not overwhelm a single server with requests for content to be viewed in the Online Viewers.
+
+.PARAMETER Proxy
+    Write - String
+    Specifies the URL of the proxy server that is configured to allow HTTP requests to external sites. Typically configured in conjunction with the ClipartEnabled and TranslationEnabled parameters.
+
+.PARAMETER RecycleActiveProcessCount
+    Write - Sint32
+    Specifies the number of files that a single Word or PowerPoint process can render before the process is recycled.
+
+.PARAMETER RenderingLocalCacheLocation
+    Write - String
+    Specifies the location of the temporary cache for use by the Word and PowerPoint Viewing Services.
+
+.PARAMETER SSLOffloaded
+    Write - Boolean
+    Indicates to the servers in the Office Web Apps Server farm that SSL is offloaded to the load balancer. When SSLOffloaded is enabled, web applications are bound to port 80 (HTTP) on the local server. However, HTML that references other resources, such as CSS or images, uses HTTPS URLs for those references.
+
+.PARAMETER TranslationEnabled
+    Write - Boolean
+    Enables support for automatic document translation using Microsoft Translator, an online service that translates text between languages. The translated file is shown in the Word Web App. Because Microsoft Translator is an online service, you must enable server-to-web communication directly or by using a proxy that you specify by using the Proxy parameter.
+
+.PARAMETER TranslationServiceAddress
+    Write - String
+    Specifies the URL of the translation server that translation requests are sent to. The default is the Microsoft Translator online service. Typically you will not use this parameter unless you must change translation services.
+
+.PARAMETER TranslationServiceAppId
+    Write - String
+    Specifies the application ID for the translation service. The default is the public application ID for Office Web Apps. Typically you will not use this parameter unless you have negotiated with Microsoft Translator for additional services and they have provided you with a private application ID.
+
+.PARAMETER AllowOutboundHttp
+    Write - Boolean
+    
+
+.PARAMETER ExcelUseEffectiveUserName
+    Write - Boolean
+    
+
+.PARAMETER S2SCertificateName
+    Write - String
+    
+
+.PARAMETER RemovePersonalInformationFromLogs
+    Write - Boolean
+    
+
+.PARAMETER PicturePasteDisabled
+    Write - Boolean
+    
+
+
+.EXAMPLE
+    This example shows how to create a basic web apps farm. There are many more options
+    that can be configured on this resource, but this minimum configuration will deploy
+    a farm that has editing enabled.
+
+
+    Configuration Example 
+    {
+        param()
+
+        Import-DscResource -ModuleName OfficeOnlineServerDsc
+
+        OfficeOnlineServerFarm LocalFarm
+        {
+            InternalURL    = "https://officeonline.contoso.com"
+            EditingEnabled = $true
+        }
+    }
+
+
