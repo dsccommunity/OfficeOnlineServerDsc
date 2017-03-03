@@ -6,5 +6,5 @@
 .sln
 Modules/OfficeOnlineServerDsc/DscResource.Tests
 Modules/OfficeOnlineServerDsc/DscResource.Tests/*
-node_modules
 node_modules/*
+node_modules
