@@ -54,6 +54,7 @@
 
         OfficeOnlineServerInstall InstallBinaries
         {
+            Ensure    = "Present"
             Path      = "C:\Installer\setup.exe"
             DependsOn = $prereqDependencies
         }
