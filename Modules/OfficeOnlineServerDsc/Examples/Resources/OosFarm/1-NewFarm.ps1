@@ -11,7 +11,7 @@
 
         Import-DscResource -ModuleName OfficeOnlineServerDsc
 
-        OfficeOnlineServerFarm LocalFarm
+        OosFarm LocalFarm
         {
             InternalURL    = "https://officeonline.contoso.com"
             EditingEnabled = $true

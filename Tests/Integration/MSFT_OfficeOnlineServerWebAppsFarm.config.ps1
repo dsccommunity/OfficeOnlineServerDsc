@@ -11,12 +11,12 @@ $webAppsFarm = @{
     AllowCEIP = $true    
 }
 
-configuration MSFT_OfficeOnlineServerFarm_config {
+configuration MSFT_OosFarm_config {
     
     Import-DscResource -ModuleName OfficeOnlineServerDsc
     node localhost {
         
-        OfficeOnlineServerFarm Integration_Test
+        OosFarm Integration_Test
         {
             InternalURL        = $webAppsFarm.InternalURL
             ExternalURL        = $webAppsFarm.ExternalURL

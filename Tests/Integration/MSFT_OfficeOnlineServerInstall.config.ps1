@@ -1,7 +1,7 @@
-configuration MSFT_OfficeOnlineServerInstall_config {
+configuration MSFT_OosInstall_config {
     Import-DscResource -ModuleName 'OfficeOnlineServerDsc'
     node localhost {
-        OfficeOnlineServerInstall Integration_Test {
+        OosInstall Integration_Test {
             Path = 'C:\InstallBits\setup.exe'
         }
     }

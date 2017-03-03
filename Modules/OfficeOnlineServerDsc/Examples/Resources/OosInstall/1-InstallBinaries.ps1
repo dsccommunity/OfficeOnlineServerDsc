@@ -9,7 +9,7 @@
 
         Import-DscResource -ModuleName OfficeOnlineServerDsc
 
-        OfficeOnlineServerInstall InstallBinaries
+        OosInstall InstallBinaries
         {
             Path = "C:\Installer\setup.exe"
         }

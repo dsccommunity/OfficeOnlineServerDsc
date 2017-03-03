@@ -112,7 +112,7 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
- * Fixed a bug that caused OfficeOnlineServerMachine to fail a test when the machine to join 
+ * Fixed a bug that caused OosMachine to fail a test when the machine to join 
  was specified using a fully qualified domain name (FQDN)
 '
 
