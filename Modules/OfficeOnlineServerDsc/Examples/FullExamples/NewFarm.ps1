@@ -54,11 +54,12 @@
 
         OfficeOnlineServerInstall InstallBinaries
         {
+            Ensure    = "Present"
             Path      = "C:\Installer\setup.exe"
             DependsOn = $prereqDependencies
         }
 
-        OfficeOnlineServerWebAppsFarm LocalFarm
+        OfficeOnlineServerFarm LocalFarm
         {
             InternalURL    = "https://officeonline.contoso.com"
             EditingEnabled = $true

@@ -1,0 +1,45 @@
+﻿.NAME
+    OfficeOnlineServerMachine
+
+# Description
+    
+    The OfficeOnlineServerMachine resource is used to instruct the server to join
+    an existing Office Web Apps 2013 or Office Online Server 2016 farm. Specify the name
+    of the first server (which would have run the OfficeOnlineServerFarm resource)
+    and it will join on that server when this resource is run.
+    
+.PARAMETER Ensure
+    Write - String
+    Allowed values: Present, Absent
+    Ensure Present or Absent
+
+.PARAMETER Roles
+    Write - String
+    Specifies one or more server roles, separated by commas, to assign to the new server. If no roles are specified, then the server is assigned all roles.
+
+.PARAMETER MachineToJoin
+    Key - String
+    Specifies the name of any server that is already a member of the Office Web Apps Server farm.
+
+
+.EXAMPLE
+    This example shows how to join a machine to an Office Web Apps farm. This
+    shows that the new server will use all roles (it is not recommended to 
+    split roles out to dedicated servers for Office Online Server farms of 
+    less than 50 servers).
+
+
+    Configuration Example 
+    {
+        param()
+
+        Import-DscResource -ModuleName OfficeOnlineServerDsc
+
+        OfficeOnlineServerMachine JoinFarm
+        {
+            MachineToJoin = "office1.contoso.com"
+            Roles = "All"
+        }
+    }
+
+
