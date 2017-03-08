@@ -111,9 +111,10 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = '
- * Fixed a bug that caused OfficeOnlineServerMachine to fail a test when the machine to join 
- was specified using a fully qualified domain name (FQDN)
+        ReleaseNotes = '* Added documentation to the module to finalise for release
+* Renamed resources to shorten names before release
+  * "OfficeOnlineServerWebAppsFarm" becomes "OfficeOnlineServerFarm"
+  * "OfficeOnlineServerWebAppsMachine" becomes "OfficeOnlineServerMachine"
 '
 
     } # End of PSData hashtable
