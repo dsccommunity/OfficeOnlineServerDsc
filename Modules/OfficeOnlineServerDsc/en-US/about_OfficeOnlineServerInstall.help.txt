@@ -1,0 +1,41 @@
+﻿.NAME
+    OfficeOnlineServerInstall
+
+# Description
+    
+    The OfficeOnlineServerInstall DSC resource is used to manage the installation
+    of the main binaries used for either Office Web Apps 2013 or Office Online
+    Server 2016. It detects either products installation through a registry key,
+    and will install the binaries if they are not present.
+    
+    Currently the only supported scenario is installation of the binaries, this
+    resource doesn't allow them to be uninstalled.
+    
+.PARAMETER Ensure
+    Key - String
+    Allowed values: Present, Absent
+    Set to 'present' to specificy that the product should be installed.
+
+.PARAMETER Path
+    Required - String
+    Path to setup.exe
+
+
+.EXAMPLE
+    This example shows how to install the binaries for office online server to the local server.
+
+
+    Configuration Example 
+    {
+        param()
+
+        Import-DscResource -ModuleName OfficeOnlineServerDsc
+
+        OfficeOnlineServerInstall InstallBinaries
+        {
+            Ensure = "Present"
+            Path = "C:\Installer\setup.exe"
+        }
+    }
+
+
