@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.0.0
+
 * Added support for Language Packs installation;
 
 ## 1.0
