@@ -1,6 +1,6 @@
 # Change log for OfficeOnlineServerDsc
 
-## 1.1.0.0
+## Unreleased
 
 * Added support for Language Packs installation;
 
