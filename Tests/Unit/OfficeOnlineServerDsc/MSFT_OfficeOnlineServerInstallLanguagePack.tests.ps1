@@ -43,6 +43,9 @@ try
                         ExitCode = 0
                     }
                 }
+                Mock -CommandName Test-Path -MockWith{
+                    return $true
+                }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
