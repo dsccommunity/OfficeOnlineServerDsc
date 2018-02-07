@@ -24,7 +24,7 @@ try
     InModuleScope $Script:DSCResourceName {
         Describe "OfficeOnlineServerInstallLanguagePack [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
-            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
+            Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
 
