@@ -28,7 +28,7 @@ try
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
 
-            Context "Office Online Server 2016 is not installed, but should be" {
+            Context "Office Online Server 2016 is not installed but should be" {
                 $testParams = @{
                     Ensure = "Present"
                     Language = "fr-fr"
