@@ -7,7 +7,7 @@ $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
 $Script:DSCResourceName    = 'MSFT_OfficeOnlineServerInstallLanguagePack'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
@@ -24,11 +24,11 @@ try
     InModuleScope $Script:DSCResourceName {
         Describe "OfficeOnlineServerInstallLanguagePack [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
-            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
+            Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
 
-            Context "Office Online Server 2016 is not installed, but should be" {
+            Context "Office Online Server 2016 is not installed but should be" {
                 $testParams = @{
                     Ensure = "Present"
                     Language = "fr-fr"
@@ -42,6 +42,9 @@ try
                     return @{
                         ExitCode = 0
                     }
+                }
+                Mock -CommandName Test-Path -MockWith{
+                    return $true
                 }
 
                 It "Returns that it is not installed from the get method" {

@@ -1,7 +1,7 @@
-version: 1.0.0.{build}
+version: 1.2.0.{build}
 
 install:
-    - git clone -b dev https://github.com/BrianFarnhill/DscResource.Tests
+    - git clone https://github.com/PowerShell/DscResource.Tests
 
     - npm --silent install  
 
