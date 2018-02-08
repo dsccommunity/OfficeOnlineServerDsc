@@ -24,7 +24,7 @@ Author = 'Microsoft Corporation'
 CompanyName = 'Microsoft Corporation'
 
 # Copyright statement for this module
-Copyright = '(c) 2016 Microsoft. All rights reserved.'
+Copyright = '(c) 2018 Microsoft. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'The OfficeOnlineServerDsc module provides the ability to install Office Online Server (formerly known as Office Web App Server).'
