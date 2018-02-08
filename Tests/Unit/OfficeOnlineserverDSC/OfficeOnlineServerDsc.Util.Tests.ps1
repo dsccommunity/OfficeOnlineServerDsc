@@ -5,14 +5,14 @@ param(
 
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
     & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
 
-Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc\Modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util.psm1" -Resolve)
+Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc\Modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util.psm1" -Resolve)
 
 InModuleScope "OfficeOnlineServerDsc.Util" {
     Describe "OfficeOnlineServerDsc.Util tests [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
