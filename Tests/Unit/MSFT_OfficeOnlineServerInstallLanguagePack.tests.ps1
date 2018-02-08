@@ -1,13 +1,13 @@
 [CmdletBinding()]
 param(
-    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerInstall'
+$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerInstallLanguagePack'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
+[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
      (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
@@ -22,16 +22,17 @@ $TestEnvironment = Initialize-TestEnvironment `
 try
 {
     InModuleScope $Script:DSCResourceName {
-        Describe "OfficeOnlineServerInstall [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
+        Describe "OfficeOnlineServerInstallLanguagePack [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
-            Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
+            Import-Module (Join-Path $PSScriptRoot "..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
 
-            Context "Office online server is not installed, but should be" {
+            Context "Office Online Server 2016 is not installed but should be" {
                 $testParams = @{
                     Ensure = "Present"
-                    Path = "C:\InstallFiles\setup.exe"
+                    Language = "fr-fr"
+                    BinaryDir= "C:\LanguagePack\setup.exe"
                 }
 
                 Mock -CommandName Get-ChildItem -MockWith {
@@ -41,6 +42,9 @@ try
                     return @{
                         ExitCode = 0
                     }
+                }
+                Mock -CommandName Test-Path -MockWith{
+                    return $true
                 }
 
                 It "Returns that it is not installed from the get method" {
@@ -57,16 +61,17 @@ try
                 }
             }
 
-            Context "Office online server 2016 is installed and should be" {
+            Context "Office Online Server 2016 is installed and should be" {
                 $testParams = @{
                     Ensure = "Present"
-                    Path = "C:\InstallFiles\setup.exe"
+                    Language = "fr-fr"
+                    BinaryDir = "C:\LanguagePack\setup.exe"
                 }
 
                 Mock Get-ChildItem -MockWith {
                     return @(
                         @{
-                            Name = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office16.WacServer"
+                            Name = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office16.WacServerLpk.fr-fr"
                         }
                     )
                 }
@@ -80,16 +85,17 @@ try
                 }
             }
 
-            Context "Office Web Apps 2013 is installed and should be" {
+            Context "Office Web Apps 2013 French Language Pack is installed and should be" {
                 $testParams = @{
                     Ensure = "Present"
-                    Path = "C:\InstallFiles\setup.exe"
+                    BinaryDir= "C:\LanguagePack\setup.exe"
+                    Language = "fr-fr"
                 }
 
                 Mock Get-ChildItem -MockWith {
                     return @(
                         @{
-                            Name = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office15.WacServer"
+                            Name = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Office15.WacServerLpk.fr-fr"
                         }
                     )
                 }
@@ -103,10 +109,11 @@ try
                 }
             }
 
-            Context "Office online server is not installed, but should be" {
+            Context "Office Web Apps 2013 French Language Pack is not installed, but should be" {
                 $testParams = @{
                     Ensure = "Present"
-                    Path = "C:\InstallFiles\setup.exe"
+                    Language = "fr-fr"
+                    BinaryDir= "C:\LanguagePack\setup.exe"
                 }
 
                 Mock -CommandName Get-ChildItem -MockWith {
