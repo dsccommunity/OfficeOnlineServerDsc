@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.2.0.0
+
+* Added fix for Multiple Language Pack Installs
+
 ## 1.1.0.0
 
 * Added support for Language Packs installation;
