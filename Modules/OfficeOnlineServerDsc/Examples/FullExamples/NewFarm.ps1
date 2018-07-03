@@ -1,7 +1,7 @@
 <#
 .EXAMPLE
     This example shows how to install the prerequisites, binaries and set up a new
-    farm on the local server.
+    farm on the local Windows Server 2016 machine.
 #>
 
     Configuration Example 
@@ -10,6 +10,7 @@
 
         Import-DscResource -ModuleName OfficeOnlineServerDsc
 
+        # For Windows Server 2012 R2, ass the 'InkandHandwritingServices' feature as well.
         $requiredFeatures = @(
             "Web-Server",
             "Web-Mgmt-Tools",
@@ -30,7 +31,6 @@
             "Web-ISAPI-Ext",
             "Web-ISAPI-Filter",
             "Web-Includes",
-            "InkandHandwritingServices",
             "NET-Framework-Features",
             "NET-Framework-Core",
             "NET-HTTP-Activation",
