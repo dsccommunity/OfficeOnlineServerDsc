@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Changes to OfficeOnlineServerDsc
+  * Added pull request template and issue templates.
+
 ## 1.2.0.0
 
 * Added fix for Multiple Language Pack Installs
