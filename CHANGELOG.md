@@ -5,7 +5,7 @@
 * Changes to OfficeOnlineServerDsc
   * Added pull request template and issue templates.
 * Created LICENSE file to match the Microsoft Open Source Team standard.
-  Fixes [Issue #35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
+  * Fixes [Issue #35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
 
 ## 1.2.0.0
 
