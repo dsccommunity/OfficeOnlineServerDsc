@@ -83,7 +83,7 @@ function Set-OosDscZoneMap
     $escDomainsPath = Join-Path -Path $zoneMap -ChildPath "\EscDomains\$ServerName"
     if (-not (Test-Path -Path $escDomainsPath))
     {
-        $null = New-Item -Path $escDomainsPath
+        $null = New-Item -Path $escDomainsPath -Force
     }
 
     if ((Get-ItemProperty -Path $escDomainsPath).File -ne 1)
@@ -94,7 +94,7 @@ function Set-OosDscZoneMap
     $domainsPath = Join-Path -Path $zoneMap -ChildPath "\Domains\$ServerName"
     if (-not (Test-Path -Path $domainsPath))
     {
-        $null = New-Item -Path $domainsPath
+        $null = New-Item -Path $domainsPath -Force
     }
 
     if ((Get-ItemProperty -Path $domainsPath).File -ne 1)
