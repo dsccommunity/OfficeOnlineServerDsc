@@ -111,8 +111,18 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = '* General bug fixes and improvements;
-
+        ReleaseNotes = '* Changes to OfficeOnlineServerDsc
+  * Added pull request template and issue templates.
+* OfficeOnlineServerInstall
+  * Added check to test if the setup file is blocked or not;
+  * Added ability to install from a UNC path, by adding server
+    to IE Local Intranet Zone. This will prevent an endless wait
+    caused by security warning;
+* OfficeOnlineServerInstallLanguagePack
+  * Added check to test if the setup file is blocked or not;
+  * Added ability to install from a UNC path, by adding server
+    to IE Local Intranet Zone. This will prevent an endless wait
+    caused by security warning
 '
 
     } # End of PSData hashtable
