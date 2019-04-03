@@ -28,6 +28,28 @@ function Get-TargetResource
         throw "Uninstallation of Language Packs is not currently supported by OfficeOnlineServer Dsc"
     }
     
+    # Check if Binary folder exists
+    if (-not(Test-Path -Path $BinaryDir))
+    {
+        throw "Specified path cannot be found. {$BinaryDir}"
+    }
+    
+    # Check if setup.exe exists in BinaryDir folder
+    $setupExe = Join-Path -Path $BinaryDir -ChildPath "setup.exe"
+    if (-not(Test-Path -Path $setupExe))
+    {
+        throw "Setup.exe cannot be found in {$BinaryDir}"
+    }
+
+    Write-Verbose -Message "Checking file status of setup.exe"
+    $zone = Get-Item $setupExe -Stream "Zone.Identifier" -EA SilentlyContinue
+
+    if ($null -ne $zone)
+    {
+        throw ("Setup file is blocked! Please use Unblock-File to unblock the file " + `
+               "before continuing.")
+    }
+
     Write-Verbose -Message "Update is for the $Language language"
 
     $matchPath = "HKEY_LOCAL_MACHINE\\$($Script:UninstallPath.Replace('\','\\'))" + `
@@ -84,7 +106,6 @@ function Set-TargetResource
     {
         throw [Exception] ("OfficeOnlineServerDsc does not support uninstalling " + `
                            "Language Packs. Please remove this manually.")
-        return
     }
 
     # Check if Binary folder exists
@@ -93,17 +114,47 @@ function Set-TargetResource
         throw "Specified path cannot be found. {$BinaryDir}"
     }
     
+    # Check if setup.exe exists in BinaryDir folder
+    $setupExe = Join-Path -Path $BinaryDir -ChildPath "setup.exe"
+    if (-not(Test-Path -Path $setupExe))
+    {
+        throw "Setup.exe cannot be found in {$BinaryDir}"
+    }
 
-    Write-Verbose -Message "Writing install config file"
+    Write-Verbose -Message "Checking file status of setup.exe"
+    $zone = Get-Item $setupExe -Stream "Zone.Identifier" -EA SilentlyContinue
+
+    if ($null -ne $zone)
+    {
+        throw ("Setup file is blocked! Please use Unblock-File to unblock the file " + `
+               "before continuing.")
+    }
+
+    Write-Verbose -Message "Checking if BinaryDir is a UNC path"
+    $uncInstall = $false
+    if ($BinaryDir.StartsWith("\\"))
+    {
+        Write-Verbose -Message "Specified BinaryDir is UNC path. Adding path to Local Intranet Zone"
+
+        $uncInstall = $true
+
+        $null = $setupexe -match "\\\\(.*?)\\.*"
+        $serverName = $Matches[1]
+
+        Set-OosDscZoneMap -Server $serverName
+    }
 
     Write-Verbose -Message "Beginning installation of the Office Online Server Language Pack"
-
-    $setupExe = Join-Path -Path $BinaryDir -ChildPath "setup.exe"
-    
     $installer = Start-Process -FilePath $setupExe `
                                -ArgumentList '/config .\files\setupsilent\config.xml' `
                                -Wait `
                                -PassThru
+
+    if ($uncInstall -eq $true)
+    {
+        Write-Verbose -Message "Removing added path from the Local Intranet Zone"
+        Remove-OosDscZoneMap -ServerName $serverName
+    }
 
     switch ($installer.ExitCode) 
     {
@@ -148,7 +199,6 @@ function Test-TargetResource
     {
         throw [Exception] ("OfficeOnlineServerDsc does not support uninstalling Office Online Server " + `
                            "Language Packs. Please remove this manually.")
-        return
     }
 
     $CurrentValues = Get-TargetResource @PSBoundParameters

@@ -24,6 +24,21 @@ function Get-TargetResource
 
     Write-Verbose -Message "Getting details of installation of Office Online Server"
 
+    # Check if Binary folder exists
+    if (-not(Test-Path -Path $Path))
+    {
+        throw "Specified path cannot be found. {$Path}"
+    }
+    
+    Write-Verbose -Message "Checking file status of setup.exe"
+    $zone = Get-Item $Path -Stream "Zone.Identifier" -EA SilentlyContinue
+
+    if ($null -ne $zone)
+    {
+        throw ("Setup file is blocked! Please use Unblock-File to unblock the file " + `
+               "before continuing.")
+    }
+
     $matchPath = "HKEY_LOCAL_MACHINE\\$($Script:UninstallPath.Replace('\','\\'))" + `
                  "\\$script:InstallKeyPattern"
     $wacPath = Get-ChildItem -Path "HKLM:\$Script:UninstallPath" | Where-Object -FilterScript {
@@ -65,10 +80,45 @@ function Set-TargetResource
 
     Write-Verbose -Message "Starting installation of Office Online Server"
 
+    # Check if Binary folder exists
+    if (-not(Test-Path -Path $Path))
+    {
+        throw "Specified path cannot be found. {$Path}"
+    }
+    
+    Write-Verbose -Message "Checking file status of setup.exe"
+    $zone = Get-Item $Path -Stream "Zone.Identifier" -EA SilentlyContinue
+
+    if ($null -ne $zone)
+    {
+        throw ("Setup file is blocked! Please use Unblock-File to unblock the file " + `
+               "before continuing.")
+    }
+
+    Write-Verbose -Message "Checking if Path is a UNC path"
+    $uncInstall = $false
+    if ($Path.StartsWith("\\"))
+    {
+        Write-Verbose -Message "Specified Path is UNC path. Adding path to Local Intranet Zone"
+
+        $uncInstall = $true
+
+        $null = $Path -match "\\\\(.*?)\\.*"
+        $serverName = $Matches[1]
+
+        Set-OosDscZoneMap -Server $serverName
+    }
+
     $installer = Start-Process -FilePath $Path `
                                -ArgumentList '/config .\files\setupsilent\config.xml' `
                                -Wait `
                                -PassThru
+
+    if ($uncInstall -eq $true)
+    {
+        Write-Verbose -Message "Removing added path from the Local Intranet Zone"
+        Remove-OosDscZoneMap -ServerName $serverName
+    }
 
     switch ($installer.ExitCode) {
         0 { 
