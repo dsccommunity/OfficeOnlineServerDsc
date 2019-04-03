@@ -24,6 +24,89 @@ function Get-OosDscInstalledProductVersion
 <#
 .SYNOPSIS
 
+This cmdlet delete entries from the ZoneMap table for the specified server.
+
+.PARAMETER ServerName
+
+The name of the server that should be removed to the ZoneMap
+
+#>
+function Remove-OosDscZoneMap
+{
+    [CmdletBinding()]
+    [OutputType()]
+    param(
+        [parameter(Mandatory = $true)]
+        [string]
+        $ServerName
+    )
+
+    $zoneMap = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap"
+
+    $escDomainsPath = Join-Path -Path $zoneMap -ChildPath "\EscDomains\$ServerName"
+    if (Test-Path -Path $escDomainsPath)
+    {
+        Remove-Item -Path $escDomainsPath
+    }
+
+    $domainsPath = Join-Path -Path $zoneMap -ChildPath "\Domains\$ServerName"
+    if (Test-Path -Path $domainsPath)
+    {
+        Remove-Item -Path $domainsPath
+    }
+}
+
+
+<#
+.SYNOPSIS
+
+This cmdlet creates new entries in the ZoneMap table for the specified server.
+This will make sure the UNC path for the server is trusted when the setup is executed.
+
+.PARAMETER ServerName
+
+The name of the server that should be added to the ZoneMap
+
+#>
+function Set-OosDscZoneMap
+{
+    [CmdletBinding()]
+    [OutputType()]
+    param(
+        [parameter(Mandatory = $true)]
+        [string]
+        $ServerName
+    )
+
+    $zoneMap = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap"
+
+    $escDomainsPath = Join-Path -Path $zoneMap -ChildPath "\EscDomains\$ServerName"
+    if (-not (Test-Path -Path $escDomainsPath))
+    {
+        $null = New-Item -Path $escDomainsPath -Force
+    }
+
+    if ((Get-ItemProperty -Path $escDomainsPath).File -ne 1)
+    {
+        Set-ItemProperty -Path $escDomainsPath -Name file -Value 1 -Type DWord
+    }
+
+    $domainsPath = Join-Path -Path $zoneMap -ChildPath "\Domains\$ServerName"
+    if (-not (Test-Path -Path $domainsPath))
+    {
+        $null = New-Item -Path $domainsPath -Force
+    }
+
+    if ((Get-ItemProperty -Path $domainsPath).File -ne 1)
+    {
+        Set-ItemProperty -Path $domainsPath -Name file -Value 1 -Type DWord
+    }
+}
+
+
+<#
+.SYNOPSIS
+
 This cmdlet determines if the OU of the farm matches the OU of the current deployment
 
 .PARAMETER DesiredOU

@@ -34,6 +34,10 @@ try
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
                 Mock -CommandName Get-ChildItem -MockWith {
                     return @()
                 }
@@ -63,6 +67,10 @@ try
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
                 Mock Get-ChildItem -MockWith {
                     return @(
                         @{
@@ -85,6 +93,10 @@ try
                     Ensure = "Present"
                     Path = "C:\InstallFiles\setup.exe"
                 }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
 
                 Mock Get-ChildItem -MockWith {
                     return @(
@@ -109,17 +121,101 @@ try
                     Path = "C:\InstallFiles\setup.exe"
                 }
 
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
                 Mock -CommandName Get-ChildItem -MockWith {
                     return @()
                 }
                 Mock -CommandName Start-Process -MockWith {
                     return @{
-                        ExitCode = 1001
+                        ExitCode = 0
                     }
                 }
 
                 It "Starts the install from the set method" {
-                    { Set-TargetResource @testParams } | Should Throw
+                    Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                }
+            }
+
+            Context "Office online server is not installed, but should be and using UNC path" {
+                $testParams = @{
+                    Ensure = "Present"
+                    Path = "\\server\InstallFiles\setup.exe"
+                }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
+                Mock -CommandName Get-Item -MockWith {
+                    return $null
+                }
+
+                Mock -CommandName Get-ChildItem -MockWith {
+                    return @()
+                }
+                Mock -CommandName Start-Process -MockWith {
+                    return @{
+                        ExitCode = 0
+                    }
+                }
+
+                It "Starts the install from the set method" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                }
+            }
+
+            Context "Setup file does not exist" {
+                $testParams = @{
+                    Ensure = "Present"
+                    Path = "C:\InstallFiles\setup.exe"
+                }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $false
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
+                It "Throws exception in the get method" {
+                    { Get-TargetResource @testParams } | Should Throw "Specified path cannot be found."
+                }
+
+                It "Throws exception in the set method" {
+                    { Set-TargetResource @testParams } | Should Throw "Specified path cannot be found."
+                }
+
+                It "Throws exception in the test method" {
+                    { Set-TargetResource @testParams } | Should Throw "Specified path cannot be found."
+                }
+            }
+
+            Context "Setup file is blocked" {
+                $testParams = @{
+                    Ensure = "Present"
+                    Path = "C:\InstallFiles\setup.exe"
+                }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
+                Mock -CommandName Get-Item -MockWith {
+                    return "data"
+                }
+
+                It "Throws exception in the get method" {
+                    { Get-TargetResource @testParams } | Should Throw "Setup file is blocked!"
+                }
+
+                It "Throws exception in the set method" {
+                    { Set-TargetResource @testParams } | Should Throw "Setup file is blocked!"
+                }
+
+                It "Throws exception in the test method" {
+                    { Set-TargetResource @testParams } | Should Throw "Setup file is blocked!"
                 }
             }
         }
