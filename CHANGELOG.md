@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.3.0.0
+
 * Changes to OfficeOnlineServerDsc
   * Added pull request template and issue templates.
 * OfficeOnlineServerInstall
