@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+* OfficeOnlineServerInstall
+  * Updated resource to make sure the Windows Environment
+    variables are loaded into the PowerShell session;
+* OfficeOnlineServerMachine
+  * Updated resource to make sure the Windows Environment
+    variables are loaded into the PowerShell session;
+
 ## 1.3.0.0
 
 * Changes to OfficeOnlineServerDsc
