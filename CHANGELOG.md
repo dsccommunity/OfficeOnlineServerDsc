@@ -2,10 +2,22 @@
 
 ## Unreleased
 
+## 1.3.0.0
+
 * Changes to OfficeOnlineServerDsc
   * Added pull request template and issue templates.
 * Created LICENSE file to match the Microsoft Open Source Team standard.
   * Fixes [Issue #35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
+* OfficeOnlineServerInstall
+  * Added check to test if the setup file is blocked or not;
+  * Added ability to install from a UNC path, by adding server
+    to IE Local Intranet Zone. This will prevent an endless wait
+    caused by security warning;
+* OfficeOnlineServerInstallLanguagePack
+  * Added check to test if the setup file is blocked or not;
+  * Added ability to install from a UNC path, by adding server
+    to IE Local Intranet Zone. This will prevent an endless wait
+    caused by security warning;
 
 ## 1.2.0.0
 
