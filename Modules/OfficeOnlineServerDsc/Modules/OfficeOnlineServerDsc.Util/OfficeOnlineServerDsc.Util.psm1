@@ -1,6 +1,30 @@
 <#
 .SYNOPSIS
 
+This cmdlet checks if all environment variables are loaded into the PSModulePath
+variable.
+
+#>
+function Confirm-OosDscEnvironmentVariables
+{
+    [CmdletBinding()]
+    [OutputType()]
+    param()
+
+    $envPSMod = [Environment]::GetEnvironmentVariable("PSModulePath","Machine") -split ";"
+    $curPsMod = $env:PSModulePath -split ";"
+    foreach ($path in $envPSMod)
+    {
+        if ($curPSMod -notcontains $path)
+        {
+            $env:PSModulePath = $env:PSModulePath + ";$path"
+        }
+    }
+}
+
+<#
+.SYNOPSIS
+
 This cmdlet determines the version number of Office Web Apps that is installed locally
 
 #>
