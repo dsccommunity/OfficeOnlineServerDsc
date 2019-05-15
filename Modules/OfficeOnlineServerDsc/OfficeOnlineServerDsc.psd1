@@ -117,7 +117,8 @@ PrivateData = @{
 * OfficeOnlineServerMachine
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
-
+* Created LICENSE file to match the Microsoft Open Source Team standard.
+  * Fixes [Issue 35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
 '
 
     } # End of PSData hashtable
