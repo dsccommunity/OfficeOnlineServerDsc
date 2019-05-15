@@ -215,6 +215,10 @@ function Get-TargetResource
         $PicturePasteDisabled
     )
 
+    Write-Verbose -Message "Getting settings for local Office Online Server"
+
+    Confirm-OosDscEnvironmentVariables
+
     Test-OosDscV16Support -Parameters $PSBoundParameters
 
     try
@@ -223,7 +227,7 @@ function Get-TargetResource
     }
     catch
     {
-        Write-Verbose -Message $_        
+        Write-Verbose -Message $_
     }
 
     $returnValue = @{
@@ -489,6 +493,10 @@ function Set-TargetResource
         $PicturePasteDisabled
     )
 
+    Write-Verbose -Message "Updating settings for local Office Online Server"
+
+    Confirm-OosDscEnvironmentVariables
+
     Test-OosDscV16Support -Parameters $PSBoundParameters
 
     try
@@ -497,7 +505,7 @@ function Set-TargetResource
     }
     catch
     {
-        Write-Verbose -Message $_        
+        Write-Verbose -Message $_
     }
 
     if(-not $officeWebAppsFarm)
@@ -720,6 +728,10 @@ function Test-TargetResource
         $PicturePasteDisabled
     )
 
+    Write-Verbose -Message "Testing settings for local Office Online Server"
+
+    Confirm-OosDscEnvironmentVariables
+
     Test-OosDscV16Support -Parameters $PSBoundParameters
 
     try
@@ -824,7 +836,7 @@ function Test-OosDscV16Support
 
     $version = Get-OosDscInstalledProductVersion
     switch ($version.Major) {
-        15 {  
+        15 {
             Write-Verbose -Message "Office Web Apps 2013 install detected. Checking parameter use."
             foreach($param in $script:v16onlyParams)
             {

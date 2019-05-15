@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 1.4.0.0
+
+* OfficeOnlineServerInstall
+  * Updated resource to make sure the Windows Environment
+    variables are loaded into the PowerShell session;
+* OfficeOnlineServerMachine
+  * Updated resource to make sure the Windows Environment
+    variables are loaded into the PowerShell session;
+* Created LICENSE file to match the Microsoft Open Source Team standard.
+  * Fixes [Issue #35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
+
 ## 1.3.0.0
 
 * Changes to OfficeOnlineServerDsc
