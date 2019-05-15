@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.4.0.0
+
 * OfficeOnlineServerInstall
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
