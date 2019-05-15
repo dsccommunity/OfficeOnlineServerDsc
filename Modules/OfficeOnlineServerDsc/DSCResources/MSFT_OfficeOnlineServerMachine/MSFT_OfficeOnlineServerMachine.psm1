@@ -30,6 +30,10 @@ function Get-TargetResource
         $MachineToJoin
     )
 
+    Write-Verbose -Message "Getting settings for local Office Online Server"
+
+    Confirm-OosDscEnvironmentVariables
+
     Import-Module -Name OfficeWebApps -ErrorAction Stop
 
     $officeWebAppsMachine = $null
@@ -93,13 +97,16 @@ function Set-TargetResource
     )
 
     Write-Verbose -Message "Updating settings for local Office Online Server"
+
+    Confirm-OosDscEnvironmentVariables
+
     Import-Module -Name OfficeWebApps -ErrorAction Stop
 
     if ($Ensure -eq "Absent")
     {
         Remove-OfficeWebAppsMachine
 
-        Write-Verbose -Message $LocalizedData.RemoveAppMachine 
+        Write-Verbose -Message $LocalizedData.RemoveAppMachine
     }
     else
     {
@@ -118,7 +125,7 @@ function Set-TargetResource
         if ($null -eq $Roles)
         {
             $Roles = @("All")
-        }             
+        }
 
         New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
 
@@ -147,6 +154,9 @@ function Test-TargetResource
     )
 
     Write-Verbose -Message "Testing settings for local Office Online Server"
+
+    Confirm-OosDscEnvironmentVariables
+
     $results = Get-TargetResource -MachineToJoin $MachineToJoin
 
     if ($null -eq $Roles)
@@ -158,17 +168,17 @@ function Test-TargetResource
     {
         $roleCompare = $null
     }
-    else 
+    else
     {
         $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
     }
-    
+
     if ($MachineToJoin.Contains(".") -eq $true)
     {
         $fqdn = $MachineToJoin
         $computer = $MachineToJoin.Substring(0, $MachineToJoin.IndexOf("."))
     }
-    else 
+    else
     {
         $domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
         $fqdn = "$MachineToJoin.$domain"
@@ -183,7 +193,7 @@ function Test-TargetResource
         # If present and all value match return true
         return $true
     }
-    elseif(($results.Ensure -eq "Absent") -and ($Ensure -eq "Absent")) 
+    elseif(($results.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
     {
         # if absent no need to check all values
         return $true
