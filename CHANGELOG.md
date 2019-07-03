@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* OfficeOnlineServerInstall
+  * Updated error code checks to force reboot;
+
 ## 1.4.0.0
 
 * OfficeOnlineServerInstall
