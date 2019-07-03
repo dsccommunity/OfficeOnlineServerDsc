@@ -12,7 +12,7 @@
 # RootModule = ''
 
 # Version number of this module.
-ModuleVersion = '1.3.0.0'
+moduleVersion = '1.4.0.0'
 
 # ID used to uniquely identify this module
 GUID = '7514bb93-d3e4-40b2-98e7-3404e9674c1c'
@@ -111,18 +111,14 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = '* Changes to OfficeOnlineServerDsc
-  * Added pull request template and issue templates.
-* OfficeOnlineServerInstall
-  * Added check to test if the setup file is blocked or not;
-  * Added ability to install from a UNC path, by adding server
-    to IE Local Intranet Zone. This will prevent an endless wait
-    caused by security warning;
-* OfficeOnlineServerInstallLanguagePack
-  * Added check to test if the setup file is blocked or not;
-  * Added ability to install from a UNC path, by adding server
-    to IE Local Intranet Zone. This will prevent an endless wait
-    caused by security warning
+        ReleaseNotes = '* OfficeOnlineServerInstall
+  * Updated resource to make sure the Windows Environment
+    variables are loaded into the PowerShell session;
+* OfficeOnlineServerMachine
+  * Updated resource to make sure the Windows Environment
+    variables are loaded into the PowerShell session;
+* Created LICENSE file to match the Microsoft Open Source Team standard.
+  * Fixes [Issue 35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
 '
 
     } # End of PSData hashtable
@@ -130,5 +126,6 @@ PrivateData = @{
 } # End of PrivateData hashtable
 
 }
+
 
 
