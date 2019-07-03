@@ -17,7 +17,7 @@ Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHel
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Script:DSCModuleName `
     -DSCResourceName $Script:DSCResourceName `
-    -TestType Unit 
+    -TestType Unit
 
 try
 {
@@ -26,7 +26,7 @@ try
 
             Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
-            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
             Context "Office Online Server 2016 is not installed but should be" {
                 $testParams = @{
