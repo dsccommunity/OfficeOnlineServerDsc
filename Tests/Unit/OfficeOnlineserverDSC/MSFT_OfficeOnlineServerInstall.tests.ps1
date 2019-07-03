@@ -17,7 +17,7 @@ Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHel
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Script:DSCModuleName `
     -DSCResourceName $Script:DSCResourceName `
-    -TestType Unit 
+    -TestType Unit
 
 try
 {
@@ -26,7 +26,7 @@ try
 
             Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
-            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
             Context "Office online server is not installed, but should be" {
                 $testParams = @{
@@ -85,6 +85,32 @@ try
 
                 It "Returns true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
+                }
+            }
+
+            Context "Office online server is not installed, but should be" {
+                $testParams = @{
+                    Ensure = "Present"
+                    Path = "C:\InstallFiles\setup.exe"
+                }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                } -ParameterFilter { $Path -eq $testParams.Path }
+
+                Mock -CommandName Get-ChildItem -MockWith {
+                    return @()
+                }
+                Mock -CommandName Start-Process -MockWith {
+                    return @{
+                        ExitCode = 3010
+                    }
+                }
+
+                It "Starts the install from the set method and initiates reboot" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled Start-Process
+                    $global:DscMachineStatus | Should Be 1
                 }
             }
 

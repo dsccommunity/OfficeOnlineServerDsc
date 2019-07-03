@@ -5,6 +5,7 @@
 * OfficeOnlineServerInstall
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
+  * Updated error code checks to force reboot;
 * OfficeOnlineServerMachine
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
