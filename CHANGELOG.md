@@ -8,6 +8,8 @@
     * Common Tests - Validate Script Files
     * Common Tests - Relative Path Length
     * Common Tests - Validate Markdown Links
+* OfficeOnlineServerInstall
+  * Updated error code checks to force reboot;
 
 ## 1.4.0.0
 
