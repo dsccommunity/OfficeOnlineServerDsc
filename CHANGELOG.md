@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+* OfficeOnlineServerDsc
+  * Optin to the following Dsc Resource metatests:
+    * Common Tests - Validate Module Files
+    * Common Tests - Validate Script Files
+    * Common Tests - Relative Path Length
+    * Common Tests - Validate Markdown Links
+
 ## 1.4.0.0
 
 * OfficeOnlineServerInstall
