@@ -161,7 +161,7 @@ function Set-TargetResource
         }
         if ($null -ne $zone)
         {
-            throw ("PrerequisitesInstaller is blocked! Please use 'Unblock-File -Path " + `
+            throw ("Setup file is blocked! Please use 'Unblock-File -Path " + `
                     "$Path' to unblock the file before continuing.")
         }
         Write-Verbose -Message "File not blocked, continuing."
