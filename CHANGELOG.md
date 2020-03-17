@@ -8,12 +8,16 @@
     * Common Tests - Validate Script Files
     * Common Tests - Relative Path Length
     * Common Tests - Validate Markdown Links
+* OfficeOnlineServerInstall
+  * Updated error code checks to force reboot;
+  * Added check for CDROM to prevent issues with block file check;
 
 ## 1.4.0.0
 
 * OfficeOnlineServerInstall
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
+  * Updated error code checks to force reboot;
 * OfficeOnlineServerMachine
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
