@@ -1,0 +1,47 @@
+﻿.NAME
+    OfficeOnlineServerProductUpdate
+
+# Description
+
+    The OfficeOnlineServerProductUpdate DSC resource is used to install the
+    Cumulative Updates for either Office Web Apps 2013 or Office Online Server
+    2016. It detects either products installation through a file on disk
+    and will install the update if it is not present.
+
+    Currently the only supported scenario is installation of updates, this
+    resource doesn't allow them to be uninstalled.
+
+.PARAMETER Ensure
+    Optional - String
+    Allowed values: Present, Absent
+    Set to 'present' to specificy that the product should be installed.
+
+.PARAMETER SetupFile
+    Key - String
+    Path and filename of the cumulative update
+
+.PARAMETER Servers
+    Required - String
+    Array with the names of OOS servers in the farm
+
+
+.EXAMPLE
+    This example shows how to install cumulative updates for office online server to
+    the local server.
+
+
+    Configuration Example
+    {
+        param()
+
+        Import-DscResource -ModuleName OfficeOnlineServerDsc
+
+        OfficeOnlineServerProductUpdate InstallCU
+        {
+            Ensure    = "Present"
+            SetupFile = "C:\Installer\wacserver2019-kb4484223-fullfile-x64-glb.exe"
+            Servers   = @("OOS1","OOS2")
+        }
+    }
+
+

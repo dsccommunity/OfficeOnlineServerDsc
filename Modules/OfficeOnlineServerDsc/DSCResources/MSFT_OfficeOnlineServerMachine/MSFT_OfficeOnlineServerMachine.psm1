@@ -1,3 +1,5 @@
+$script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
+
 data LocalizedData
 {
     # culture="en-US"
@@ -127,7 +129,7 @@ function Set-TargetResource
             $Roles = @("All")
         }
 
-        New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
+        $null = New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
 
         Write-Verbose -Message $LocalizedData.SetAppMachine
     }
@@ -157,20 +159,34 @@ function Test-TargetResource
 
     Confirm-OosDscEnvironmentVariables
 
-    $results = Get-TargetResource -MachineToJoin $MachineToJoin
+    # Check if server is continuing after a patch install reboot
+    $key = Get-Item $OOSDscRegKey
+    $state = $key.GetValue("State")
+
+    if ($state -eq "Patching")
+    {
+        Write-Verbose -Message "Server continuing after a patch reboot. Farm join not required."
+        Write-Verbose -Message "Returning True to prevent issues."
+        return $true
+    }
+
+    $CurrentValues = Get-TargetResource -MachineToJoin $MachineToJoin
+
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
     if ($null -eq $Roles)
     {
         $Roles = @("All")
     }
 
-    if ($null -eq $results.Roles)
+    if ($null -eq $CurrentValues.Roles)
     {
         $roleCompare = $null
     }
     else
     {
-        $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
+        $roleCompare = Compare-Object -ReferenceObject $CurrentValues.Roles -DifferenceObject $Roles
     }
 
     if ($MachineToJoin.Contains(".") -eq $true)
@@ -185,15 +201,15 @@ function Test-TargetResource
         $computer = $MachineToJoin
     }
 
-    if (($results.Ensure -eq "Present") `
+    if (($CurrentValues.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
-            -and (($results.MachineToJoin -eq $fqdn) -or ($results.MachineToJoin -eq $computer)) `
+            -and (($CurrentValues.MachineToJoin -eq $fqdn) -or ($CurrentValues.MachineToJoin -eq $computer)) `
             -and ( $null -eq $roleCompare))
     {
         # If present and all value match return true
         return $true
     }
-    elseif(($results.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
+    elseif(($CurrentValues.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
     {
         # if absent no need to check all values
         return $true

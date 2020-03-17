@@ -1,3 +1,5 @@
+$script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
+
 $script:v16onlyParams = @("AllowOutboundHttp", "S2SCertificateName", "OnlinePictureEnabled", `
                           "OnlineVideoEnabled", "OfficeAddinEnabled", `
                           "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
@@ -511,12 +513,12 @@ function Set-TargetResource
     if(-not $officeWebAppsFarm)
     {
         Write-Verbose "Installing new WebAppsFarm"
-        New-OfficeWebAppsFarm @PSBoundParameters -Force
+        $null = New-OfficeWebAppsFarm @PSBoundParameters -Force
     }
     else
     {
         Write-Verbose "WebAppsFarm found setting parameters on farm"
-        Set-OfficeWebAppsFarm @PSBoundParameters -Force
+        $null = Set-OfficeWebAppsFarm @PSBoundParameters -Force
     }
 }
 
@@ -732,6 +734,17 @@ function Test-TargetResource
 
     Confirm-OosDscEnvironmentVariables
 
+    # Check if server is continuing after a patch install reboot
+    $key = Get-Item $OOSDscRegKey
+    $state = $key.GetValue("State")
+
+    if ($state -eq "Patching")
+    {
+        Write-Verbose -Message "Server continuing after a patch reboot. Farm creation not required."
+        Write-Verbose -Message "Returning True to prevent issues."
+        return $true
+    }
+
     Test-OosDscV16Support -Parameters $PSBoundParameters
 
     try
@@ -755,7 +768,10 @@ function Test-TargetResource
         }
     }
 
-    $currentValues = Get-TargetResource @PSBoundParameters
+    $CurrentValues = Get-TargetResource @PSBoundParameters
+
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
     if ($InternalURL.EndsWith('/') -eq $false)
     {
@@ -769,7 +785,7 @@ function Test-TargetResource
     {
         $Proxy += "/"
     }
-    return Test-OosDscParameterState -CurrentValues $currentValues `
+    return Test-OosDscParameterState -CurrentValues $CurrentValues `
                                    -DesiredValues $PSBoundParameters `
                                    -ValuesToCheck @(
                                        "InternalURL",
