@@ -7,33 +7,33 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
-        [Parameter(Mandatory = $true)] 
-        [ValidateSet("Present","Absent")] 
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("Present","Absent")]
+        [System.String]
         $Ensure,
 
-        [Parameter(Mandatory = $true)]  
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [System.String]
         $BinaryDir,
 
-        [Parameter(Mandatory = $true)]  
-        [System.String] 
-        $Language 
+        [Parameter(Mandatory = $true)]
+        [System.String]
+        $Language
     )
 
     Write-Verbose -Message "Getting install status of the $Language Language Pack"
 
-    if ($Ensure -eq "Absent") 
+    if ($Ensure -eq "Absent")
     {
         throw "Uninstallation of Language Packs is not currently supported by OfficeOnlineServer Dsc"
     }
-    
+
     # Check if Binary folder exists
     if (-not(Test-Path -Path $BinaryDir))
     {
         throw "Specified path cannot be found. {$BinaryDir}"
     }
-    
+
     # Check if setup.exe exists in BinaryDir folder
     $setupExe = Join-Path -Path $BinaryDir -ChildPath "setup.exe"
     if (-not(Test-Path -Path $setupExe))
@@ -86,23 +86,23 @@ function Set-TargetResource
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
     param
     (
-        [Parameter(Mandatory = $true)] 
-        [ValidateSet("Present","Absent")] 
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("Present","Absent")]
+        [System.String]
         $Ensure,
 
-        [Parameter(Mandatory = $true)]  
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [System.String]
         $BinaryDir,
 
-        [Parameter(Mandatory = $true)]  
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [System.String]
         $Language
     )
 
     Write-Verbose -Message "Setting install status of Office Online Language Pack"
 
-    if ($Ensure -eq "Absent") 
+    if ($Ensure -eq "Absent")
     {
         throw [Exception] ("OfficeOnlineServerDsc does not support uninstalling " + `
                            "Language Packs. Please remove this manually.")
@@ -113,7 +113,7 @@ function Set-TargetResource
     {
         throw "Specified path cannot be found. {$BinaryDir}"
     }
-    
+
     # Check if setup.exe exists in BinaryDir folder
     $setupExe = Join-Path -Path $BinaryDir -ChildPath "setup.exe"
     if (-not(Test-Path -Path $setupExe))
@@ -122,12 +122,48 @@ function Set-TargetResource
     }
 
     Write-Verbose -Message "Checking file status of setup.exe"
-    $zone = Get-Item $setupExe -Stream "Zone.Identifier" -EA SilentlyContinue
-
-    if ($null -ne $zone)
+    $checkBlockedFile = $true
+    if (Split-Path -Path $setupExe -IsAbsolute)
     {
-        throw ("Setup file is blocked! Please use Unblock-File to unblock the file " + `
-               "before continuing.")
+        $driveLetter = (Split-Path -Path $setupExe -Qualifier).TrimEnd(":")
+        Write-Verbose -Message "BinaryDir refers to drive $driveLetter"
+
+        $volume = Get-Volume -DriveLetter $driveLetter -ErrorAction SilentlyContinue
+        if ($null -ne $volume)
+        {
+            if ($volume.DriveType -ne "CD-ROM")
+            {
+                Write-Verbose -Message "Volume is a fixed drive: Perform Blocked File test"
+            }
+            else
+            {
+                Write-Verbose -Message "Volume is a CD-ROM drive: Skipping Blocked File test"
+                $checkBlockedFile = $false
+            }
+        }
+        else
+        {
+            Write-Verbose -Message "Volume not found. Unable to determine the type. Continuing."
+        }
+    }
+
+    if ($checkBlockedFile -eq $true)
+    {
+        Write-Verbose -Message "Checking status now"
+        try
+        {
+            $zone = Get-Item -Path $setupExe -Stream "Zone.Identifier" -EA SilentlyContinue
+        }
+        catch
+        {
+            Write-Verbose -Message 'Encountered error while reading file stream. Ignoring file stream.'
+        }
+        if ($null -ne $zone)
+        {
+            throw ("PrerequisitesInstaller is blocked! Please use 'Unblock-File -Path " + `
+                    "$setupExe' to unblock the file before continuing.")
+        }
+        Write-Verbose -Message "File not blocked, continuing."
     }
 
     Write-Verbose -Message "Checking if BinaryDir is a UNC path"
@@ -156,9 +192,9 @@ function Set-TargetResource
         Remove-OosDscZoneMap -ServerName $serverName
     }
 
-    switch ($installer.ExitCode) 
+    switch ($installer.ExitCode)
     {
-        0 {  
+        0 {
             Write-Verbose -Message "Office Online Server Language Pack binary installation complete"
         }
         17022 {
@@ -178,30 +214,33 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
-        [Parameter(Mandatory = $true)] 
-        [ValidateSet("Present","Absent")] 
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("Present","Absent")]
+        [System.String]
         $Ensure,
 
-        [Parameter(Mandatory = $true)]  
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [System.String]
         $BinaryDir,
 
-        [Parameter(Mandatory = $true)]  
-        [System.String] 
+        [Parameter(Mandatory = $true)]
+        [System.String]
         $Language
 )
 
     Write-Verbose -Message "Testing install status of Office Online Server $Language Language Pack"
 
 
-    if ($Ensure -eq "Absent") 
+    if ($Ensure -eq "Absent")
     {
         throw [Exception] ("OfficeOnlineServerDsc does not support uninstalling Office Online Server " + `
                            "Language Packs. Please remove this manually.")
     }
 
     $CurrentValues = Get-TargetResource @PSBoundParameters
+
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
     if($CurrentValues.Ensure -eq $Ensure)
     {

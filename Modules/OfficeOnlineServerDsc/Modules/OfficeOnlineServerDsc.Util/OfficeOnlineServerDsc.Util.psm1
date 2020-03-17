@@ -25,6 +25,119 @@ function Confirm-OosDscEnvironmentVariables
 <#
 .SYNOPSIS
 
+This cmdlet converts a Hashtable into a String
+
+#>
+function Convert-OosDscHashtableToString
+{
+    param
+    (
+        [Parameter()]
+        [System.Collections.Hashtable]
+        $Hashtable
+    )
+    $values = @()
+    foreach ($pair in $Hashtable.GetEnumerator())
+    {
+        if ($pair.Value -is [System.Array])
+        {
+            $str = "$($pair.Key)=$(Convert-OOSDscArrayToString -Array $pair.Value)"
+        }
+        elseif ($pair.Value -is [System.Collections.Hashtable])
+        {
+            $str = "$($pair.Key)={$(Convert-OOSDscHashtableToString -Hashtable $pair.Value)}"
+        }
+        elseif ($pair.Value -is [Microsoft.Management.Infrastructure.CimInstance])
+        {
+            $str = "$($pair.Key)=$(Convert-OOSDscCIMInstanceToString -CIMInstance $pair.Value)"
+        }
+        else
+        {
+            $str = "$($pair.Key)=$($pair.Value)"
+        }
+        $values += $str
+    }
+
+    [array]::Sort($values)
+    return ($values -join "; ")
+}
+
+<#
+.SYNOPSIS
+
+This cmdlet converts an Array into a String
+
+#>
+function Convert-OOSDscArrayToString
+{
+    param
+    (
+        [Parameter()]
+        [System.Array]
+        $Array
+    )
+
+    $str = "("
+    for ($i = 0; $i -lt $Array.Count; $i++)
+    {
+        $item = $Array[$i]
+        if ($item -is [System.Collections.Hashtable])
+        {
+            $str += "{"
+            $str += Convert-OOSDscHashtableToString -Hashtable $item
+            $str += "}"
+        }
+        elseif ($Array[$i] -is [Microsoft.Management.Infrastructure.CimInstance])
+        {
+            $str += Convert-OOSDscCIMInstanceToString -CIMInstance $item
+        }
+        else
+        {
+            $str += $item
+        }
+
+        if ($i -lt ($Array.Count - 1))
+        {
+            $str += ","
+        }
+    }
+    $str += ")"
+
+    return $str
+}
+
+<#
+.SYNOPSIS
+
+This cmdlet converts a CIMInstance into a String
+
+#>
+function Convert-OOSDscCIMInstanceToString
+{
+    param
+    (
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance]
+        $CIMInstance
+    )
+
+    $str = "{"
+    foreach ($prop in $CIMInstance.CimInstanceProperties)
+    {
+        if ($str -notmatch "{$")
+        {
+            $str += "; "
+        }
+        $str += "$($prop.Name)=$($prop.Value)"
+    }
+    $str += "}"
+
+    return $str
+}
+
+<#
+.SYNOPSIS
+
 This cmdlet determines the version number of Office Web Apps that is installed locally
 
 #>
@@ -215,7 +328,7 @@ function Test-OosDscParameterState() {
         -and ($DesiredValues.GetType().Name -ne "CimInstance") `
         -and ($DesiredValues.GetType().Name -ne "PSBoundParametersDictionary"))
     {
-        throw ("Property 'DesiredValues' in Test-SPDscParameterState must be either a " + `
+        throw ("Property 'DesiredValues' in Test-OOSDscParameterState must be either a " + `
                "Hashtable or CimInstance. Type detected was $($DesiredValues.GetType().Name)")
     }
 
@@ -248,7 +361,7 @@ function Test-OosDscParameterState() {
                 }
                 else
                 {
-                    $CheckDesiredValue = Test-SPDSCObjectHasProperty $DesiredValues $_
+                    $CheckDesiredValue = Test-OOSDscObjectHasProperty $DesiredValues $_
                 }
 
                 if ($CheckDesiredValue)
@@ -337,7 +450,7 @@ function Test-OosDscParameterState() {
                                 Write-Verbose -Message ("Unable to compare property $fieldName " + `
                                                         "as the type ($($desiredType.Name)) is " + `
                                                         "not handled by the " + `
-                                                        "Test-SPDscParameterState cmdlet")
+                                                        "Test-OOSDscParameterState cmdlet")
                                 $returnValue = $false
                             }
                         }
@@ -347,6 +460,37 @@ function Test-OosDscParameterState() {
         }
     }
     return $returnValue
+}
+
+<#
+.SYNOPSIS
+
+This method is used to check if an object has a specific property
+
+#>
+function Test-OOSDscObjectHasProperty
+{
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [Parameter(Mandatory = $true, Position = 1)]
+        [Object]
+        $Object,
+
+        [Parameter(Mandatory = $true, Position = 2)]
+        [String]
+        $PropertyName
+    )
+
+    if (([bool]($Object.PSobject.Properties.name -contains $PropertyName)) -eq $true)
+    {
+        if ($null -ne $Object.$PropertyName)
+        {
+            return $true
+        }
+    }
+    return $false
 }
 
 Export-ModuleMember -Function *

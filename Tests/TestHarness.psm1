@@ -24,7 +24,7 @@ function Invoke-TestHarness
     if ($IgnoreCodeCoverage.IsPresent -eq $false)
     {
         Get-ChildItem -Path "$repoDir\modules\OfficeOnlineServerDsc\DSCResources\**\*.psm1" -Recurse | ForEach-Object {
-            if ($_.FullName -notlike '*\DSCResource.Tests\*') 
+            if ($_.FullName -notlike '*\DSCResource.Tests\*')
             {
                 $testCoverageFiles += $_.FullName
             }
@@ -32,7 +32,7 @@ function Invoke-TestHarness
     }
 
     $testResultSettings = @{ }
-    if ([String]::IsNullOrEmpty($TestResultsFile) -eq $false) 
+    if ([String]::IsNullOrEmpty($TestResultsFile) -eq $false)
     {
         $testResultSettings.Add('OutputFormat', 'NUnitXml' )
         $testResultSettings.Add('OutputFile', $TestResultsFile)
@@ -55,13 +55,13 @@ function Invoke-TestHarness
                               -ChildPath "\Tests\Unit\Stubs\$_\OfficeWebApps.psm1"
         $testsToRun += @(@{
             'Path' = (Join-Path -Path $repoDir -ChildPath "\Tests\Unit")
-            'Parameters' = @{ 
+            'Parameters' = @{
                 'WACCmdletModule' = $stubPath
             }
         })
     }
 
-    # Integration Tests (not run in appveyor due to time/reboots needed to install SharePoint)
+    # Integration Tests (not run in appveyor due to time/reboots needed to install OfficeOnlineServer)
     #$integrationTestsPath = Join-Path -Path $repoDir -ChildPath 'Tests\Integration'
     #$testsToRun += @( (Get-ChildItem -Path $integrationTestsPath -Filter '*.Tests.ps1').FullName )
 

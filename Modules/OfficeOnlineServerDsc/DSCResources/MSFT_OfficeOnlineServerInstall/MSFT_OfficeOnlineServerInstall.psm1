@@ -236,9 +236,12 @@ function Test-TargetResource
     }
 
     Write-Verbose -Message "Testing for installation of Office Online Server"
-    $result = Get-TargetResource @PSBoundParameters
+    $CurrentValues = Get-TargetResource @PSBoundParameters
 
-    return ($result.Ensure -eq $Ensure)
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
+
+    return ($CurrentValues.Ensure -eq $Ensure)
 }
 
 Export-ModuleMember -Function *-TargetResource

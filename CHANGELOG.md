@@ -11,6 +11,11 @@
 * OfficeOnlineServerInstall
   * Updated error code checks to force reboot;
   * Added check for CDROM to prevent issues with block file check;
+* OfficeOnlineServerInstallLanguagePack
+  * Added Contextual Help information
+  * Added check for CDROM to prevent issues with block file check;
+* OfficeOnlineServerProductUpdate
+  * New resource
 
 ## 1.4.0.0
 
