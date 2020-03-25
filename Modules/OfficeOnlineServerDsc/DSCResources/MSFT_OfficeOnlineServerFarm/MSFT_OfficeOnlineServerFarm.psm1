@@ -735,14 +735,17 @@ function Test-TargetResource
     Confirm-OosDscEnvironmentVariables
 
     # Check if server is continuing after a patch install reboot
-    $key = Get-Item $OOSDscRegKey
-    $state = $key.GetValue("State")
-
-    if ($state -eq "Patching")
+    if (Test-Path -Path $OOSDscRegKey)
     {
-        Write-Verbose -Message "Server continuing after a patch reboot. Farm creation not required."
-        Write-Verbose -Message "Returning True to prevent issues."
-        return $true
+        $key = Get-Item -Path $OOSDscRegKey
+        $state = $key.GetValue("State")
+
+        if ($state -eq "Patching")
+        {
+            Write-Verbose -Message "Server continuing after a patch reboot. Farm creation not required."
+            Write-Verbose -Message "Returning True to prevent issues."
+            return $true
+        }
     }
 
     Test-OosDscV16Support -Parameters $PSBoundParameters

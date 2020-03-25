@@ -90,9 +90,13 @@ function Get-TargetResource
 
     Write-Verbose -Message "Get installed OOS version information"
     $OfficeVersionInfoFile = "C:\ProgramData\Microsoft\OfficeWebApps\Data\local\OfficeVersion.inc"
-    if (-not (Test-Path -Path $OfficeVersionInfoFile))
+    if ((Test-Path -Path $OfficeVersionInfoFile) -eq $false)
     {
-        throw "Cannot find file $OfficeVersionInfoFile"
+        $OfficeVersionInfoFile = "C:\Program Files\Microsoft Office Web Apps\AgentManager\OfficeVersion.inc"
+        if ((Test-Path -Path $OfficeVersionInfoFile) -eq $false)
+        {
+            throw "Cannot find file $OfficeVersionInfoFile"
+        }
     }
 
     $OfficeVersionInfo = Get-Content -Path $OfficeVersionInfoFile -Raw
@@ -168,9 +172,13 @@ function Set-TargetResource
     }
 
     $OfficeVersionInfoFile = "C:\ProgramData\Microsoft\OfficeWebApps\Data\local\OfficeVersion.inc"
-    if (-not (Test-Path -Path $OfficeVersionInfoFile))
+    if ((Test-Path -Path $OfficeVersionInfoFile) -eq $false)
     {
-        throw "Cannot find file $OfficeVersionInfoFile. Is Office Online Server installed?"
+        $OfficeVersionInfoFile = "C:\Program Files\Microsoft Office Web Apps\AgentManager\OfficeVersion.inc"
+        if ((Test-Path -Path $OfficeVersionInfoFile) -eq $false)
+        {
+            throw "Cannot find file $OfficeVersionInfoFile. Is Office Online Server installed?"
+        }
     }
 
     Write-Verbose -Message "Checking file status of $SetupFile"
@@ -450,14 +458,17 @@ function Test-TargetResource
     }
 
     # Check if server is continuing after a reboot
-    $key = Get-Item -Path $OOSDscRegKey
-    $state = $key.GetValue("State")
-
-    if ($state -eq "Patching")
+    if (Test-Path -Path $OOSDscRegKey)
     {
-        Write-Verbose -Message "Server continuing after required reboot after patching."
-        Write-Verbose -Message "Returning False."
-        return $false
+        $key = Get-Item -Path $OOSDscRegKey
+        $state = $key.GetValue("State")
+
+        if ($state -eq "Patching")
+        {
+            Write-Verbose -Message "Server continuing after required reboot after patching."
+            Write-Verbose -Message "Returning False."
+            return $false
+        }
     }
 
     $CurrentValues = Get-TargetResource @PSBoundParameters
@@ -489,13 +500,15 @@ function Get-ServerInfo
             $returnval = @{
                 Name = $env:COMPUTERNAME
             }
+
             $OfficeVersionInfoFile = "C:\ProgramData\Microsoft\OfficeWebApps\Data\local\OfficeVersion.inc"
 
-            if (-not (Test-Path -Path $OfficeVersionInfoFile))
+            if ((Test-Path -Path $OfficeVersionInfoFile) -eq $false)
             {
-                [System.Version]$versionInfo = "0.0.0.0"
+                $OfficeVersionInfoFile = "C:\Program Files\Microsoft Office Web Apps\AgentManager\OfficeVersion.inc"
             }
-            else
+
+            if ((Test-Path -Path $OfficeVersionInfoFile) -eq $true)
             {
                 $OfficeVersionInfo = Get-Content -Path $OfficeVersionInfoFile -Raw
                 if ($OfficeVersionInfo -match "RMJ = ([0-9]*)\r\nRMM = ([0-9]*)\r\nRUP = ([0-9]*)\r\nRPR = ([0-9]*)")
@@ -506,6 +519,10 @@ function Get-ServerInfo
                 {
                     [System.Version]$versionInfo = "0.0.0.0"
                 }
+            }
+            else
+            {
+                [System.Version]$versionInfo = "0.0.0.0"
             }
             $returnval.Version = $versionInfo
 

@@ -17,7 +17,7 @@ Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHel
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Script:DSCModuleName `
     -DSCResourceName $Script:DSCResourceName `
-    -TestType Unit 
+    -TestType Unit
 
 try
 {
@@ -142,11 +142,15 @@ try
             }
         }
 
+        Mock -CommandName Test-Path -MockWith {
+            return $false
+        } -ParameterFilter { $_.Path -eq 'HKLM:\SOFTWARE\OOSDsc' }
+
         Describe "OfficeOnlineServerFarm [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
             Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
-            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
             if ($Global:CurrentWACCmdletModule.Contains("15") -eq $true)
             {
@@ -160,7 +164,7 @@ try
                     return [Version]::Parse("16.0.0.0")
                 }
             }
-            
+
 
             Mock -CommandName New-OfficeWebAppsFarm -MockWith { }
             Mock -CommandName Set-OfficeWebAppsFarm -MockWith { }
@@ -171,7 +175,7 @@ try
                     InternalUrl = $internalURL
                 }
 
-                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
                     throw "It does not appear that this machine is part of an Office Online Server Farm."
                 }
 
@@ -191,7 +195,7 @@ try
 
             Context "A correctly configured farm is found locally" {
 
-                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
                     return $mockWebFarm
                 }
 
@@ -211,7 +215,7 @@ try
 
             Context "An incorrectly configured farm is found locally" {
 
-                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
                     return $mockWebFarmFalse
                 }
 
@@ -230,11 +234,11 @@ try
             }
 
             Context "A farm with an incorrect OU exists locally" {
-                
+
                 $mockBadOu = $mockWebFarm
                 $mockBadOu.FarmOu = 'ldap://OU=WrongOU'
 
-                Mock -CommandName Get-OfficeWebAppsFarm -MockWith { 
+                Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
                     return $mockWebFarm
                 }
 
@@ -268,6 +272,38 @@ try
                     It "Throws in the set method" {
                         { Set-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
                     }
+                }
+            }
+
+            Context "Server is returning after a reboot after patching, do nothing" {
+                $testParams = @{
+                    InternalUrl = $internalURL
+                }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                }
+
+                Mock -CommandName Get-Item -MockWith {
+                    $returnval = "test"
+                    $returnval = $returnval | Add-Member -MemberType ScriptMethod `
+                        -Name GetValue `
+                        -Value {
+                            [CmdletBinding()]
+                            param(
+                                [Parameter(Mandatory = $true)]
+                                [System.String]
+                                $Input
+                            )
+
+                            return "Patching"
+                        } -PassThru -Force
+
+                    return $returnval
+                } -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\OOSDsc' }
+
+                It "Returns true from the test method" {
+                    Test-TargetResource @testParams | Should Be $true
                 }
             }
         }
