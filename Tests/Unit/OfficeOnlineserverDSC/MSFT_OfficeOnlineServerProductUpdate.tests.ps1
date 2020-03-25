@@ -3,15 +3,15 @@ param(
     [String] $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
-$Script:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerProductUpdate'
+$Script:DSCModuleName = 'OfficeOnlineServerDsc'
+$Script:DSCResourceName = 'MSFT_OfficeOnlineServerProductUpdate'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
 [String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
 if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
+    (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
 {
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
+    & git.exe @('clone', 'https://github.com/PowerShell/DscResource.Tests.git', (Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
 }
 Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
 $TestEnvironment = Initialize-TestEnvironment `
@@ -30,9 +30,9 @@ try
 
             Context "CU file does not exist" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup_not_exist.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
 
                 Mock -CommandName Test-Path -MockWith {
@@ -48,8 +48,8 @@ try
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -69,10 +69,12 @@ try
 
             Context "OfficeVersion.inc file does not exist" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup_not_exist.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
+
+                $env:COMPUTERNAME = "OOS1"
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -80,7 +82,7 @@ try
 
                 Mock -CommandName Test-Path -MockWith {
                     return $false
-                } -ParameterFilter { $Path -eq "C:\ProgramData\Microsoft\OfficeWebApps\Data\local\OfficeVersion.inc" }
+                } -ParameterFilter { $Path -like "*OfficeVersion.inc" }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $false
@@ -91,8 +93,8 @@ try
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -120,10 +122,11 @@ try
 
             Context "Incorrect info in OfficeVersion.inc file" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup_not_exist.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
+                $env:COMPUTERNAME = "OOS1"
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -138,8 +141,8 @@ try
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -185,9 +188,9 @@ ISBUILDLABMACHINE = 0
             ## Servers not contain current server -> SET Method
             Context "Current server not in Servers variable" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
 
                 $env:COMPUTERNAME = "SERVER_NOT_IN_LIST"
@@ -205,8 +208,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -226,9 +229,9 @@ ISBUILDLABMACHINE = 0
 
             Context "Ensure = Absent" {
                 $testParams = @{
-                    Ensure = "Absent"
+                    Ensure    = "Absent"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
 
                 It "Throw exception in Get method" {
@@ -242,9 +245,9 @@ ISBUILDLABMACHINE = 0
 
             Context "Unknown exit code during install" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -313,7 +316,7 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -332,8 +335,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -373,8 +376,8 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName New-Item -MockWith {}
-                Mock -CommandName New-ItemProperty -MockWith {}
+                Mock -CommandName New-Item -MockWith { }
+                Mock -CommandName New-ItemProperty -MockWith { }
 
                 $global:DSCMachineStatus = 0
                 It "Starts the install from the set method" {
@@ -384,9 +387,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Single server" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -455,7 +458,7 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -474,8 +477,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -515,8 +518,8 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName New-Item -MockWith {}
-                Mock -CommandName New-ItemProperty -MockWith {}
+                Mock -CommandName New-Item -MockWith { }
+                Mock -CommandName New-ItemProperty -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
@@ -536,9 +539,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Master server, last server in farm" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2")
+                    Servers   = @("OOS1", "OOS2")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -546,8 +549,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles     = "All"
+                        Config    = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -601,22 +604,22 @@ ISBUILDLABMACHINE = 0
     "AllowHttpSecureStoreConnections":  false
 }
 "@
-                        NewMaster     = "OOS2"
+                        NewMaster = "OOS2"
                     }
 
                     if ($global:srvCounter -eq 1)
                     {
-                        $returnval.Name          = "OOS1"
-                        $returnval.Machines      = @("OOS1")
+                        $returnval.Name = "OOS1"
+                        $returnval.Machines = @("OOS1")
                         $returnval.MasterMachine = "OOS1"
-                        $returnval.Version       = "16.0.10353.20001"
+                        $returnval.Version = "16.0.10353.20001"
                     }
                     else
                     {
-                        $returnval.Name          = "OOS2"
-                        $returnval.Machines      = @("OOS2")
+                        $returnval.Name = "OOS2"
+                        $returnval.Machines = @("OOS2")
                         $returnval.MasterMachine = "OOS2"
-                        $returnval.Version       = "16.0.10354.20001"
+                        $returnval.Version = "16.0.10354.20001"
                     }
 
                     $global:srvCounter++
@@ -624,7 +627,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -643,8 +646,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -684,8 +687,8 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName New-Item -MockWith {}
-                Mock -CommandName New-ItemProperty -MockWith {}
+                Mock -CommandName New-Item -MockWith { }
+                Mock -CommandName New-ItemProperty -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
@@ -705,9 +708,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Master server, not last server in farm" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2")
+                    Servers   = @("OOS1", "OOS2")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -771,19 +774,19 @@ ISBUILDLABMACHINE = 0
 }
 "@
                         NewMaster     = "OOS2"
-                        Machines      = @("OOS1","OOS2")
+                        Machines      = @("OOS1", "OOS2")
                         MasterMachine = "OOS1"
                     }
 
                     if ($global:srvCounter -eq 1)
                     {
-                        $returnval.Name          = "OOS1"
-                        $returnval.Version       = "16.0.10353.20001"
+                        $returnval.Name = "OOS1"
+                        $returnval.Version = "16.0.10353.20001"
                     }
                     else
                     {
-                        $returnval.Name          = "OOS2"
-                        $returnval.Version       = "16.0.10353.20001"
+                        $returnval.Name = "OOS2"
+                        $returnval.Version = "16.0.10353.20001"
                     }
 
                     $global:srvCounter++
@@ -791,7 +794,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -810,8 +813,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -851,8 +854,8 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName New-Item -MockWith {}
-                Mock -CommandName New-ItemProperty -MockWith {}
+                Mock -CommandName New-Item -MockWith { }
+                Mock -CommandName New-ItemProperty -MockWith { }
 
                 $global:SleepCounter = 0
                 Mock -CommandName Start-Sleep -MockWith {
@@ -907,9 +910,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Master server, resume install as master server. Create new farm." {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1")
+                    Servers   = @("OOS1")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -917,8 +920,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles     = "All"
+                        Config    = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -972,13 +975,13 @@ ISBUILDLABMACHINE = 0
     "AllowHttpSecureStoreConnections":  false
 }
 "@
-                        NewMaster     = "OOS1"
+                        NewMaster = "OOS1"
                     }
 
                     if ($global:srvCounter -eq 1)
                     {
-                        $returnval.Name          = "OOS1"
-                        $returnval.Version       = "16.0.10354.20001"
+                        $returnval.Name = "OOS1"
+                        $returnval.Version = "16.0.10354.20001"
                     }
 
                     $global:srvCounter++
@@ -986,7 +989,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName New-OfficeWebAppsFarm -MockWith {}
+                Mock -CommandName New-OfficeWebAppsFarm -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -1005,28 +1008,28 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            if ($Input -eq "State")
-                            {
-                                return "Patching"
-                            }
-                            else
-                            {
-                                return @"
+                        if ($Input -eq "State")
+                        {
+                            return "Patching"
+                        }
+                        else
+                        {
+                            return @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
     "ExternalURL":  null
 }
 "@
-                            }
-                        } -PassThru -Force
+                        }
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -1060,7 +1063,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName Remove-Item -MockWith {}
+                Mock -CommandName Remove-Item -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"
@@ -1079,9 +1082,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Master server, resume install and join other farm" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2")
+                    Servers   = @("OOS1", "OOS2")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -1089,8 +1092,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles     = "All"
+                        Config    = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -1144,19 +1147,19 @@ ISBUILDLABMACHINE = 0
     "AllowHttpSecureStoreConnections":  false
 }
 "@
-                        NewMaster     = "OOS2"
+                        NewMaster = "OOS2"
                     }
 
                     if ($global:srvCounter -eq 1)
                     {
-                        $returnval.Name          = "OOS1"
-                        $returnval.Version       = "16.0.10354.20001"
+                        $returnval.Name = "OOS1"
+                        $returnval.Version = "16.0.10354.20001"
                     }
                     else
                     {
-                        $returnval.Name          = "OOS2"
-                        $returnval.Version       = "16.0.10354.20001"
-                        $returnval.Machines      = @("OOS2")
+                        $returnval.Name = "OOS2"
+                        $returnval.Version = "16.0.10354.20001"
+                        $returnval.Machines = @("OOS2")
                         $returnval.MasterMachine = "OOS2"
                     }
 
@@ -1182,22 +1185,22 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            if ($Input -eq "State")
-                            {
-                                return "Patching"
-                            }
-                            else
-                            {
-                                return "All"
-                            }
-                        } -PassThru -Force
+                        if ($Input -eq "State")
+                        {
+                            return "Patching"
+                        }
+                        else
+                        {
+                            return "All"
+                        }
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -1231,9 +1234,9 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName New-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName New-OfficeWebAppsMachine -MockWith { }
 
-                Mock -CommandName Remove-Item -MockWith {}
+                Mock -CommandName Remove-Item -MockWith { }
 
                 Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
                     if ($global:SleepCounter -lt 25)
@@ -1279,9 +1282,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Not Master server, first patched server, create new farm" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2")
+                    Servers   = @("OOS1", "OOS2")
                 }
 
                 $env:COMPUTERNAME = "OOS2"
@@ -1345,19 +1348,19 @@ ISBUILDLABMACHINE = 0
 }
 "@
                         NewMaster     = $null
-                        Machines      = @("OOS1","OOS2")
+                        Machines      = @("OOS1", "OOS2")
                         MasterMachine = "OOS1"
                     }
 
                     if ($global:srvCounter -eq 1)
                     {
-                        $returnval.Name          = "OOS1"
-                        $returnval.Version       = "16.0.10353.20001"
+                        $returnval.Name = "OOS1"
+                        $returnval.Version = "16.0.10353.20001"
                     }
                     else
                     {
-                        $returnval.Name          = "OOS2"
-                        $returnval.Version       = "16.0.10353.20001"
+                        $returnval.Name = "OOS2"
+                        $returnval.Version = "16.0.10353.20001"
                     }
 
                     $global:srvCounter++
@@ -1365,7 +1368,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -1384,8 +1387,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -1425,8 +1428,8 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName New-Item -MockWith {}
-                Mock -CommandName New-ItemProperty -MockWith {}
+                Mock -CommandName New-Item -MockWith { }
+                Mock -CommandName New-ItemProperty -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
@@ -1447,9 +1450,9 @@ ISBUILDLABMACHINE = 0
             ### CU Is not installed: Not Master server, not first patched server -> Install and join other master server
             Context "CU is not installed, but should be - Not Master server, second patched server, join new farm" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2","OOS3")
+                    Servers   = @("OOS1", "OOS2", "OOS3")
                 }
 
                 $env:COMPUTERNAME = "OOS2"
@@ -1457,8 +1460,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles  = "All"
+                        Config = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -1516,26 +1519,29 @@ ISBUILDLABMACHINE = 0
 
                     switch ($global:srvCounter)
                     {
-                        1 {
-                            $returnval.Name          = "OOS1"
-                            $returnval.Version       = "16.0.10353.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        1
+                        {
+                            $returnval.Name = "OOS1"
+                            $returnval.Version = "16.0.10353.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        2 {
-                            $returnval.Name          = "OOS2"
-                            $returnval.Version       = "16.0.10353.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        2
+                        {
+                            $returnval.Name = "OOS2"
+                            $returnval.Version = "16.0.10353.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        3 {
-                            $returnval.Name          = "OOS3"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = @("OOS3")
+                        3
+                        {
+                            $returnval.Name = "OOS3"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = @("OOS3")
                             $returnval.MasterMachine = "OOS3"
-                            $returnval.NewMaster     = "OOS3"
+                            $returnval.NewMaster = "OOS3"
                         }
                     }
 
@@ -1544,7 +1550,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName Remove-OfficeWebAppsMachine -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -1563,8 +1569,8 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            return ""
-                        } -PassThru -Force
+                        return ""
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -1604,8 +1610,8 @@ ISBUILDLABMACHINE = 0
                     }
                 }
 
-                Mock -CommandName New-Item -MockWith {}
-                Mock -CommandName New-ItemProperty -MockWith {}
+                Mock -CommandName New-Item -MockWith { }
+                Mock -CommandName New-ItemProperty -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Absent"
@@ -1625,9 +1631,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Not Master server, resume install as master server. Create new farm." {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2","OOS3")
+                    Servers   = @("OOS1", "OOS2", "OOS3")
                 }
 
                 $env:COMPUTERNAME = "OOS3"
@@ -1635,8 +1641,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles  = "All"
+                        Config = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -1694,26 +1700,29 @@ ISBUILDLABMACHINE = 0
 
                     switch ($global:srvCounter)
                     {
-                        1 {
-                            $returnval.Name          = "OOS1"
-                            $returnval.Version       = "16.0.10353.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        1
+                        {
+                            $returnval.Name = "OOS1"
+                            $returnval.Version = "16.0.10353.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        2 {
-                            $returnval.Name          = "OOS2"
-                            $returnval.Version       = "16.0.10353.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        2
+                        {
+                            $returnval.Name = "OOS2"
+                            $returnval.Version = "16.0.10353.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        3 {
-                            $returnval.Name          = "OOS3"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = $null
+                        3
+                        {
+                            $returnval.Name = "OOS3"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = $null
                             $returnval.MasterMachine = $null
-                            $returnval.NewMaster     = "OOS3"
+                            $returnval.NewMaster = "OOS3"
                         }
                     }
 
@@ -1722,7 +1731,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName New-OfficeWebAppsFarm -MockWith {}
+                Mock -CommandName New-OfficeWebAppsFarm -MockWith { }
 
                 Mock -CommandName Test-Path -MockWith {
                     return $true
@@ -1741,28 +1750,28 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            if ($Input -eq "State")
-                            {
-                                return "Patching"
-                            }
-                            else
-                            {
-                                return @"
+                        if ($Input -eq "State")
+                        {
+                            return "Patching"
+                        }
+                        else
+                        {
+                            return @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
     "ExternalURL":  null
 }
 "@
-                            }
-                        } -PassThru -Force
+                        }
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -1796,7 +1805,7 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName Remove-Item -MockWith {}
+                Mock -CommandName Remove-Item -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"
@@ -1815,9 +1824,9 @@ ISBUILDLABMACHINE = 0
 
             Context "CU is not installed, but should be - Not Master server, resume install and join other farm" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2","OOS3")
+                    Servers   = @("OOS1", "OOS2", "OOS3")
                 }
 
                 $env:COMPUTERNAME = "OOS2"
@@ -1825,8 +1834,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles  = "All"
+                        Config = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -1884,26 +1893,29 @@ ISBUILDLABMACHINE = 0
 
                     switch ($global:srvCounter)
                     {
-                        1 {
-                            $returnval.Name          = "OOS1"
-                            $returnval.Version       = "16.0.10353.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        1
+                        {
+                            $returnval.Name = "OOS1"
+                            $returnval.Version = "16.0.10353.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        2 {
-                            $returnval.Name          = "OOS2"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = $null
+                        2
+                        {
+                            $returnval.Name = "OOS2"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = $null
                             $returnval.MasterMachine = $null
-                            $returnval.NewMaster     = "OOS3"
+                            $returnval.NewMaster = "OOS3"
                         }
-                        3 {
-                            $returnval.Name          = "OOS3"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = @("OOS3")
+                        3
+                        {
+                            $returnval.Name = "OOS3"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = @("OOS3")
                             $returnval.MasterMachine = "OOS3"
-                            $returnval.NewMaster     = "OOS3"
+                            $returnval.NewMaster = "OOS3"
                         }
                     }
 
@@ -1929,22 +1941,22 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            if ($Input -eq "State")
-                            {
-                                return "Patching"
-                            }
-                            else
-                            {
-                                return "All"
-                            }
-                        } -PassThru -Force
+                        if ($Input -eq "State")
+                        {
+                            return "Patching"
+                        }
+                        else
+                        {
+                            return "All"
+                        }
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -1978,9 +1990,9 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName New-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName New-OfficeWebAppsMachine -MockWith { }
 
-                Mock -CommandName Remove-Item -MockWith {}
+                Mock -CommandName Remove-Item -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"
@@ -2001,9 +2013,9 @@ ISBUILDLABMACHINE = 0
             ### CU Is not installed: No role known -> New server, just install patch
             Context "CU is not installed, but should be - New server, no role known, just install patch" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2")
+                    Servers   = @("OOS1", "OOS2")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -2011,25 +2023,27 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = $null
-                        Config        = $null
+                        Roles  = $null
+                        Config = $null
                     }
 
                     switch ($global:srvCounter)
                     {
-                        1 {
-                            $returnval.Name          = "OOS1"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = $null
+                        1
+                        {
+                            $returnval.Name = "OOS1"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = $null
                             $returnval.MasterMachine = $null
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        2 {
-                            $returnval.Name          = "OOS2"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = $null
+                        2
+                        {
+                            $returnval.Name = "OOS2"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = $null
                             $returnval.MasterMachine = $null
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
                     }
 
@@ -2055,15 +2069,15 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            return $null
-                        } -PassThru -Force
+                        return $null
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -2122,9 +2136,9 @@ ISBUILDLABMACHINE = 0
             ### CU Is installed
             Context "CU is installed and should be" {
                 $testParams = @{
-                    Ensure = "Present"
+                    Ensure    = "Present"
                     SetupFile = "C:\InstallFiles\setup.exe"
-                    Servers = @("OOS1","OOS2")
+                    Servers   = @("OOS1", "OOS2")
                 }
 
                 $env:COMPUTERNAME = "OOS1"
@@ -2132,8 +2146,8 @@ ISBUILDLABMACHINE = 0
                 $global:srvCounter = 1
                 Mock -CommandName Invoke-Command -MockWith {
                     $returnval = @{
-                        Roles         = "All"
-                        Config        = @"
+                        Roles  = "All"
+                        Config = @"
 {
     "FarmOU":  "",
     "InternalURL":  "https://oos.portal.politie.local/",
@@ -2191,19 +2205,21 @@ ISBUILDLABMACHINE = 0
 
                     switch ($global:srvCounter)
                     {
-                        1 {
-                            $returnval.Name          = "OOS1"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        1
+                        {
+                            $returnval.Name = "OOS1"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
-                        2 {
-                            $returnval.Name          = "OOS2"
-                            $returnval.Version       = "16.0.10354.20001"
-                            $returnval.Machines      = @("OOS1","OOS2")
+                        2
+                        {
+                            $returnval.Name = "OOS2"
+                            $returnval.Version = "16.0.10354.20001"
+                            $returnval.Machines = @("OOS1", "OOS2")
                             $returnval.MasterMachine = "OOS1"
-                            $returnval.NewMaster     = "OOS1"
+                            $returnval.NewMaster = "OOS1"
                         }
                     }
 
@@ -2229,15 +2245,15 @@ ISBUILDLABMACHINE = 0
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            return $null
-                        } -PassThru -Force
+                        return $null
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq "HKLM:\SOFTWARE\OOSDsc" }
@@ -2271,9 +2287,9 @@ ISBUILDLABMACHINE = 0
                     return $returnval
                 }
 
-                Mock -CommandName New-OfficeWebAppsMachine -MockWith {}
+                Mock -CommandName New-OfficeWebAppsMachine -MockWith { }
 
-                Mock -CommandName Remove-Item -MockWith {}
+                Mock -CommandName Remove-Item -MockWith { }
 
                 It "Returns that it is not installed from the get method" {
                     (Get-TargetResource @testParams).Ensure | Should Be "Present"

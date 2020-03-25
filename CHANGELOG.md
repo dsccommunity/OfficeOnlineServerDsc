@@ -8,12 +8,20 @@
     * Common Tests - Validate Script Files
     * Common Tests - Relative Path Length
     * Common Tests - Validate Markdown Links
+* OfficeOnlineServerFarm
+  * Added logic to make sure this resource does not interfere with
+    a patch installation after a reboot
 * OfficeOnlineServerInstall
-  * Updated error code checks to force reboot;
-  * Added check for CDROM to prevent issues with block file check;
+  * Updated error code checks to force reboot
+  * Added check for CDROM to prevent issues with block file check
 * OfficeOnlineServerInstallLanguagePack
   * Added Contextual Help information
-  * Added check for CDROM to prevent issues with block file check;
+  * Added check for CDROM to prevent issues with block file check
+* OfficeOnlineServerMachine
+  * Added logic to make sure this resource does not interfere with
+    a patch installation after a reboot
+  * Removed check for MachineToJoin. The resource only needs to check
+    for farm join, especially with the new ProductUpdate resource.
 * OfficeOnlineServerProductUpdate
   * New resource
 

@@ -19,7 +19,7 @@ function Get-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -48,8 +48,8 @@ function Get-TargetResource
     {
         # catch when not a part of the farm and redirect output to returned hash table
         $notInFarmError = "It does not appear that this machine is part of an " + `
-                          "(Office Online)|(Office Web Apps) Server farm\."
-        if($_.toString() -match $notInFarmError)
+            "(Office Online)|(Office Web Apps) Server farm\."
+        if ($_.toString() -match $notInFarmError)
         {
             Write-Verbose -Message $LocalizedData.NotApartOfAFarm
         }
@@ -62,16 +62,16 @@ function Get-TargetResource
     if ($null -eq $officeWebAppsMachine)
     {
         $returnValue = @{
-            Ensure = "Absent"
-            Roles = $null
+            Ensure        = "Absent"
+            Roles         = $null
             MachineToJoin = $null
         }
     }
     else
     {
         $returnValue = @{
-            Ensure = "Present"
-            Roles = [System.String[]]$officeWebAppsMachine.Roles
+            Ensure        = "Present"
+            Roles         = [System.String[]]$officeWebAppsMachine.Roles
             MachineToJoin = [System.String]$officeWebAppsMachine.MasterMachineName
         }
     }
@@ -85,7 +85,7 @@ function Set-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -142,7 +142,7 @@ function Test-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -160,14 +160,17 @@ function Test-TargetResource
     Confirm-OosDscEnvironmentVariables
 
     # Check if server is continuing after a patch install reboot
-    $key = Get-Item $OOSDscRegKey
-    $state = $key.GetValue("State")
-
-    if ($state -eq "Patching")
+    if (Test-Path -Path $OOSDscRegKey)
     {
-        Write-Verbose -Message "Server continuing after a patch reboot. Farm join not required."
-        Write-Verbose -Message "Returning True to prevent issues."
-        return $true
+        $key = Get-Item -Path $OOSDscRegKey
+        $state = $key.GetValue("State")
+
+        if ($state -eq "Patching")
+        {
+            Write-Verbose -Message "Server continuing after a patch reboot. Farm join not required."
+            Write-Verbose -Message "Returning True to prevent issues."
+            return $true
+        }
     }
 
     $CurrentValues = Get-TargetResource -MachineToJoin $MachineToJoin
@@ -189,27 +192,14 @@ function Test-TargetResource
         $roleCompare = Compare-Object -ReferenceObject $CurrentValues.Roles -DifferenceObject $Roles
     }
 
-    if ($MachineToJoin.Contains(".") -eq $true)
-    {
-        $fqdn = $MachineToJoin
-        $computer = $MachineToJoin.Substring(0, $MachineToJoin.IndexOf("."))
-    }
-    else
-    {
-        $domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
-        $fqdn = "$MachineToJoin.$domain"
-        $computer = $MachineToJoin
-    }
-
     if (($CurrentValues.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
-            -and (($CurrentValues.MachineToJoin -eq $fqdn) -or ($CurrentValues.MachineToJoin -eq $computer)) `
             -and ( $null -eq $roleCompare))
     {
         # If present and all value match return true
         return $true
     }
-    elseif(($CurrentValues.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
+    elseif (($CurrentValues.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
     {
         # if absent no need to check all values
         return $true
