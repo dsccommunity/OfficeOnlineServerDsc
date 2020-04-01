@@ -1,16 +1,22 @@
-version: 1.2.0.{build}
+version: 1.5.0.{build}
+
+environment:
+  APPVEYOR_RDP_PASSWORD: 'P@ssw0rd'
+
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
     - git clone https://github.com/PowerShell/DscResource.Tests
 
-    - npm --silent install  
+    - npm --silent install
 
     - ps: |
         $moduleName = 'OfficeOnlineServerDsc'
         $mainModuleFolder = "Modules\$moduleName"
         Import-Module -Name "$env:APPVEYOR_BUILD_FOLDER\DscResource.Tests\AppVeyor.psm1"
         Invoke-AppveyorInstallTask
-        
+
 build: off
 
 test_script:
@@ -26,3 +32,6 @@ after_test:
             -Type 'Wiki' `
             -MainModulePath $mainModuleFolder `
             -ResourceModuleName $moduleName
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
