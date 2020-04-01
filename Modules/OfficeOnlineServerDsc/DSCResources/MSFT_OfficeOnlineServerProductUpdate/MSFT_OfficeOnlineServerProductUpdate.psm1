@@ -4,7 +4,7 @@ function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -133,7 +133,7 @@ function Set-TargetResource
     # Supressing the global variable use to allow passing DSC the reboot message
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -431,7 +431,7 @@ function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -490,7 +490,7 @@ Export-ModuleMember -Function *-TargetResource
 function Get-ServerInfo
 {
     [OutputType([System.Array])]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [System.String[]]
@@ -580,7 +580,7 @@ function Get-ServerInfo
 
 function Set-OOSDscRegKeys
 {
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [System.String]
@@ -617,7 +617,7 @@ function Set-OOSDscRegKeys
 
 function Install-OOSDscPatch
 {
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [System.String]

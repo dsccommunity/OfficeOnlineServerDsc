@@ -2,14 +2,14 @@
     OfficeOnlineServerFarm
 
 # Description
-    
+
     The OfficeOnlineServerFarm resource is used to create a new farm for either
     Office Web Apps 2013 or Office Online Server 2016. It requries that the binaries
     have already been installed, but when this is run it will establish a new farm. This
     means that this resource only needs to be used on the first server in a deployment,
     all other servers should use the OfficeOnlineServerMachine resource to join
     the farm.
-    
+
 .PARAMETER AllowCEIP
     Write - Boolean
     Enables Customer Experience Improvement Program (CEIP) reporting on all servers in the Office Web Apps Server farm
@@ -192,23 +192,23 @@
 
 .PARAMETER AllowOutboundHttp
     Write - Boolean
-    
+
 
 .PARAMETER ExcelUseEffectiveUserName
     Write - Boolean
-    
+
 
 .PARAMETER S2SCertificateName
     Write - String
-    
+
 
 .PARAMETER RemovePersonalInformationFromLogs
     Write - Boolean
-    
+
 
 .PARAMETER PicturePasteDisabled
     Write - Boolean
-    
+
 
 
 .EXAMPLE
@@ -217,9 +217,9 @@
     a farm that has editing enabled.
 
 
-    Configuration Example 
+    Configuration Example
     {
-        param()
+        Param()
 
         Import-DscResource -ModuleName OfficeOnlineServerDsc
 

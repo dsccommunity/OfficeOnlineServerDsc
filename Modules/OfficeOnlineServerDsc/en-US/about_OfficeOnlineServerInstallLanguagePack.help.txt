@@ -31,7 +31,7 @@
 
     Configuration Example
     {
-        param()
+        Param()
 
         Import-DscResource -ModuleName OfficeOnlineServerDsc
 
