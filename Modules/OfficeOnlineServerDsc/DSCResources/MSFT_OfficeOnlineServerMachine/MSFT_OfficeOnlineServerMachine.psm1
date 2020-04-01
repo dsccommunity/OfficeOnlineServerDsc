@@ -1,3 +1,5 @@
+$script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
+
 data LocalizedData
 {
     # culture="en-US"
@@ -17,7 +19,7 @@ function Get-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -46,8 +48,8 @@ function Get-TargetResource
     {
         # catch when not a part of the farm and redirect output to returned hash table
         $notInFarmError = "It does not appear that this machine is part of an " + `
-                          "(Office Online)|(Office Web Apps) Server farm\."
-        if($_.toString() -match $notInFarmError)
+            "(Office Online)|(Office Web Apps) Server farm\."
+        if ($_.toString() -match $notInFarmError)
         {
             Write-Verbose -Message $LocalizedData.NotApartOfAFarm
         }
@@ -60,16 +62,16 @@ function Get-TargetResource
     if ($null -eq $officeWebAppsMachine)
     {
         $returnValue = @{
-            Ensure = "Absent"
-            Roles = $null
+            Ensure        = "Absent"
+            Roles         = $null
             MachineToJoin = $null
         }
     }
     else
     {
         $returnValue = @{
-            Ensure = "Present"
-            Roles = [System.String[]]$officeWebAppsMachine.Roles
+            Ensure        = "Present"
+            Roles         = [System.String[]]$officeWebAppsMachine.Roles
             MachineToJoin = [System.String]$officeWebAppsMachine.MasterMachineName
         }
     }
@@ -83,7 +85,7 @@ function Set-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -127,7 +129,7 @@ function Set-TargetResource
             $Roles = @("All")
         }
 
-        New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
+        $null = New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
 
         Write-Verbose -Message $LocalizedData.SetAppMachine
     }
@@ -140,7 +142,7 @@ function Test-TargetResource
     param
     (
         [Parameter()]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure = "Present",
 
@@ -157,43 +159,47 @@ function Test-TargetResource
 
     Confirm-OosDscEnvironmentVariables
 
-    $results = Get-TargetResource -MachineToJoin $MachineToJoin
+    # Check if server is continuing after a patch install reboot
+    if (Test-Path -Path $OOSDscRegKey)
+    {
+        $key = Get-Item -Path $OOSDscRegKey
+        $state = $key.GetValue("State")
+
+        if ($state -eq "Patching")
+        {
+            Write-Verbose -Message "Server continuing after a patch reboot. Farm join not required."
+            Write-Verbose -Message "Returning True to prevent issues."
+            return $true
+        }
+    }
+
+    $CurrentValues = Get-TargetResource -MachineToJoin $MachineToJoin
+
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
     if ($null -eq $Roles)
     {
         $Roles = @("All")
     }
 
-    if ($null -eq $results.Roles)
+    if ($null -eq $CurrentValues.Roles)
     {
         $roleCompare = $null
     }
     else
     {
-        $roleCompare = Compare-Object -ReferenceObject $results.Roles -DifferenceObject $Roles
+        $roleCompare = Compare-Object -ReferenceObject $CurrentValues.Roles -DifferenceObject $Roles
     }
 
-    if ($MachineToJoin.Contains(".") -eq $true)
-    {
-        $fqdn = $MachineToJoin
-        $computer = $MachineToJoin.Substring(0, $MachineToJoin.IndexOf("."))
-    }
-    else
-    {
-        $domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
-        $fqdn = "$MachineToJoin.$domain"
-        $computer = $MachineToJoin
-    }
-
-    if (($results.Ensure -eq "Present") `
+    if (($CurrentValues.Ensure -eq "Present") `
             -and ($Ensure -eq "Present") `
-            -and (($results.MachineToJoin -eq $fqdn) -or ($results.MachineToJoin -eq $computer)) `
             -and ( $null -eq $roleCompare))
     {
         # If present and all value match return true
         return $true
     }
-    elseif(($results.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
+    elseif (($CurrentValues.Ensure -eq "Absent") -and ($Ensure -eq "Absent"))
     {
         # if absent no need to check all values
         return $true

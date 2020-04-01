@@ -9,9 +9,9 @@ function Confirm-OosDscEnvironmentVariables
 {
     [CmdletBinding()]
     [OutputType()]
-    param()
+    Param()
 
-    $envPSMod = [Environment]::GetEnvironmentVariable("PSModulePath","Machine") -split ";"
+    $envPSMod = [Environment]::GetEnvironmentVariable("PSModulePath", "Machine") -split ";"
     $curPsMod = $env:PSModulePath -split ";"
     foreach ($path in $envPSMod)
     {
@@ -25,6 +25,119 @@ function Confirm-OosDscEnvironmentVariables
 <#
 .SYNOPSIS
 
+This cmdlet converts a Hashtable into a String
+
+#>
+function Convert-OosDscHashtableToString
+{
+    Param
+    (
+        [Parameter()]
+        [System.Collections.Hashtable]
+        $Hashtable
+    )
+    $values = @()
+    foreach ($pair in $Hashtable.GetEnumerator())
+    {
+        if ($pair.Value -is [System.Array])
+        {
+            $str = "$($pair.Key)=$(Convert-OOSDscArrayToString -Array $pair.Value)"
+        }
+        elseif ($pair.Value -is [System.Collections.Hashtable])
+        {
+            $str = "$($pair.Key)={$(Convert-OOSDscHashtableToString -Hashtable $pair.Value)}"
+        }
+        elseif ($pair.Value -is [Microsoft.Management.Infrastructure.CimInstance])
+        {
+            $str = "$($pair.Key)=$(Convert-OOSDscCIMInstanceToString -CIMInstance $pair.Value)"
+        }
+        else
+        {
+            $str = "$($pair.Key)=$($pair.Value)"
+        }
+        $values += $str
+    }
+
+    [array]::Sort($values)
+    return ($values -join "; ")
+}
+
+<#
+.SYNOPSIS
+
+This cmdlet converts an Array into a String
+
+#>
+function Convert-OOSDscArrayToString
+{
+    Param
+    (
+        [Parameter()]
+        [System.Array]
+        $Array
+    )
+
+    $str = "("
+    for ($i = 0; $i -lt $Array.Count; $i++)
+    {
+        $item = $Array[$i]
+        if ($item -is [System.Collections.Hashtable])
+        {
+            $str += "{"
+            $str += Convert-OOSDscHashtableToString -Hashtable $item
+            $str += "}"
+        }
+        elseif ($Array[$i] -is [Microsoft.Management.Infrastructure.CimInstance])
+        {
+            $str += Convert-OOSDscCIMInstanceToString -CIMInstance $item
+        }
+        else
+        {
+            $str += $item
+        }
+
+        if ($i -lt ($Array.Count - 1))
+        {
+            $str += ","
+        }
+    }
+    $str += ")"
+
+    return $str
+}
+
+<#
+.SYNOPSIS
+
+This cmdlet converts a CIMInstance into a String
+
+#>
+function Convert-OOSDscCIMInstanceToString
+{
+    Param
+    (
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance]
+        $CIMInstance
+    )
+
+    $str = "{"
+    foreach ($prop in $CIMInstance.CimInstanceProperties)
+    {
+        if ($str -notmatch "{$")
+        {
+            $str += "; "
+        }
+        $str += "$($prop.Name)=$($prop.Value)"
+    }
+    $str += "}"
+
+    return $str
+}
+
+<#
+.SYNOPSIS
+
 This cmdlet determines the version number of Office Web Apps that is installed locally
 
 #>
@@ -32,16 +145,16 @@ function Get-OosDscInstalledProductVersion
 {
     [CmdletBinding()]
     [OutputType([Version])]
-    param()
+    Param()
 
     return Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | `
         Select-Object DisplayName, DisplayVersion | `
         Where-Object {
-            $_.DisplayName -eq "Microsoft Office Web Apps Server 2013" -or `
+        $_.DisplayName -eq "Microsoft Office Web Apps Server 2013" -or `
             $_.DisplayName -eq "Microsoft Office Online Server"
-        } | ForEach-Object -Process {
-            return [Version]::Parse($_.DisplayVersion)
-        } | Select-Object -First 1
+    } | ForEach-Object -Process {
+        return [Version]::Parse($_.DisplayVersion)
+    } | Select-Object -First 1
 }
 
 
@@ -59,8 +172,9 @@ function Remove-OosDscZoneMap
 {
     [CmdletBinding()]
     [OutputType()]
-    param(
-        [parameter(Mandatory = $true)]
+    Param
+    (
+        [Parameter(Mandatory = $true)]
         [string]
         $ServerName
     )
@@ -96,8 +210,9 @@ function Set-OosDscZoneMap
 {
     [CmdletBinding()]
     [OutputType()]
-    param(
-        [parameter(Mandatory = $true)]
+    Param
+    (
+        [Parameter(Mandatory = $true)]
         [string]
         $ServerName
     )
@@ -145,13 +260,13 @@ The name of the OU that the farm currently is in
 function Test-OosDscFarmOu
 {
     [cmdletbinding()]
-    param
+    Param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [string]
         $DesiredOU,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [object]
         $ExistingOU
     )
@@ -159,7 +274,8 @@ function Test-OosDscFarmOu
     $adsi = [adsisearcher]'(objectCategory=organizationalUnit)'
     $adsi.Filter = "name=$DesiredOU"
     $ou = $adsi.FindAll()
-    if($ou.path){
+    if ($ou.path)
+    {
         $searchRoot = "," + $adsi.SearchRoot.Path -replace 'LDAP://'
         $ldapResult = $ou.path -replace $searchRoot
         Write-Verbose -Message "LDAP search result: $ldapResult"
@@ -191,20 +307,21 @@ This is a list of which properties in the desired values list should be checkked
 If this is empty then all values in DesiredValues are checked.
 
 #>
-function Test-OosDscParameterState() {
+function Test-OosDscParameterState()
+{
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param
+    Param
     (
-        [parameter(Mandatory = $true, Position=1)]
+        [Parameter(Mandatory = $true, Position = 1)]
         [HashTable]
         $CurrentValues,
 
-        [parameter(Mandatory = $true, Position=2)]
+        [Parameter(Mandatory = $true, Position = 2)]
         [Object]
         $DesiredValues,
 
-        [parameter(Mandatory = $false, Position=3)]
+        [Parameter(Mandatory = $false, Position = 3)]
         [Array]
         $ValuesToCheck
     )
@@ -212,17 +329,17 @@ function Test-OosDscParameterState() {
     $returnValue = $true
 
     if (($DesiredValues.GetType().Name -ne "HashTable") `
-        -and ($DesiredValues.GetType().Name -ne "CimInstance") `
-        -and ($DesiredValues.GetType().Name -ne "PSBoundParametersDictionary"))
+            -and ($DesiredValues.GetType().Name -ne "CimInstance") `
+            -and ($DesiredValues.GetType().Name -ne "PSBoundParametersDictionary"))
     {
-        throw ("Property 'DesiredValues' in Test-SPDscParameterState must be either a " + `
-               "Hashtable or CimInstance. Type detected was $($DesiredValues.GetType().Name)")
+        throw ("Property 'DesiredValues' in Test-OOSDscParameterState must be either a " + `
+                "Hashtable or CimInstance. Type detected was $($DesiredValues.GetType().Name)")
     }
 
     if (($DesiredValues.GetType().Name -eq "CimInstance") -and ($null -eq $ValuesToCheck))
     {
         throw ("If 'DesiredValues' is a Hashtable then property 'ValuesToCheck' must contain " + `
-               "a value")
+                "a value")
     }
 
     if (($null -eq $ValuesToCheck) -or ($ValuesToCheck.Count -lt 1))
@@ -238,17 +355,17 @@ function Test-OosDscParameterState() {
         if ($_ -ne "Verbose")
         {
             if (($CurrentValues.ContainsKey($_) -eq $false) `
-            -or ($CurrentValues.$_ -ne $DesiredValues.$_) `
-            -or (($DesiredValues.ContainsKey($_) -eq $true) -and ($DesiredValues.$_.GetType().IsArray)))
+                    -or ($CurrentValues.$_ -ne $DesiredValues.$_) `
+                    -or (($DesiredValues.ContainsKey($_) -eq $true) -and ($DesiredValues.$_.GetType().IsArray)))
             {
                 if ($DesiredValues.GetType().Name -eq "HashTable" -or `
-                    $DesiredValues.GetType().Name -eq "PSBoundParametersDictionary")
+                        $DesiredValues.GetType().Name -eq "PSBoundParametersDictionary")
                 {
                     $CheckDesiredValue = $DesiredValues.ContainsKey($_)
                 }
                 else
                 {
-                    $CheckDesiredValue = Test-SPDSCObjectHasProperty $DesiredValues $_
+                    $CheckDesiredValue = Test-OOSDscObjectHasProperty $DesiredValues $_
                 }
 
                 if ($CheckDesiredValue)
@@ -258,25 +375,25 @@ function Test-OosDscParameterState() {
                     if ($desiredType.IsArray -eq $true)
                     {
                         if (($CurrentValues.ContainsKey($fieldName) -eq $false) `
-                        -or ($null -eq $CurrentValues.$fieldName))
+                                -or ($null -eq $CurrentValues.$fieldName))
                         {
                             Write-Verbose -Message ("Expected to find an array value for " + `
-                                                    "property $fieldName in the current " + `
-                                                    "values, but it was either not present or " + `
-                                                    "was null. This has caused the test method " + `
-                                                    "to return false.")
+                                    "property $fieldName in the current " + `
+                                    "values, but it was either not present or " + `
+                                    "was null. This has caused the test method " + `
+                                    "to return false.")
                             $returnValue = $false
                         }
                         else
                         {
                             $arrayCompare = Compare-Object -ReferenceObject $CurrentValues.$fieldName `
-                                                           -DifferenceObject $DesiredValues.$fieldName
+                                -DifferenceObject $DesiredValues.$fieldName
                             if ($null -ne $arrayCompare)
                             {
                                 Write-Verbose -Message ("Found an array for property $fieldName " + `
-                                                        "in the current values, but this array " + `
-                                                        "does not match the desired state. " + `
-                                                        "Details of the changes are below.")
+                                        "in the current values, but this array " + `
+                                        "does not match the desired state. " + `
+                                        "Details of the changes are below.")
                                 $arrayCompare | ForEach-Object -Process {
                                     Write-Verbose -Message "$($_.InputObject) - $($_.SideIndicator)"
                                 }
@@ -288,56 +405,63 @@ function Test-OosDscParameterState() {
                     {
                         switch ($desiredType.Name)
                         {
-                            "String" {
+                            "String"
+                            {
                                 if ([string]::IsNullOrEmpty($CurrentValues.$fieldName) `
-                                -and [string]::IsNullOrEmpty($DesiredValues.$fieldName))
-                                {}
+                                        -and [string]::IsNullOrEmpty($DesiredValues.$fieldName))
+                                {
+                                }
                                 else
                                 {
                                     Write-Verbose -Message ("String value for property " + `
-                                                            "$fieldName does not match. " + `
-                                                            "Current state is " + `
-                                                            "'$($CurrentValues.$fieldName)' " + `
-                                                            "and desired state is " + `
-                                                            "'$($DesiredValues.$fieldName)'")
+                                            "$fieldName does not match. " + `
+                                            "Current state is " + `
+                                            "'$($CurrentValues.$fieldName)' " + `
+                                            "and desired state is " + `
+                                            "'$($DesiredValues.$fieldName)'")
                                     $returnValue = $false
                                 }
                             }
-                            "Int32" {
+                            "Int32"
+                            {
                                 if (($DesiredValues.$fieldName -eq 0) `
-                                -and ($null -eq $CurrentValues.$fieldName))
-                                {}
+                                        -and ($null -eq $CurrentValues.$fieldName))
+                                {
+                                }
                                 else
                                 {
                                     Write-Verbose -Message ("Int32 value for property " + `
-                                                            "$fieldName does not match. " + `
-                                                            "Current state is " + `
-                                                            "'$($CurrentValues.$fieldName)' " + `
-                                                            "and desired state is " + `
-                                                            "'$($DesiredValues.$fieldName)'")
+                                            "$fieldName does not match. " + `
+                                            "Current state is " + `
+                                            "'$($CurrentValues.$fieldName)' " + `
+                                            "and desired state is " + `
+                                            "'$($DesiredValues.$fieldName)'")
                                     $returnValue = $false
                                 }
                             }
-                            "Int16" {
+                            "Int16"
+                            {
                                 if (($DesiredValues.$fieldName -eq 0) `
-                                -and ($null -eq $CurrentValues.$fieldName))
-                                {}
+                                        -and ($null -eq $CurrentValues.$fieldName))
+                                {
+                                }
                                 else
                                 {
                                     Write-Verbose -Message ("Int16 value for property " + `
-                                                            "$fieldName does not match. " + `
-                                                            "Current state is " + `
-                                                            "'$($CurrentValues.$fieldName)' " + `
-                                                            "and desired state is " + `
-                                                            "'$($DesiredValues.$fieldName)'")
+                                            "$fieldName does not match. " + `
+                                            "Current state is " + `
+                                            "'$($CurrentValues.$fieldName)' " + `
+                                            "and desired state is " + `
+                                            "'$($DesiredValues.$fieldName)'")
                                     $returnValue = $false
                                 }
                             }
-                            default {
+                            default
+                            {
                                 Write-Verbose -Message ("Unable to compare property $fieldName " + `
-                                                        "as the type ($($desiredType.Name)) is " + `
-                                                        "not handled by the " + `
-                                                        "Test-SPDscParameterState cmdlet")
+                                        "as the type ($($desiredType.Name)) is " + `
+                                        "not handled by the " + `
+                                        "Test-OOSDscParameterState cmdlet")
                                 $returnValue = $false
                             }
                         }
@@ -347,6 +471,37 @@ function Test-OosDscParameterState() {
         }
     }
     return $returnValue
+}
+
+<#
+.SYNOPSIS
+
+This method is used to check if an object has a specific property
+
+#>
+function Test-OOSDscObjectHasProperty
+{
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    Param
+    (
+        [Parameter(Mandatory = $true, Position = 1)]
+        [Object]
+        $Object,
+
+        [Parameter(Mandatory = $true, Position = 2)]
+        [String]
+        $PropertyName
+    )
+
+    if (([bool]($Object.PSobject.Properties.name -contains $PropertyName)) -eq $true)
+    {
+        if ($null -ne $Object.$PropertyName)
+        {
+            return $true
+        }
+    }
+    return $false
 }
 
 Export-ModuleMember -Function *

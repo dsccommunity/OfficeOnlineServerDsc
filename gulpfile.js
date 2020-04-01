@@ -4,10 +4,10 @@ var through2 = require("through2");
 var markdownlint = require("markdownlint");
 
 gulp.task("test-mdsyntax", function task() {
-  return gulp.src("Modules/SharePointDsc/DSCResources/**/*.md", { "read": false })
+  return gulp.src("Modules/OfficeOnlineServerDsc/DSCResources/**/*.md", { "read": false })
     .pipe(through2.obj(function obj(file, enc, next) {
       markdownlint(
-        { 
+        {
           "files": [ file.path ],
           "config": require("./.markdownlint.json")
         },

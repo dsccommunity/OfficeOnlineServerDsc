@@ -3,15 +3,15 @@
     This example shows how to install the binaries for office online server to the local server.
 #>
 
-    Configuration Example 
+Configuration Example
+{
+    Param()
+
+    Import-DscResource -ModuleName OfficeOnlineServerDsc
+
+    OfficeOnlineServerInstall InstallBinaries
     {
-        param()
-
-        Import-DscResource -ModuleName OfficeOnlineServerDsc
-
-        OfficeOnlineServerInstall InstallBinaries
-        {
-            Ensure = "Present"
-            Path = "C:\Installer\setup.exe"
-        }
+        Ensure = "Present"
+        Path   = "C:\Installer\setup.exe"
     }
+}
