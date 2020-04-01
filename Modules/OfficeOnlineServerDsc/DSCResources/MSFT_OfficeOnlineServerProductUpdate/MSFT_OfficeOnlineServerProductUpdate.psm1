@@ -100,6 +100,7 @@ function Get-TargetResource
     }
 
     $OfficeVersionInfo = Get-Content -Path $OfficeVersionInfoFile -Raw
+    Write-Verbose -Verbose $OfficeVersionInfo
     if ($OfficeVersionInfo -match "RMJ = ([0-9]*)\r\nRMM = ([0-9]*)\r\nRUP = ([0-9]*)\r\nRPR = ([0-9]*)")
     {
         [System.Version]$versionInfo = $matches[1] + "." + $matches[2] + "." + $matches[3] + "." + $matches[4]
