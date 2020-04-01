@@ -8,7 +8,7 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure,
 
@@ -47,7 +47,7 @@ function Get-TargetResource
     if ($null -ne $zone)
     {
         throw ("Setup file is blocked! Please use Unblock-File to unblock the file " + `
-               "before continuing.")
+                "before continuing.")
     }
 
     Write-Verbose -Message "Update is for the $Language language"
@@ -62,18 +62,18 @@ function Get-TargetResource
     {
         Write-Verbose -Message "Language Pack $Language is found"
         return @{
-            BinaryDir         = $BinaryDir
-            Language          = $Language
-            Ensure            = "Present"
+            BinaryDir = $BinaryDir
+            Language  = $Language
+            Ensure    = "Present"
         }
     }
     else
     {
         Write-Verbose -Message "Language Pack $Language is NOT found"
         return @{
-            BinaryDir         = $BinaryDir
-            Language          = $Language
-            Ensure            = "Absent"
+            BinaryDir = $BinaryDir
+            Language  = $Language
+            Ensure    = "Absent"
         }
     }
 }
@@ -87,7 +87,7 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure,
 
@@ -105,7 +105,7 @@ function Set-TargetResource
     if ($Ensure -eq "Absent")
     {
         throw [Exception] ("OfficeOnlineServerDsc does not support uninstalling " + `
-                           "Language Packs. Please remove this manually.")
+                "Language Packs. Please remove this manually.")
     }
 
     # Check if Binary folder exists
@@ -160,7 +160,7 @@ function Set-TargetResource
         }
         if ($null -ne $zone)
         {
-            throw ("PrerequisitesInstaller is blocked! Please use 'Unblock-File -Path " + `
+            throw ("Setup file is blocked! Please use 'Unblock-File -Path " + `
                     "$setupExe' to unblock the file before continuing.")
         }
         Write-Verbose -Message "File not blocked, continuing."
@@ -182,9 +182,9 @@ function Set-TargetResource
 
     Write-Verbose -Message "Beginning installation of the Office Online Server Language Pack"
     $installer = Start-Process -FilePath $setupExe `
-                               -ArgumentList '/config .\files\setupsilent\config.xml' `
-                               -Wait `
-                               -PassThru
+        -ArgumentList '/config .\files\setupsilent\config.xml' `
+        -Wait `
+        -PassThru
 
     if ($uncInstall -eq $true)
     {
@@ -194,14 +194,17 @@ function Set-TargetResource
 
     switch ($installer.ExitCode)
     {
-        0 {
+        0
+        {
             Write-Verbose -Message "Office Online Server Language Pack binary installation complete"
         }
-        17022 {
+        17022
+        {
             Write-Verbose -Message "Office Online Server Language Pack binary installation complete. Reboot required."
             $global:DSCMachineStatus = 1
         }
-        Default {
+        Default
+        {
             throw "Office Online Server Language Pack install failed, exit code was $($installer.ExitCode)"
         }
     }
@@ -215,7 +218,7 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [ValidateSet("Present","Absent")]
+        [ValidateSet("Present", "Absent")]
         [System.String]
         $Ensure,
 
@@ -226,15 +229,14 @@ function Test-TargetResource
         [Parameter(Mandatory = $true)]
         [System.String]
         $Language
-)
+    )
 
     Write-Verbose -Message "Testing install status of Office Online Server $Language Language Pack"
-
 
     if ($Ensure -eq "Absent")
     {
         throw [Exception] ("OfficeOnlineServerDsc does not support uninstalling Office Online Server " + `
-                           "Language Packs. Please remove this manually.")
+                "Language Packs. Please remove this manually.")
     }
 
     $CurrentValues = Get-TargetResource @PSBoundParameters
@@ -242,7 +244,7 @@ function Test-TargetResource
     Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
     Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
-    if($CurrentValues.Ensure -eq $Ensure)
+    if ($CurrentValues.Ensure -eq $Ensure)
     {
         Write-Verbose -Message "Language Pack $Language is already installed on the server"
         return $true
