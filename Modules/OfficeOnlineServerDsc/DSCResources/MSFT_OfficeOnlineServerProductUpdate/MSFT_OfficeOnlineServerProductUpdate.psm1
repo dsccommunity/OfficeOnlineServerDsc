@@ -399,7 +399,7 @@ function Set-TargetResource
 
                 $objParams = $config | ConvertFrom-Json
                 $params = @{ }
-                $objParams | Get-Member -MemberType *Property | % {
+                $objParams | Get-Member -MemberType *Property | ForEach-Object -Process {
                     if ([string]::IsNullOrEmpty($objParams.($_.name)) -eq $false)
                     {
                         $params.($_.name) = $objParams.($_.name)
@@ -416,7 +416,7 @@ function Set-TargetResource
                 Write-Verbose -Message "Read server roles from registry"
                 $roles = $key.GetValue("Roles") -split ","
 
-                $domain = (Get-WmiObject Win32_ComputerSystem).Domain
+                $domain = (Get-CimInstance -ClassName Win32_ComputerSystem).Domain
                 Write-Verbose -Message "Creating new farm with Master server $($currentServer.NewMaster).$domain and roles $($roles -join ", ")"
                 New-OfficeWebAppsMachine -MachineToJoin "$($currentServer.NewMaster).$domain" -Roles $roles
             }
