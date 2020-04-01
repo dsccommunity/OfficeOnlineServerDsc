@@ -17,29 +17,32 @@ Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHel
 $TestEnvironment = Initialize-TestEnvironment `
     -DSCModuleName $Script:DSCModuleName `
     -DSCResourceName $Script:DSCResourceName `
-    -TestType Unit 
+    -TestType Unit
 
 try
 {
     InModuleScope $Script:DSCResourceName {
         Describe "OfficeOnlineServerMachine [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
-            
+
             Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
-            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+            Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
             Mock -CommandName New-OfficeWebAppsMachine -MockWith {}
             Mock -CommandName Remove-OfficeWebAppsMachine -MockWith {}
+            Mock -CommandName Test-Path -MockWith {
+                return $false
+            } -ParameterFilter { $_.Path -eq 'HKLM:\SOFTWARE\OOSDsc' }
 
             Context "The Office Online Server PowerShell module can not be found" {
                 $testParams = @{
                     MachineToJoin = "oos1.contoso.com"
                 }
 
-                Mock -CommandName Import-Module -MockWith { 
-                    throw "Failed to import module" 
-                } -ParameterFilter { 
-                    $Name -eq "OfficeWebApps" 
+                Mock -CommandName Import-Module -MockWith {
+                    throw "Failed to import module"
+                } -ParameterFilter {
+                    $Name -eq "OfficeWebApps"
                 }
 
                 It "Throws an exception from the get method" {
@@ -56,7 +59,7 @@ try
             }
 
             Mock -CommandName Import-Module -MockWith { } -ParameterFilter {
-                $Name -eq "OfficeWebApps" 
+                $Name -eq "OfficeWebApps"
             }
 
             Context "The local server is not connect to a farm, but should be" {
@@ -64,8 +67,8 @@ try
                     MachineToJoin = "oos1.contoso.com"
                 }
 
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
-                    throw "It does not appear that this machine is part of an Office Online Server farm." 
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith {
+                    throw "It does not appear that this machine is part of an Office Online Server farm."
                 }
 
                 It "Should return absent from the get method" {
@@ -87,11 +90,11 @@ try
                     MachineToJoin = "oos1.contoso.com"
                 }
 
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
-                    @{ 
-                        Roles = "all"; 
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith {
+                    @{
+                        Roles = "all";
                         MasterMachineName = $testParams.MachineToJoin
-                    } 
+                    }
                 }
 
                 It "Should return present from the get method" {
@@ -108,11 +111,11 @@ try
                     MachineToJoin = "oos1.contoso.com"
                 }
 
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
-                    @{ 
-                        Roles = "FrontEnd"; 
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith {
+                    @{
+                        Roles = "FrontEnd";
                         MasterMachineName = $testParams.MachineToJoin
-                    } 
+                    }
                 }
 
                 It "Should return present from the get method" {
@@ -136,11 +139,11 @@ try
                     Ensure = "Absent"
                 }
 
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
-                    @{ 
-                        Roles = "all"; 
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith {
+                    @{
+                        Roles = "all";
                         MasterMachineName = $testParams.MachineToJoin
-                    } 
+                    }
                 }
 
                 It "Should return present from the get method" {
@@ -163,8 +166,8 @@ try
                     Ensure = "Absent"
                 }
 
-                Mock -CommandName Get-OfficeWebAppsMachine -MockWith { 
-                    throw "It does not appear that this machine is part of an Office Online Server farm." 
+                Mock -CommandName Get-OfficeWebAppsMachine -MockWith {
+                    throw "It does not appear that this machine is part of an Office Online Server farm."
                 }
 
                 It "Should return absent from the get method" {
@@ -172,6 +175,39 @@ try
                 }
 
                 It "Should return true from the test method" {
+                    Test-TargetResource @testParams | Should Be $true
+                }
+            }
+
+            Context "Server is returning after a reboot after patching, do nothing" {
+                $testParams = @{
+                    MachineToJoin = "oos1.contoso.com"
+                    Ensure = "Absent"
+                }
+
+                Mock -CommandName Test-Path -MockWith {
+                    return $true
+                }
+
+                Mock -CommandName Get-Item -MockWith {
+                    $returnval = "test"
+                    $returnval = $returnval | Add-Member -MemberType ScriptMethod `
+                        -Name GetValue `
+                        -Value {
+                            [CmdletBinding()]
+                            param(
+                                [Parameter(Mandatory = $true)]
+                                [System.String]
+                                $Input
+                            )
+
+                            return "Patching"
+                        } -PassThru -Force
+
+                    return $returnval
+                } -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\OOSDsc' }
+
+                It "Returns true from the test method" {
                     Test-TargetResource @testParams | Should Be $true
                 }
             }

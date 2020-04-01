@@ -5,14 +5,14 @@ function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param
+    Param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         [ValidateSet("Present", "Absent")]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $Path
     )
@@ -76,20 +76,20 @@ function Get-TargetResource
     }
 
     $matchPath = "HKEY_LOCAL_MACHINE\\$($Script:UninstallPath.Replace('\','\\'))" + `
-                 "\\$script:InstallKeyPattern"
+        "\\$script:InstallKeyPattern"
     $wacPath = Get-ChildItem -Path "HKLM:\$Script:UninstallPath" | Where-Object -FilterScript {
         $_.Name -match $matchPath
     }
 
     $localEnsure = "Absent"
-    if($null -ne $wacPath)
+    if ($null -ne $wacPath)
     {
         $localEnsure = "Present"
     }
 
     return @{
         Ensure = $localEnsure
-        Path = $Path
+        Path   = $Path
     }
 }
 
@@ -97,14 +97,14 @@ function Get-TargetResource
 function Set-TargetResource
 {
     [CmdletBinding()]
-    param
+    Param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         [ValidateSet("Present", "Absent")]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $Path
     )
@@ -182,9 +182,9 @@ function Set-TargetResource
     }
 
     $installer = Start-Process -FilePath $Path `
-                               -ArgumentList '/config .\files\setupsilent\config.xml' `
-                               -Wait `
-                               -PassThru
+        -ArgumentList '/config .\files\setupsilent\config.xml' `
+        -Wait `
+        -PassThru
 
     if ($uncInstall -eq $true)
     {
@@ -193,7 +193,8 @@ function Set-TargetResource
     }
 
     # Exit codes: https://docs.microsoft.com/en-us/windows/desktop/msi/error-codes
-    switch ($installer.ExitCode) {
+    switch ($installer.ExitCode)
+    {
         0
         {
             Write-Verbose -Message "Installation of Office Online Server succeeded."
@@ -201,14 +202,14 @@ function Set-TargetResource
         3010
         {
             Write-Verbose -Message ("Office Online Server binary installation complete, " + `
-                                    "but reboot is required")
+                    "but reboot is required")
             $global:DSCMachineStatus = 1
         }
         Default
         {
             throw ("Office Online Server installation failed. Exit code " + `
-                   "'$($installer.ExitCode)' was returned. Check " + `
-                   "$($env:TEMP)\Wac Server Setup.log for further information")
+                    "'$($installer.ExitCode)' was returned. Check " + `
+                    "$($env:TEMP)\Wac Server Setup.log for further information")
         }
     }
 }
@@ -218,14 +219,14 @@ function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param
+    Param
     (
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         [ValidateSet("Present", "Absent")]
         $Ensure,
 
-        [parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true)]
         [System.String]
         $Path
     )
@@ -236,9 +237,12 @@ function Test-TargetResource
     }
 
     Write-Verbose -Message "Testing for installation of Office Online Server"
-    $result = Get-TargetResource @PSBoundParameters
+    $CurrentValues = Get-TargetResource @PSBoundParameters
 
-    return ($result.Ensure -eq $Ensure)
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
+
+    return ($CurrentValues.Ensure -eq $Ensure)
 }
 
 Export-ModuleMember -Function *-TargetResource

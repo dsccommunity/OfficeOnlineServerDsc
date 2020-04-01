@@ -1,332 +1,350 @@
-function Get-OfficeWebAppsFarm { 
-  [CmdletBinding()]
-param()
+function Get-OfficeWebAppsFarm
+{
+    [CmdletBinding()]
+    Param()
 
- 
- } 
 
-function Get-OfficeWebAppsHost { 
-  [CmdletBinding()]
-param()
+}
 
- 
- } 
+function Get-OfficeWebAppsHost
+{
+    [CmdletBinding()]
+    Param()
 
-function Get-OfficeWebAppsMachine { 
-  [CmdletBinding()]
-param()
 
- 
- } 
+}
 
-function New-OfficeWebAppsFarm { 
-  [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
-param(
-    [switch]
-    ${Force},
+function Get-OfficeWebAppsMachine
+{
+    [CmdletBinding()]
+    Param()
 
-    [string]
-    ${FarmOU},
 
-    [string]
-    ${InternalURL},
+}
 
-    [string]
-    ${ExternalURL},
+function New-OfficeWebAppsFarm
+{
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    Param
+    (
+        [switch]
+        ${Force},
 
-    [switch]
-    ${AllowHttp},
+        [string]
+        ${FarmOU},
 
-    [switch]
-    ${SSLOffloaded},
+        [string]
+        ${InternalURL},
 
-    [string]
-    ${CertificateName},
+        [string]
+        ${ExternalURL},
 
-    [switch]
-    ${EditingEnabled},
+        [switch]
+        ${AllowHttp},
 
-    [string]
-    ${Proxy},
+        [switch]
+        ${SSLOffloaded},
 
-    [string]
-    ${LogLocation},
+        [string]
+        ${CertificateName},
 
-    [System.Nullable[uint32]]
-    ${LogRetentionInDays},
+        [switch]
+        ${EditingEnabled},
 
-    [string]
-    ${LogVerbosity},
+        [string]
+        ${Proxy},
 
-    [string]
-    ${CacheLocation},
+        [string]
+        ${LogLocation},
 
-    [System.Nullable[int]]
-    ${MaxMemoryCacheSizeInMB},
+        [System.Nullable[uint32]]
+        ${LogRetentionInDays},
 
-    [System.Nullable[uint32]]
-    ${DocumentInfoCacheSize},
+        [string]
+        ${LogVerbosity},
 
-    [System.Nullable[int]]
-    ${CacheSizeInGB},
+        [string]
+        ${CacheLocation},
 
-    [switch]
-    ${ClipartEnabled},
+        [System.Nullable[int]]
+        ${MaxMemoryCacheSizeInMB},
 
-    [switch]
-    ${IgnoreDeserializationFilter},
+        [System.Nullable[uint32]]
+        ${DocumentInfoCacheSize},
 
-    [switch]
-    ${TranslationEnabled},
+        [System.Nullable[int]]
+        ${CacheSizeInGB},
 
-    [System.Nullable[int]]
-    ${MaxTranslationCharacterCount},
+        [switch]
+        ${ClipartEnabled},
 
-    [string]
-    ${TranslationServiceAppId},
+        [switch]
+        ${IgnoreDeserializationFilter},
 
-    [string]
-    ${TranslationServiceAddress},
+        [switch]
+        ${TranslationEnabled},
 
-    [string]
-    ${RenderingLocalCacheLocation},
+        [System.Nullable[int]]
+        ${MaxTranslationCharacterCount},
 
-    [System.Nullable[uint32]]
-    ${RecycleActiveProcessCount},
+        [string]
+        ${TranslationServiceAppId},
 
-    [switch]
-    ${AllowCEIP},
+        [string]
+        ${TranslationServiceAddress},
 
-    [System.Nullable[int]]
-    ${ExcelRequestDurationMax},
+        [string]
+        ${RenderingLocalCacheLocation},
 
-    [System.Nullable[int]]
-    ${ExcelSessionTimeout},
+        [System.Nullable[uint32]]
+        ${RecycleActiveProcessCount},
 
-    [System.Nullable[int]]
-    ${ExcelWorkbookSizeMax},
+        [switch]
+        ${AllowCEIP},
 
-    [System.Nullable[int]]
-    ${ExcelPrivateBytesMax},
+        [System.Nullable[int]]
+        ${ExcelRequestDurationMax},
 
-    [System.Nullable[int]]
-    ${ExcelConnectionLifetime},
+        [System.Nullable[int]]
+        ${ExcelSessionTimeout},
 
-    [System.Nullable[int]]
-    ${ExcelExternalDataCacheLifetime},
+        [System.Nullable[int]]
+        ${ExcelWorkbookSizeMax},
 
-    [switch]
-    ${ExcelAllowExternalData},
+        [System.Nullable[int]]
+        ${ExcelPrivateBytesMax},
 
-    [switch]
-    ${ExcelWarnOnDataRefresh},
+        [System.Nullable[int]]
+        ${ExcelConnectionLifetime},
 
-    [switch]
-    ${OpenFromUrlEnabled},
+        [System.Nullable[int]]
+        ${ExcelExternalDataCacheLifetime},
 
-    [switch]
-    ${OpenFromUncEnabled},
+        [switch]
+        ${ExcelAllowExternalData},
 
-    [switch]
-    ${OpenFromUrlThrottlingEnabled},
+        [switch]
+        ${ExcelWarnOnDataRefresh},
 
-    [switch]
-    ${PicturePasteDisabled},
+        [switch]
+        ${OpenFromUrlEnabled},
 
-    [switch]
-    ${RemovePersonalInformationFromLogs},
+        [switch]
+        ${OpenFromUncEnabled},
 
-    [switch]
-    ${AllowHttpSecureStoreConnections})
+        [switch]
+        ${OpenFromUrlThrottlingEnabled},
 
- 
- } 
+        [switch]
+        ${PicturePasteDisabled},
 
-function New-OfficeWebAppsHost { 
-  [CmdletBinding()]
-param(
-    [Parameter(Mandatory=$true)]
-    [string]
-    ${Domain})
+        [switch]
+        ${RemovePersonalInformationFromLogs},
 
- 
- } 
+        [switch]
+        ${AllowHttpSecureStoreConnections})
 
-function New-OfficeWebAppsMachine { 
-  [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
-param(
-    [switch]
-    ${Force},
 
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]
-    ${MachineToJoin},
+}
 
-    [string[]]
-    ${Roles})
+function New-OfficeWebAppsHost
+{
+    [CmdletBinding()]
+    Param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]
+        ${Domain})
 
- 
- } 
 
-function Remove-OfficeWebAppsHost { 
-  [CmdletBinding()]
-param(
-    [Parameter(Mandatory=$true)]
-    [string]
-    ${Domain})
+}
 
- 
- } 
+function New-OfficeWebAppsMachine
+{
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    Param
+    (
+        [switch]
+        ${Force},
 
-function Remove-OfficeWebAppsMachine { 
-  [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
-param()
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string]
+        ${MachineToJoin},
 
- 
- } 
+        [string[]]
+        ${Roles})
 
-function Repair-OfficeWebAppsFarm { 
-  [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
-param(
-    [switch]
-    ${Force})
 
- 
- } 
+}
 
-function Set-OfficeWebAppsFarm { 
-  [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
-param(
-    [switch]
-    ${Force},
+function Remove-OfficeWebAppsHost
+{
+    [CmdletBinding()]
+    Param
+    (
+        [Parameter(Mandatory = $true)]
+        [string]
+        ${Domain})
 
-    [string]
-    ${FarmOU},
 
-    [string]
-    ${InternalURL},
+}
 
-    [string]
-    ${ExternalURL},
+function Remove-OfficeWebAppsMachine
+{
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    Param()
 
-    [switch]
-    ${AllowHttp},
 
-    [switch]
-    ${SSLOffloaded},
+}
 
-    [string]
-    ${CertificateName},
+function Repair-OfficeWebAppsFarm
+{
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    Param
+    (
+        [switch]
+        ${Force})
 
-    [switch]
-    ${EditingEnabled},
 
-    [string]
-    ${Proxy},
+}
 
-    [string]
-    ${LogLocation},
+function Set-OfficeWebAppsFarm
+{
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    Param
+    (
+        [switch]
+        ${Force},
 
-    [System.Nullable[uint32]]
-    ${LogRetentionInDays},
+        [string]
+        ${FarmOU},
 
-    [string]
-    ${LogVerbosity},
+        [string]
+        ${InternalURL},
 
-    [string]
-    ${CacheLocation},
+        [string]
+        ${ExternalURL},
 
-    [System.Nullable[int]]
-    ${MaxMemoryCacheSizeInMB},
+        [switch]
+        ${AllowHttp},
 
-    [System.Nullable[uint32]]
-    ${DocumentInfoCacheSize},
+        [switch]
+        ${SSLOffloaded},
 
-    [System.Nullable[int]]
-    ${CacheSizeInGB},
+        [string]
+        ${CertificateName},
 
-    [switch]
-    ${ClipartEnabled},
+        [switch]
+        ${EditingEnabled},
 
-    [switch]
-    ${IgnoreDeserializationFilter},
+        [string]
+        ${Proxy},
 
-    [switch]
-    ${TranslationEnabled},
+        [string]
+        ${LogLocation},
 
-    [System.Nullable[int]]
-    ${MaxTranslationCharacterCount},
+        [System.Nullable[uint32]]
+        ${LogRetentionInDays},
 
-    [string]
-    ${TranslationServiceAppId},
+        [string]
+        ${LogVerbosity},
 
-    [string]
-    ${TranslationServiceAddress},
+        [string]
+        ${CacheLocation},
 
-    [string]
-    ${RenderingLocalCacheLocation},
+        [System.Nullable[int]]
+        ${MaxMemoryCacheSizeInMB},
 
-    [System.Nullable[uint32]]
-    ${RecycleActiveProcessCount},
+        [System.Nullable[uint32]]
+        ${DocumentInfoCacheSize},
 
-    [switch]
-    ${AllowCEIP},
+        [System.Nullable[int]]
+        ${CacheSizeInGB},
 
-    [System.Nullable[int]]
-    ${ExcelRequestDurationMax},
+        [switch]
+        ${ClipartEnabled},
 
-    [System.Nullable[int]]
-    ${ExcelSessionTimeout},
+        [switch]
+        ${IgnoreDeserializationFilter},
 
-    [System.Nullable[int]]
-    ${ExcelWorkbookSizeMax},
+        [switch]
+        ${TranslationEnabled},
 
-    [System.Nullable[int]]
-    ${ExcelPrivateBytesMax},
+        [System.Nullable[int]]
+        ${MaxTranslationCharacterCount},
 
-    [System.Nullable[int]]
-    ${ExcelConnectionLifetime},
+        [string]
+        ${TranslationServiceAppId},
 
-    [System.Nullable[int]]
-    ${ExcelExternalDataCacheLifetime},
+        [string]
+        ${TranslationServiceAddress},
 
-    [switch]
-    ${ExcelAllowExternalData},
+        [string]
+        ${RenderingLocalCacheLocation},
 
-    [switch]
-    ${ExcelWarnOnDataRefresh},
+        [System.Nullable[uint32]]
+        ${RecycleActiveProcessCount},
 
-    [switch]
-    ${OpenFromUrlEnabled},
+        [switch]
+        ${AllowCEIP},
 
-    [switch]
-    ${OpenFromUncEnabled},
+        [System.Nullable[int]]
+        ${ExcelRequestDurationMax},
 
-    [switch]
-    ${OpenFromUrlThrottlingEnabled},
+        [System.Nullable[int]]
+        ${ExcelSessionTimeout},
 
-    [switch]
-    ${PicturePasteDisabled},
+        [System.Nullable[int]]
+        ${ExcelWorkbookSizeMax},
 
-    [switch]
-    ${RemovePersonalInformationFromLogs},
+        [System.Nullable[int]]
+        ${ExcelPrivateBytesMax},
 
-    [switch]
-    ${AllowHttpSecureStoreConnections})
+        [System.Nullable[int]]
+        ${ExcelConnectionLifetime},
 
- 
- } 
+        [System.Nullable[int]]
+        ${ExcelExternalDataCacheLifetime},
 
-function Set-OfficeWebAppsMachine { 
-  [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Medium')]
-param(
-    [string]
-    ${Master},
+        [switch]
+        ${ExcelAllowExternalData},
 
-    [string[]]
-    ${Roles})
+        [switch]
+        ${ExcelWarnOnDataRefresh},
 
- 
- } 
+        [switch]
+        ${OpenFromUrlEnabled},
+
+        [switch]
+        ${OpenFromUncEnabled},
+
+        [switch]
+        ${OpenFromUrlThrottlingEnabled},
+
+        [switch]
+        ${PicturePasteDisabled},
+
+        [switch]
+        ${RemovePersonalInformationFromLogs},
+
+        [switch]
+        ${AllowHttpSecureStoreConnections})
+
+
+}
+
+function Set-OfficeWebAppsMachine
+{
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    Param
+    (
+        [string]
+        ${Master},
+
+        [string[]]
+        ${Roles})
+
+
+}
 
 
