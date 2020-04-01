@@ -5,7 +5,7 @@ function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [ValidateSet("Present", "Absent")]
@@ -84,7 +84,7 @@ function Set-TargetResource
     # Supressing the global variable use to allow passing DSC the reboot message
     [CmdletBinding()]
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidGlobalVars", "")]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [ValidateSet("Present", "Absent")]
@@ -215,7 +215,7 @@ function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param
+    Param
     (
         [Parameter(Mandatory = $true)]
         [ValidateSet("Present", "Absent")]

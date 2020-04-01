@@ -1,6 +1,8 @@
 [CmdletBinding()]
-param(
-    [String] $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
+Param
+(
+    [String]
+    $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
 $Script:DSCModuleName = 'OfficeOnlineServerDsc'
@@ -1009,7 +1011,7 @@ ISBUILDLABMACHINE = 0
                         -Name GetValue `
                         -Value {
                         [CmdletBinding()]
-                        param(
+                        Param(
                             [Parameter(Mandatory = $true)]
                             [System.String]
                             $Input
@@ -1186,7 +1188,7 @@ ISBUILDLABMACHINE = 0
                         -Name GetValue `
                         -Value {
                         [CmdletBinding()]
-                        param(
+                        Param(
                             [Parameter(Mandatory = $true)]
                             [System.String]
                             $Input
@@ -1751,7 +1753,7 @@ ISBUILDLABMACHINE = 0
                         -Name GetValue `
                         -Value {
                         [CmdletBinding()]
-                        param(
+                        Param(
                             [Parameter(Mandatory = $true)]
                             [System.String]
                             $Input
@@ -1942,7 +1944,7 @@ ISBUILDLABMACHINE = 0
                         -Name GetValue `
                         -Value {
                         [CmdletBinding()]
-                        param(
+                        Param(
                             [Parameter(Mandatory = $true)]
                             [System.String]
                             $Input
@@ -2070,7 +2072,7 @@ ISBUILDLABMACHINE = 0
                         -Name GetValue `
                         -Value {
                         [CmdletBinding()]
-                        param(
+                        Param(
                             [Parameter(Mandatory = $true)]
                             [System.String]
                             $Input
@@ -2246,7 +2248,7 @@ ISBUILDLABMACHINE = 0
                         -Name GetValue `
                         -Value {
                         [CmdletBinding()]
-                        param(
+                        Param(
                             [Parameter(Mandatory = $true)]
                             [System.String]
                             $Input

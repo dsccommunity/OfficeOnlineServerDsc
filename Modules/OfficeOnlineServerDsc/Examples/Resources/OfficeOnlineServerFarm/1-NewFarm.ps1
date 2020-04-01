@@ -5,15 +5,15 @@
     a farm that has editing enabled.
 #>
 
-    Configuration Example 
+Configuration Example
+{
+    Param()
+
+    Import-DscResource -ModuleName OfficeOnlineServerDsc
+
+    OfficeOnlineServerFarm LocalFarm
     {
-        param()
-
-        Import-DscResource -ModuleName OfficeOnlineServerDsc
-
-        OfficeOnlineServerFarm LocalFarm
-        {
-            InternalURL    = "https://officeonline.contoso.com"
-            EditingEnabled = $true
-        }
+        InternalURL    = "https://officeonline.contoso.com"
+        EditingEnabled = $true
     }
+}
