@@ -76,7 +76,7 @@ function Get-TargetResource
         if ($null -ne $zone)
         {
             throw ("Setup file is blocked! Please use 'Unblock-File -Path $SetupFile' " + `
-                   "to unblock the file before continuing.")
+                    "to unblock the file before continuing.")
         }
         Write-Verbose -Message "File not blocked, continuing."
     }
@@ -114,16 +114,16 @@ function Get-TargetResource
     {
         # Version of OfficeOnlineServer is lower than the patch version. Patch is not installed.
         return @{
-            SetupFile         = $SetupFile
-            Ensure            = "Absent"
+            SetupFile = $SetupFile
+            Ensure    = "Absent"
         }
     }
     else
     {
         # Version of OfficeOnlineServer is equal or greater than the patch version. Patch is installed.
         return @{
-            SetupFile         = $SetupFile
-            Ensure            = "Present"
+            SetupFile = $SetupFile
+            Ensure    = "Present"
         }
     }
 }
@@ -215,7 +215,7 @@ function Set-TargetResource
         if ($null -ne $zone)
         {
             throw ("Setup file is blocked! Please use 'Unblock-File -Path $SetupFile' " + `
-                   "to unblock the file before continuing.")
+                    "to unblock the file before continuing.")
         }
         Write-Verbose -Message "File not blocked, continuing."
     }
@@ -261,7 +261,7 @@ function Set-TargetResource
                 if ($machinesCount -gt 1)
                 {
                     throw ("[ERROR] Cannot complete patching. Other servers need to be patched first. " + `
-                           "Waited $maxcount minutes for other servers complete patching.")
+                            "Waited $maxcount minutes for other servers complete patching.")
                 }
             }
 
@@ -278,11 +278,15 @@ function Set-TargetResource
             else
             {
                 # Determine newMaster from other machines
-                $newMaster = $patchedMachines.NewMaster | Sort-Object | Select-Object -Unique
+                $newMaster = $patchedMachines.MasterMachine | Sort-Object | Select-Object -Unique
                 if ($newMaster -is [System.Array])
                 {
                     Write-Verbose -Message "WARNING: Multiple masters found"
                     $newMaster = $newMaster | Select-Object -First
+                }
+                elseif ($null -eq $newMaster)
+                {
+                    throw "Unable to determine new master. Cannot continue patching server."
                 }
             }
             Write-Verbose -Message "Determined the following server to be the new MasterMachine {$newMaster}"
@@ -394,7 +398,7 @@ function Set-TargetResource
                 $config = $key.GetValue("Config")
 
                 $objParams = $config | ConvertFrom-Json
-                $params = @{}
+                $params = @{ }
                 $objParams | Get-Member -MemberType *Property | % {
                     if ([string]::IsNullOrEmpty($objParams.($_.name)) -eq $false)
                     {
@@ -531,27 +535,27 @@ function Get-ServerInfo
                 $oosFarm = Get-OfficeWebAppsFarm -ErrorAction SilentlyContinue
                 if ($null -ne $oosFarm)
                 {
-                    $oosMachine              = Get-OfficeWebAppsMachine
-                    $returnval.Machines      = $oosFarm.Machines.MachineName
+                    $oosMachine = Get-OfficeWebAppsMachine
+                    $returnval.Machines = $oosFarm.Machines.MachineName
                     $returnval.MasterMachine = $oosMachine.MasterMachineName
-                    $returnval.Roles         = $oosMachine.Roles -join ","
+                    $returnval.Roles = $oosMachine.Roles -join ","
 
                     # Retrieving OOS Farm properties and convert to JSON
                     $objProps = $oosFarm | Select-Object -Property * -ExcludeProperty ExcelEnableCrossForestKerberosAuthentication, Machines, OfficeAddinEnabled, OnlinePictureEnabled, OnlineVideoEnabled
                     $jsonProps = $objProps | ConvertTo-Json
 
-                    $returnval.Config        = $jsonProps
+                    $returnval.Config = $jsonProps
                 }
                 else
                 {
-                    $returnval.Machines      = $null
+                    $returnval.Machines = $null
                     $returnval.MasterMachine = $null
                 }
             }
             catch
             {
-                    $returnval.Machines      = $null
-                    $returnval.MasterMachine = $null
+                $returnval.Machines = $null
+                $returnval.MasterMachine = $null
             }
 
             # Check if NewMaster OOSDscRegKey has been created
