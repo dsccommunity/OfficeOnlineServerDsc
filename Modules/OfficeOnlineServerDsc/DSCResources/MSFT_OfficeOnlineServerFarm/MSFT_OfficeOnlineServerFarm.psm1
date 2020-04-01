@@ -14,7 +14,7 @@ function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param
+    Param
     (
         [Parameter()]
         [System.Boolean]
@@ -292,7 +292,7 @@ function Get-TargetResource
 function Set-TargetResource
 {
     [CmdletBinding()]
-    param
+    Param
     (
         [Parameter()]
         [System.Boolean]
@@ -510,7 +510,7 @@ function Set-TargetResource
         Write-Verbose -Message $_
     }
 
-    if(-not $officeWebAppsFarm)
+    if (-not $officeWebAppsFarm)
     {
         Write-Verbose "Installing new WebAppsFarm"
         $null = New-OfficeWebAppsFarm @PSBoundParameters -Force
@@ -527,7 +527,7 @@ function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param
+    Param
     (
         [Parameter()]
         [System.Boolean]
@@ -760,7 +760,7 @@ function Test-TargetResource
         return $false
     }
 
-    if($PSBoundParameters.ContainsKey('FarmOU'))
+    if ($PSBoundParameters.ContainsKey('FarmOU'))
     {
         if ((Test-OosDscFarmOu -ExistingOU $officeWebAppsFarm.FarmOU -DesiredOU $FarmOU) -ne $true)
         {
@@ -847,17 +847,19 @@ function Test-OosDscV16Support
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param(
+    Param
+    (
         [Parameter(Mandatory=$true)]
         [Object]
         $Parameters
     )
 
     $version = Get-OosDscInstalledProductVersion
-    switch ($version.Major) {
+    switch ($version.Major)
+    {
         15 {
             Write-Verbose -Message "Office Web Apps 2013 install detected. Checking parameter use."
-            foreach($param in $script:v16onlyParams)
+            foreach ($param in $script:v16onlyParams)
             {
                 if ($Parameters.ContainsKey($param) -eq $true)
                 {
