@@ -2,11 +2,35 @@
 
 ## Unreleased
 
+* OfficeOnlineServerDsc
+  * Optin to the following Dsc Resource metatests:
+    * Common Tests - Validate Module Files
+    * Common Tests - Validate Script Files
+    * Common Tests - Relative Path Length
+    * Common Tests - Validate Markdown Links
+* OfficeOnlineServerFarm
+  * Added logic to make sure this resource does not interfere with
+    a patch installation after a reboot
+* OfficeOnlineServerInstall
+  * Updated error code checks to force reboot
+  * Added check for CDROM to prevent issues with block file check
+* OfficeOnlineServerInstallLanguagePack
+  * Added Contextual Help information
+  * Added check for CDROM to prevent issues with block file check
+* OfficeOnlineServerMachine
+  * Added logic to make sure this resource does not interfere with
+    a patch installation after a reboot
+  * Removed check for MachineToJoin. The resource only needs to check
+    for farm join, especially with the new ProductUpdate resource.
+* OfficeOnlineServerProductUpdate
+  * New resource
+
 ## 1.4.0.0
 
 * OfficeOnlineServerInstall
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;
+  * Updated error code checks to force reboot;
 * OfficeOnlineServerMachine
   * Updated resource to make sure the Windows Environment
     variables are loaded into the PowerShell session;

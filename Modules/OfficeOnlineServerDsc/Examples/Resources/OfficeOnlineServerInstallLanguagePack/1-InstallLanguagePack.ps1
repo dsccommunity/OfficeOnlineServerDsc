@@ -5,16 +5,16 @@
     Currently there is no support for uninstalling the language pack.
 #>
 
-Configuration Example 
+Configuration Example
 {
-    param()
+    Param()
 
     Import-DscResource -ModuleName OfficeOnlineServerDsc
 
     OfficeOnlineServerInstallLanguagePack CurrentLanguagePack
     {
-        Ensure = "Present"
+        Ensure    = "Present"
         BinaryDir = "D:\"
-        Language = "de-de"
+        Language  = "de-de"
     }
 }

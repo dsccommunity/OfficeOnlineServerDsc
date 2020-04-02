@@ -1,3 +1,5 @@
+$script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
+
 $script:v16onlyParams = @("AllowOutboundHttp", "S2SCertificateName", "OnlinePictureEnabled", `
                           "OnlineVideoEnabled", "OfficeAddinEnabled", `
                           "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
@@ -12,7 +14,7 @@ function Get-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
-    param
+    Param
     (
         [Parameter()]
         [System.Boolean]
@@ -290,7 +292,7 @@ function Get-TargetResource
 function Set-TargetResource
 {
     [CmdletBinding()]
-    param
+    Param
     (
         [Parameter()]
         [System.Boolean]
@@ -508,15 +510,15 @@ function Set-TargetResource
         Write-Verbose -Message $_
     }
 
-    if(-not $officeWebAppsFarm)
+    if (-not $officeWebAppsFarm)
     {
         Write-Verbose "Installing new WebAppsFarm"
-        New-OfficeWebAppsFarm @PSBoundParameters -Force
+        $null = New-OfficeWebAppsFarm @PSBoundParameters -Force
     }
     else
     {
         Write-Verbose "WebAppsFarm found setting parameters on farm"
-        Set-OfficeWebAppsFarm @PSBoundParameters -Force
+        $null = Set-OfficeWebAppsFarm @PSBoundParameters -Force
     }
 }
 
@@ -525,7 +527,7 @@ function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param
+    Param
     (
         [Parameter()]
         [System.Boolean]
@@ -732,6 +734,20 @@ function Test-TargetResource
 
     Confirm-OosDscEnvironmentVariables
 
+    # Check if server is continuing after a patch install reboot
+    if (Test-Path -Path $OOSDscRegKey)
+    {
+        $key = Get-Item -Path $OOSDscRegKey
+        $state = $key.GetValue("State")
+
+        if ($state -eq "Patching")
+        {
+            Write-Verbose -Message "Server continuing after a patch reboot. Farm creation not required."
+            Write-Verbose -Message "Returning True to prevent issues."
+            return $true
+        }
+    }
+
     Test-OosDscV16Support -Parameters $PSBoundParameters
 
     try
@@ -744,7 +760,7 @@ function Test-TargetResource
         return $false
     }
 
-    if($PSBoundParameters.ContainsKey('FarmOU'))
+    if ($PSBoundParameters.ContainsKey('FarmOU'))
     {
         if ((Test-OosDscFarmOu -ExistingOU $officeWebAppsFarm.FarmOU -DesiredOU $FarmOU) -ne $true)
         {
@@ -755,7 +771,10 @@ function Test-TargetResource
         }
     }
 
-    $currentValues = Get-TargetResource @PSBoundParameters
+    $CurrentValues = Get-TargetResource @PSBoundParameters
+
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
     if ($InternalURL.EndsWith('/') -eq $false)
     {
@@ -769,7 +788,7 @@ function Test-TargetResource
     {
         $Proxy += "/"
     }
-    return Test-OosDscParameterState -CurrentValues $currentValues `
+    return Test-OosDscParameterState -CurrentValues $CurrentValues `
                                    -DesiredValues $PSBoundParameters `
                                    -ValuesToCheck @(
                                        "InternalURL",
@@ -828,17 +847,19 @@ function Test-OosDscV16Support
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    param(
+    Param
+    (
         [Parameter(Mandatory=$true)]
         [Object]
         $Parameters
     )
 
     $version = Get-OosDscInstalledProductVersion
-    switch ($version.Major) {
+    switch ($version.Major)
+    {
         15 {
             Write-Verbose -Message "Office Web Apps 2013 install detected. Checking parameter use."
-            foreach($param in $script:v16onlyParams)
+            foreach ($param in $script:v16onlyParams)
             {
                 if ($Parameters.ContainsKey($param) -eq $true)
                 {
