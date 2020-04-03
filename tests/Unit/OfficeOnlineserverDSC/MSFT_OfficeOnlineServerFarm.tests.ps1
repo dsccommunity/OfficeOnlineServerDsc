@@ -3,27 +3,38 @@ param(
     [String] $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
-$Script:DSCModuleName      = 'OfficeOnlineServerDsc'
-$Script:DSCResourceName    = 'MSFT_OfficeOnlineServerFarm'
+$script:DSCModuleName = 'OfficeOnlineServerDsc'
+$script:DSCResourceName = 'MSFT_OfficeOnlineServerFarm'
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
-if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
+function Invoke-TestSetup
 {
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
+    try
+    {
+        Import-Module -Name DscResource.Test -Force -ErrorAction 'Stop'
+    }
+    catch [System.IO.FileNotFoundException]
+    {
+        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
+    }
+
+    $script:testEnvironment = Initialize-TestEnvironment `
+        -DSCModuleName $script:dscModuleName `
+        -DSCResourceName $script:dscResourceName `
+        -ResourceType 'Mof' `
+        -TestType 'Unit'
 }
-Import-Module (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1') -Force
-$TestEnvironment = Initialize-TestEnvironment `
-    -DSCModuleName $Script:DSCModuleName `
-    -DSCResourceName $Script:DSCResourceName `
-    -TestType Unit
+
+function Invoke-TestCleanup
+{
+    Restore-TestEnvironment -TestEnvironment $script:testEnvironment
+}
+
+Invoke-TestSetup
 
 try
 {
     InModuleScope $Script:DSCResourceName {
-
-        Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
         $internalURL = "http://webfarm.contoso.com"
         $externalURL = "http://external.contoso.com"
         $proxy = 'http://proxy.contoso.com'
@@ -147,8 +158,6 @@ try
         } -ParameterFilter { $_.Path -eq 'HKLM:\SOFTWARE\OOSDsc' }
 
         Describe "OfficeOnlineServerFarm [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
-
-            Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
@@ -170,7 +179,7 @@ try
             Mock -CommandName Set-OfficeWebAppsFarm -MockWith { }
             Mock -CommandName Test-OosDscFarmOu -MockWith { return $true }
 
-            Context "A farm does not exist on the local macine, but should" {
+            Context "A farm does not exist on the local machine, but should" {
                 $testParams = @{
                     InternalUrl = $internalURL
                 }
@@ -311,5 +320,5 @@ try
 }
 finally
 {
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+    Invoke-TestCleanup
 }
