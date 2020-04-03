@@ -58,9 +58,9 @@ BuildWorkflow:
   test:
     - Pester_Tests_Stop_On_Fail
     - Pester_if_Code_Coverage_Under_Threshold
-    # Use this task when you have multiple parallel tests, which produce multiple
-    # code coverage files and needs to get merged into one file.
-    #- Merge_CodeCoverage_Files
+
+  merge:
+    - Merge_CodeCoverage_Files
 
   publish:
     - Publish_release_to_GitHub
@@ -88,7 +88,7 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
     - FunctionalQuality
     - TestQuality
   Tag:
-  CodeCoverageThreshold: 80 # Set to 0 to bypass
+  CodeCoverageThreshold: 79 # Set to 0 to bypass
   # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
   # CodeCoverageOutputFileEncoding: ascii
   # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
