@@ -5,20 +5,28 @@ param(
 
 $Global:CurrentWACCmdletModule = $WACCmdletModule
 
-[String] $moduleRoot = Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve
-if ( (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-     (-not (Test-Path -Path (Join-Path -Path $moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
-{
-    & git @('clone','https://github.com/PowerShell/DscResource.Tests.git',(Join-Path -Path $moduleRoot -ChildPath '\DSCResource.Tests\'))
-}
+$script:projectPath = "$PSScriptRoot\..\..\.." | Convert-Path
+$script:projectName = (Get-ChildItem -Path "$script:projectPath\*\*.psd1" | Where-Object -FilterScript {
+        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
+        $(try { Test-ModuleManifest -Path $_.FullName -ErrorAction Stop } catch { $false })
+    }).BaseName
 
-Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc\Modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util.psm1" -Resolve)
+$script:parentModule = Get-Module -Name $script:projectName -ListAvailable | Select-Object -First 1
+$script:subModulesFolder = Join-Path -Path $script:parentModule.ModuleBase -ChildPath 'Modules'
+Remove-Module -Name $script:parentModule -Force -ErrorAction 'SilentlyContinue'
+
+$script:subModuleName = (Split-Path -Path $PSCommandPath -Leaf) -replace '\.Tests.ps1'
+$script:subModuleFile = Join-Path -Path $script:subModulesFolder -ChildPath "$($script:subModuleName)"
+
+Import-Module $script:subModuleFile -Force -ErrorAction Stop
+
+#Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc\Modules\OfficeOnlineServerDsc.Util\OfficeOnlineServerDsc.Util.psm1" -Resolve)
 
 InModuleScope "OfficeOnlineServerDsc.Util" {
     Describe "OfficeOnlineServerDsc.Util tests [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
         Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
-        Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue 
+        Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
         Context "Validate Test-OosDscParameterState" {
             It "Returns true for two identical tables" {
