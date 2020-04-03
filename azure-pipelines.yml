@@ -173,7 +173,9 @@ stages:
           #     pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
 
       - job: MergeCodeCoverage
-        dependsOn: Test_Unit_2013 | Test_Unit_2016
+        dependsOn:
+        - 'Test_Unit_2013'
+        - 'Test_Unit_2016'
         displayName: 'Merge Code Coverage'
         pool:
           vmImage: 'windows-2019'
