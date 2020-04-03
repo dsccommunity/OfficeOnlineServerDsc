@@ -1,8 +1,8 @@
 # OfficeOnlineServerDsc
 
-[![Build Status](https://dev.azure.com/dsccommunity/OfficeOnlineServerDsc/_apis/build/status/dsccommunity.OfficeOnlineServerDsc?branchName=master)](https://dev.azure.com/dsccommunity/OfficeOnlineServerDsc/_build/latest?definitionId={definitionId}&branchName=master)
-![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/OfficeOnlineServerDsc/{definitionId}/master)
-[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/OfficeOnlineServerDsc/{definitionId}/master)](https://dsccommunity.visualstudio.com/OfficeOnlineServerDsc/_test/analytics?definitionId={definitionId}&contextType=build)
+[![Build Status](https://dev.azure.com/dsccommunity/OfficeOnlineServerDsc/_apis/build/status/dsccommunity.OfficeOnlineServerDsc?branchName=master)](https://dev.azure.com/dsccommunity/OfficeOnlineServerDsc/_build/latest?definitionId=29&branchName=master)
+![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/OfficeOnlineServerDsc/29/master)
+[![Azure DevOps tests](https://img.shields.io/azure-devops/tests/dsccommunity/OfficeOnlineServerDsc/29/master)](https://dsccommunity.visualstudio.com/OfficeOnlineServerDsc/_test/analytics?definitionId=29&contextType=build)
 [![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/OfficeOnlineServerDsc?label=OfficeOnlineServerDsc%20Preview)](https://www.powershellgallery.com/packages/OfficeOnlineServerDsc/)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/OfficeOnlineServerDsc?label=OfficeOnlineServerDsc)](https://www.powershellgallery.com/packages/OfficeOnlineServerDsc/)
 
