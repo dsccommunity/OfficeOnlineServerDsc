@@ -237,9 +237,7 @@ stages:
               pwsh: false
 
           - task: PublishCodeCoverageResults@1
-            dependsOn: merge
             displayName: 'Publish Code Coverage'
-            condition: succeededOrFailed()
             inputs:
               codeCoverageTool: 'JaCoCo'
               summaryFileLocation: 'output/CodeCov_Merged.xml'
