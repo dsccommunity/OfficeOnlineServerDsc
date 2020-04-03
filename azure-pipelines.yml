@@ -113,7 +113,7 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: 'Publish CodeCoverage Artifact'
             inputs:
-              pathToPublish: ''$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)''
+              pathToPublish: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
               artifactName: 'CodeCoverage_2013'
               publishLocation: 'Container'
           # - task: PublishCodeCoverageResults@1
@@ -161,7 +161,7 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: 'Publish CodeCoverage Artifact'
             inputs:
-              pathToPublish: ''$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)''
+              pathToPublish: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
               artifactName: 'CodeCoverage_2016'
               publishLocation: 'Container'
           # - task: PublishCodeCoverageResults@1
