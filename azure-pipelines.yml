@@ -59,6 +59,7 @@ stages:
               downloadType: 'single'
               artifactName: 'output'
               downloadPath: '$(Build.SourcesDirectory)'
+
           - task: PowerShell@2
             name: test
             displayName: 'Run HQRM Test'
@@ -66,6 +67,7 @@ stages:
               filePath: './build.ps1'
               arguments: '-Tasks hqrmtest'
               pwsh: false
+
           - task: PublishTestResults@2
             displayName: 'Publish Test Results'
             condition: succeededOrFailed()
@@ -108,13 +110,19 @@ stages:
               testResultsFormat: 'NUnit'
               testResultsFiles: 'output/testResults/NUnit*.xml'
               testRunTitle: 'Unit (Windows Server Core)'
-          - task: PublishCodeCoverageResults@1
-            displayName: 'Publish Code Coverage'
-            condition: succeededOrFailed()
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish CodeCoverage Artifact'
             inputs:
-              codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: 'output/testResults/CodeCov*.xml'
-              pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
+              pathToPublish: ''$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)''
+              artifactName: 'CodeCoverage_2013'
+              publishLocation: 'Container'
+          # - task: PublishCodeCoverageResults@1
+          #   displayName: 'Publish Code Coverage'
+          #   condition: succeededOrFailed()
+          #   inputs:
+          #     codeCoverageTool: 'JaCoCo'
+          #     summaryFileLocation: 'output/testResults/CodeCov*.xml'
+          #     pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
 
       - job: Test_Unit_2016
         displayName: 'Unit OOS 2016'
@@ -150,13 +158,62 @@ stages:
               testResultsFormat: 'NUnit'
               testResultsFiles: 'output/testResults/NUnit*.xml'
               testRunTitle: 'Unit (Windows Server Core)'
-          - task: PublishCodeCoverageResults@1
-            displayName: 'Publish Code Coverage'
-            condition: succeededOrFailed()
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish CodeCoverage Artifact'
             inputs:
-              codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: 'output/testResults/CodeCov*.xml'
-              pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
+              pathToPublish: ''$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)''
+              artifactName: 'CodeCoverage_2016'
+              publishLocation: 'Container'
+          # - task: PublishCodeCoverageResults@1
+          #   displayName: 'Publish Code Coverage'
+          #   condition: succeededOrFailed()
+          #   inputs:
+          #     codeCoverageTool: 'JaCoCo'
+          #     summaryFileLocation: 'output/testResults/CodeCov*.xml'
+          #     pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
+
+      - job: MergeCodeCoverage
+        dependsOn: Test_Unit_2013 | Test_Unit_2016
+        displayName: 'Merge Code Coverage'
+        pool:
+          vmImage: 'windows-2019'
+        timeoutInMinutes: 0
+        steps:
+          - powershell: |
+              $repositoryOwner,$repositoryName = $env:BUILD_REPOSITORY_NAME -split '/'
+
+              echo "##vso[task.setvariable variable=RepositoryOwner;isOutput=true]$repositoryOwner"
+              echo "##vso[task.setvariable variable=RepositoryName;isOutput=true]$repositoryName"
+            name: dscBuildVariable
+            displayName: 'Set Environment Variables'
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Build Artifact'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'CodeCoverage_2013'
+              downloadPath: '$(Build.SourcesDirectory)'
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Build Artifact'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'CodeCoverage_2016'
+              downloadPath: '$(Build.SourcesDirectory)'
+          - task: PowerShell@2
+            name: test
+            displayName: 'Merge Code Coverage files'
+            inputs:
+              targetType: 'inline'
+              script: 'Get-ChildItem $(Build.SourcesDirectory)'
+              pwsh: false
+          # - task: PublishCodeCoverageResults@1
+          #   displayName: 'Publish Code Coverage'
+          #   condition: succeededOrFailed()
+          #   inputs:
+          #     codeCoverageTool: 'JaCoCo'
+          #     summaryFileLocation: 'output/testResults/CodeCov*.xml'
+          #     pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
 
   - stage: Deploy
     dependsOn: Test
