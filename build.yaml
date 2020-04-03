@@ -88,7 +88,7 @@ Pester: #Passthru, OutputFile, CodeCoverageOutputFile not supported
     - FunctionalQuality
     - TestQuality
   Tag:
-  CodeCoverageThreshold: 0 # Set to 0 to bypass
+  CodeCoverageThreshold: 80 # Set to 0 to bypass
   # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
   # CodeCoverageOutputFileEncoding: ascii
   # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
