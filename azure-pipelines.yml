@@ -89,6 +89,7 @@ stages:
               echo "##vso[task.setvariable variable=RepositoryName;isOutput=true]$repositoryName"
             name: dscBuildVariable
             displayName: 'Set Environment Variables'
+
           - task: DownloadBuildArtifacts@0
             displayName: 'Download Build Artifact'
             inputs:
@@ -96,6 +97,7 @@ stages:
               downloadType: 'single'
               artifactName: 'output'
               downloadPath: '$(Build.SourcesDirectory)'
+
           - task: PowerShell@2
             name: test
             displayName: 'Run Unit Test for OWA 2013'
@@ -103,6 +105,7 @@ stages:
               filePath: './build.ps1'
               arguments: "-Tasks test -PesterScript @(@{ Path = '$(Build.SourcesDirectory)/Tests/Unit'; Parameters = @{WACCmdletModule = '$(Build.SourcesDirectory)/Tests/Unit/Stubs/15.0.4569.1506/OfficeWebApps.psm1' }})"
               pwsh: false
+
           - task: PublishTestResults@2
             displayName: 'Publish Test Results'
             condition: succeededOrFailed()
@@ -110,6 +113,7 @@ stages:
               testResultsFormat: 'NUnit'
               testResultsFiles: 'output/testResults/NUnit*.xml'
               testRunTitle: 'Unit (Windows Server Core)'
+
           - task: PublishBuildArtifacts@1
             displayName: 'Publish CodeCoverage Artifact'
             inputs:
@@ -137,6 +141,7 @@ stages:
               echo "##vso[task.setvariable variable=RepositoryName;isOutput=true]$repositoryName"
             name: dscBuildVariable
             displayName: 'Set Environment Variables'
+
           - task: DownloadBuildArtifacts@0
             displayName: 'Download Build Artifact'
             inputs:
@@ -144,6 +149,7 @@ stages:
               downloadType: 'single'
               artifactName: 'output'
               downloadPath: '$(Build.SourcesDirectory)'
+
           - task: PowerShell@2
             name: test
             displayName: 'Run Unit Test for OOS 2016'
@@ -151,6 +157,7 @@ stages:
               filePath: './build.ps1'
               arguments: "-Tasks test -PesterScript @(@{ Path = '$(Build.SourcesDirectory)/Tests/Unit'; Parameters = @{WACCmdletModule = '$(Build.SourcesDirectory)/Tests/Unit/Stubs/16.0.6814.2226/OfficeWebApps.psm1' }})"
               pwsh: false
+
           - task: PublishTestResults@2
             displayName: 'Publish Test Results'
             condition: succeededOrFailed()
@@ -158,6 +165,7 @@ stages:
               testResultsFormat: 'NUnit'
               testResultsFiles: 'output/testResults/NUnit*.xml'
               testRunTitle: 'Unit (Windows Server Core)'
+
           - task: PublishBuildArtifacts@1
             displayName: 'Publish CodeCoverage Artifact'
             inputs:
@@ -188,27 +196,38 @@ stages:
               echo "##vso[task.setvariable variable=RepositoryName;isOutput=true]$repositoryName"
             name: dscBuildVariable
             displayName: 'Set Environment Variables'
+
           - task: DownloadBuildArtifacts@0
             displayName: 'Download Build Artifact'
             inputs:
               buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'CodeCoverage_2013'
-              downloadPath: '$(Build.SourcesDirectory)/output'
-          - task: DownloadBuildArtifacts@0
-            displayName: 'Download Build Artifact'
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'CodeCoverage_2016'
-              downloadPath: '$(Build.SourcesDirectory)/output'
+              downloadType: 'specific'
+              downloadPath: '$(Build.SourcesDirectory)'
+
+          # - task: DownloadBuildArtifacts@0
+          #   displayName: 'Download Build Artifact'
+          #   inputs:
+          #     buildType: 'current'
+          #     downloadType: 'single'
+          #     artifactName: 'CodeCoverage_2013'
+          #     downloadPath: '$(Build.SourcesDirectory)/output'
+
+          # - task: DownloadBuildArtifacts@0
+          #   displayName: 'Download Build Artifact'
+          #   inputs:
+          #     buildType: 'current'
+          #     downloadType: 'single'
+          #     artifactName: 'CodeCoverage_2016'
+          #     downloadPath: '$(Build.SourcesDirectory)/output'
+
           - task: PowerShell@2
-            name: test
+            name: troubleshoot
             displayName: 'Troubleshooting'
             inputs:
               targetType: 'inline'
-              script: 'Get-ChildItem $(Build.SourcesDirectory)/output'
+              script: 'Get-ChildItem $(Build.SourcesDirectory)/output/CodeCov*.xml -Recurse'
               pwsh: false
+
           - task: PowerShell@2
             name: merge
             displayName: 'Merge Code Coverage files'
@@ -216,13 +235,15 @@ stages:
               filePath: './build.ps1'
               arguments: "-Tasks merge"
               pwsh: false
-          # - task: PublishCodeCoverageResults@1
-          #   displayName: 'Publish Code Coverage'
-          #   condition: succeededOrFailed()
-          #   inputs:
-          #     codeCoverageTool: 'JaCoCo'
-          #     summaryFileLocation: 'output/CodeCov_Merged.xml'
-          #     pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
+
+          - task: PublishCodeCoverageResults@1
+            dependsOn: merge
+            displayName: 'Publish Code Coverage'
+            condition: succeededOrFailed()
+            inputs:
+              codeCoverageTool: 'JaCoCo'
+              summaryFileLocation: 'output/CodeCov_Merged.xml'
+              pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
 
   - stage: Deploy
     dependsOn: Test
