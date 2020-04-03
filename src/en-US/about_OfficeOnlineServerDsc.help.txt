@@ -1,0 +1,25 @@
+TOPIC
+    about_OfficeOnlineServerDsc
+
+SHORT DESCRIPTION
+    DSC resources for deployment and configuration of {Product Name}.
+
+LONG DESCRIPTION
+    This module contains DSC resources for deployment and configuration of {Product Name}.
+
+EXAMPLES
+    PS C:\> Get-DscResource -Module OfficeOnlineServerDsc
+
+NOTE:
+    Thank you to the DSC Community contributors who contributed to this module by
+    writing code, sharing opinions, and provided feedback.
+
+TROUBLESHOOTING NOTE:
+    Go to the Github repository for read about issues, submit a new issue, and read
+    about new releases. https://github.com/dsccommunity/OfficeOnlineServerDsc
+
+SEE ALSO
+    - https://github.com/dsccommunity/OfficeOnlineServerDsc
+
+KEYWORDS
+    DSC, DscResource, {productTag}

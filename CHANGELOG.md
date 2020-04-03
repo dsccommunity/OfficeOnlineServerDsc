@@ -1,77 +1,38 @@
 # Change log for OfficeOnlineServerDsc
 
-## Unreleased
+The format is based on and uses the types of changes according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-* OfficeOnlineServerDsc
-  * Optin to the following Dsc Resource metatests:
-    * Common Tests - Validate Module Files
-    * Common Tests - Validate Script Files
-    * Common Tests - Relative Path Length
-    * Common Tests - Validate Markdown Links
-* OfficeOnlineServerFarm
-  * Added logic to make sure this resource does not interfere with
+## [Unreleased]
+
+## Added
+
+- OfficeOnlineServerDsc
+  - Optin to the following Dsc Resource metatests:
+    - Common Tests - Validate Module Files
+    - Common Tests - Validate Script Files
+    - Common Tests - Relative Path Length
+    - Common Tests - Validate Markdown Links
+- OfficeOnlineServerFarm
+  - Added logic to make sure this resource does not interfere with
     a patch installation after a reboot
-* OfficeOnlineServerInstall
-  * Updated error code checks to force reboot
-  * Added check for CDROM to prevent issues with block file check
-* OfficeOnlineServerInstallLanguagePack
-  * Added Contextual Help information
-  * Added check for CDROM to prevent issues with block file check
-* OfficeOnlineServerMachine
-  * Added logic to make sure this resource does not interfere with
+- OfficeOnlineServerInstall
+  - Added check for CDROM to prevent issues with block file check
+- OfficeOnlineServerInstallLanguagePack
+  - Added Contextual Help information
+  - Added check for CDROM to prevent issues with block file check
+- OfficeOnlineServerMachine
+  - Added logic to make sure this resource does not interfere with
     a patch installation after a reboot
-  * Removed check for MachineToJoin. The resource only needs to check
+- OfficeOnlineServerProductUpdate
+  - New resource
+
+## Changed
+
+- OfficeOnlineServerInstall
+  - Updated error code checks to force reboot
+- OfficeOnlineServerMachine
+  - Removed check for MachineToJoin. The resource only needs to check
     for farm join, especially with the new ProductUpdate resource.
-* OfficeOnlineServerProductUpdate
-  * New resource
 
-## 1.4.0.0
-
-* OfficeOnlineServerInstall
-  * Updated resource to make sure the Windows Environment
-    variables are loaded into the PowerShell session;
-  * Updated error code checks to force reboot;
-* OfficeOnlineServerMachine
-  * Updated resource to make sure the Windows Environment
-    variables are loaded into the PowerShell session;
-* Created LICENSE file to match the Microsoft Open Source Team standard.
-  * Fixes [Issue #35](https://github.com/PowerShell/OfficeOnlineServerDsc/issues/35)
-
-## 1.3.0.0
-
-* Changes to OfficeOnlineServerDsc
-  * Added pull request template and issue templates.
-* OfficeOnlineServerInstall
-  * Added check to test if the setup file is blocked or not;
-  * Added ability to install from a UNC path, by adding server
-    to IE Local Intranet Zone. This will prevent an endless wait
-    caused by security warning;
-* OfficeOnlineServerInstallLanguagePack
-  * Added check to test if the setup file is blocked or not;
-  * Added ability to install from a UNC path, by adding server
-    to IE Local Intranet Zone. This will prevent an endless wait
-    caused by security warning;
-
-## 1.2.0.0
-
-* Added fix for Multiple Language Pack Installs
-
-## 1.1.0.0
-
-* Added support for Language Packs installation;
-
-## 1.0
-
-* Added documentation to the module to finalise for release;
-* Renamed resources to shorten names before release;
-  * 'OfficeOnlineServerWebAppsFarm' becomes 'OfficeOnlineServerFarm';
-  * 'OfficeOnlineServerWebAppsMachine' becomes 'OfficeOnlineServerMachine';
-
-## 0.2
-
-* Fixed a bug that caused OfficeOnlineServerMachine to fail a test when;
-  the machine to join was specified using a fully qualified domain name (FQDN);
-
-### 0.1.0.0
-
-* First release of OfficeOnlineServerDsc;
+For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md).
