@@ -74,8 +74,8 @@ stages:
               testResultsFiles: 'output/testResults/NUnit*.xml'
               testRunTitle: 'HQRM'
 
-      - job: Test_Unit 2013
-        displayName: 'Unit'
+      - job: Test_Unit_2013
+        displayName: 'Unit OWA 2013'
         pool:
           vmImage: 'windows-2019'
         timeoutInMinutes: 0
@@ -96,7 +96,7 @@ stages:
               downloadPath: '$(Build.SourcesDirectory)'
           - task: PowerShell@2
             name: test
-            displayName: 'Run Unit Test'
+            displayName: 'Run Unit Test for OWA 2013'
             inputs:
               filePath: './build.ps1'
               arguments: "-Tasks test -PesterScript @(@{ Path = '$(Build.SourcesDirectory)/Tests/Unit'; Parameters = @{WACCmdletModule = '$(Build.SourcesDirectory)/Tests/Unit/Stubs/15.0.4569.1506/OfficeWebApps.psm1' }})"
@@ -116,8 +116,8 @@ stages:
               summaryFileLocation: 'output/testResults/CodeCov*.xml'
               pathToSources: '$(Build.SourcesDirectory)/output/$(dscBuildVariable.RepositoryName)'
 
-      - job: Test_Unit 2016
-        displayName: 'Unit'
+      - job: Test_Unit_2016
+        displayName: 'Unit OOS 2016'
         pool:
           vmImage: 'windows-2019'
         timeoutInMinutes: 0
@@ -138,7 +138,7 @@ stages:
               downloadPath: '$(Build.SourcesDirectory)'
           - task: PowerShell@2
             name: test
-            displayName: 'Run Unit Test'
+            displayName: 'Run Unit Test for OOS 2016'
             inputs:
               filePath: './build.ps1'
               arguments: "-Tasks test -PesterScript @(@{ Path = '$(Build.SourcesDirectory)/Tests/Unit'; Parameters = @{WACCmdletModule = '$(Build.SourcesDirectory)/Tests/Unit/Stubs/16.0.6814.2226/OfficeWebApps.psm1' }})"
