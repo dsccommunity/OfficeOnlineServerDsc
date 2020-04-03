@@ -3,7 +3,7 @@ $script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPat
 $script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
 Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
 
-$script:LocalizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerInstall'
+$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerInstall'
 
 $Script:UninstallPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 $script:InstallKeyPattern = "Office1(5)|(6).WacServer"
@@ -49,17 +49,17 @@ function Get-TargetResource
         {
             if ($volume.DriveType -ne "CD-ROM")
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsFixedDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsFixedDrive
             }
             else
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsCDDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsCDDrive
                 $checkBlockedFile = $false
             }
         }
         else
         {
-            Write-Verbose -Message $LocalizedData.VolumeNotFound
+            Write-Verbose -Message $script:localizedData.VolumeNotFound
         }
     }
 
@@ -72,14 +72,14 @@ function Get-TargetResource
         }
         catch
         {
-            Write-Verbose -Message $LocalizedData.ErrorReadingFileStream
+            Write-Verbose -Message $script:localizedData.ErrorReadingFileStream
         }
         if ($null -ne $zone)
         {
             throw ("Setup file is blocked! Please use 'Unblock-File -Path " + `
                     "$Path' to unblock the file before continuing.")
         }
-        Write-Verbose -Message $LocalizedData.FileNotBlocked
+        Write-Verbose -Message $script:localizedData.FileNotBlocked
     }
 
     $matchPath = "HKEY_LOCAL_MACHINE\\$($Script:UninstallPath.Replace('\','\\'))" + `
@@ -141,17 +141,17 @@ function Set-TargetResource
         {
             if ($volume.DriveType -ne "CD-ROM")
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsFixedDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsFixedDrive
             }
             else
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsCDDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsCDDrive
                 $checkBlockedFile = $false
             }
         }
         else
         {
-            Write-Verbose -Message $LocalizedData.VolumeNotFound
+            Write-Verbose -Message $script:localizedData.VolumeNotFound
         }
     }
 
@@ -164,21 +164,21 @@ function Set-TargetResource
         }
         catch
         {
-            Write-Verbose -Message $LocalizedData.ErrorReadingFileStream
+            Write-Verbose -Message $script:localizedData.ErrorReadingFileStream
         }
         if ($null -ne $zone)
         {
             throw ("Setup file is blocked! Please use 'Unblock-File -Path " + `
                     "$Path' to unblock the file before continuing.")
         }
-        Write-Verbose -Message $LocalizedData.FileNotBlocked
+        Write-Verbose -Message $script:localizedData.FileNotBlocked
     }
 
-    Write-Verbose -Message $LocalizedData.CheckForUNC
+    Write-Verbose -Message $script:localizedData.CheckForUNC
     $uncInstall = $false
     if ($Path.StartsWith("\\"))
     {
-        Write-Verbose -Message $LocalizedData.PathIsUNC
+        Write-Verbose -Message $script:localizedData.PathIsUNC
 
         $uncInstall = $true
 
@@ -195,7 +195,7 @@ function Set-TargetResource
 
     if ($uncInstall -eq $true)
     {
-        Write-Verbose -Message $LocalizedData.RemoveUNCPath
+        Write-Verbose -Message $script:localizedData.RemoveUNCPath
         Remove-OosDscZoneMap -ServerName $serverName
     }
 
@@ -204,11 +204,11 @@ function Set-TargetResource
     {
         0
         {
-            Write-Verbose -Message $LocalizedData.InstallationSucceeded
+            Write-Verbose -Message $script:localizedData.InstallationSucceeded
         }
         3010
         {
-            Write-Verbose -Message $LocalizedData.RebootRequired
+            Write-Verbose -Message $script:localizedData.RebootRequired
             $global:DSCMachineStatus = 1
         }
         Default
