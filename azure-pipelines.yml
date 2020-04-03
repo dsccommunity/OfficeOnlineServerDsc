@@ -197,28 +197,36 @@ stages:
             name: dscBuildVariable
             displayName: 'Set Environment Variables'
 
+          # - task: DownloadBuildArtifacts@0
+          #   displayName: 'Download Build Artifact'
+          #   inputs:
+          #     buildType: 'current'
+          #     downloadType: 'specific'
+          #     downloadPath: '$(Build.SourcesDirectory)'
+
           - task: DownloadBuildArtifacts@0
             displayName: 'Download Build Artifact'
             inputs:
               buildType: 'current'
-              downloadType: 'specific'
+              downloadType: 'single'
+              artifactName: 'output'
               downloadPath: '$(Build.SourcesDirectory)'
 
-          # - task: DownloadBuildArtifacts@0
-          #   displayName: 'Download Build Artifact'
-          #   inputs:
-          #     buildType: 'current'
-          #     downloadType: 'single'
-          #     artifactName: 'CodeCoverage_2013'
-          #     downloadPath: '$(Build.SourcesDirectory)/output'
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Build Artifact'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'CodeCoverage_2013'
+              downloadPath: '$(Build.SourcesDirectory)/output'
 
-          # - task: DownloadBuildArtifacts@0
-          #   displayName: 'Download Build Artifact'
-          #   inputs:
-          #     buildType: 'current'
-          #     downloadType: 'single'
-          #     artifactName: 'CodeCoverage_2016'
-          #     downloadPath: '$(Build.SourcesDirectory)/output'
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download Build Artifact'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'CodeCoverage_2016'
+              downloadPath: '$(Build.SourcesDirectory)/output'
 
           - task: PowerShell@2
             name: troubleshoot
