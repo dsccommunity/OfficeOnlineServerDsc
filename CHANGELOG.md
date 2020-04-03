@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 
 - OfficeOnlineServerDsc
+  - Implemented the new DSC Community CD/CI system
   - Optin to the following Dsc Resource metatests:
     - Common Tests - Validate Module Files
     - Common Tests - Validate Script Files
