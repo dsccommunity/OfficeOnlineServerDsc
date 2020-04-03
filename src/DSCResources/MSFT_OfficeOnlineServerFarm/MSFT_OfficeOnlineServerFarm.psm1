@@ -3,7 +3,7 @@ $script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPat
 $script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
 Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
 
-$script:LocalizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerFarm'
+$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerFarm'
 
 $script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
 
@@ -519,12 +519,12 @@ function Set-TargetResource
 
     if (-not $officeWebAppsFarm)
     {
-        Write-Verbose -Message $LocalizedData.InstallingNewFarm
+        Write-Verbose -Message $script:localizedData.InstallingNewFarm
         $null = New-OfficeWebAppsFarm @PSBoundParameters -Force
     }
     else
     {
-        Write-Verbose -Message $LocalizedData.FarmExists
+        Write-Verbose -Message $script:localizedData.FarmExists
         $null = Set-OfficeWebAppsFarm @PSBoundParameters -Force
     }
 }
@@ -749,7 +749,7 @@ function Test-TargetResource
 
         if ($state -eq "Patching")
         {
-            Write-Verbose -Message $LocalizedData.ContinueAfterPatching
+            Write-Verbose -Message $script:localizedData.ContinueAfterPatching
             return $true
         }
     }
@@ -864,7 +864,7 @@ function Test-OosDscV16Support
     switch ($version.Major)
     {
         15 {
-            Write-Verbose -Message $LocalizedData.OWA2013Detected
+            Write-Verbose -Message $script:localizedData.OWA2013Detected
             foreach ($param in $script:v16onlyParams)
             {
                 if ($Parameters.ContainsKey($param) -eq $true)
@@ -874,7 +874,7 @@ function Test-OosDscV16Support
             }
         }
         16 {
-            Write-Verbose -Message $LocalizedData.OOS2016Detected
+            Write-Verbose -Message $script:localizedData.OOS2016Detected
         }
         Default {
             throw ("This module only supports Office Web Apps 2013 (v15) and Office " + `

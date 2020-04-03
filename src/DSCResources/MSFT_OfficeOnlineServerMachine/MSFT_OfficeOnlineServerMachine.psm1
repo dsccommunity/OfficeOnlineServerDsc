@@ -3,7 +3,7 @@ $script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPat
 $script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
 Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
 
-$script:LocalizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerMachine'
+$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerMachine'
 
 $script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
 
@@ -46,7 +46,7 @@ function Get-TargetResource
             "(Office Online)|(Office Web Apps) Server farm\."
         if ($_.toString() -match $notInFarmError)
         {
-            Write-Verbose -Message $LocalizedData.NotApartOfAFarm
+            Write-Verbose -Message $script:localizedData.NotApartOfAFarm
         }
         else
         {
@@ -103,7 +103,7 @@ function Set-TargetResource
     {
         Remove-OfficeWebAppsMachine
 
-        Write-Verbose -Message $LocalizedData.RemoveAppMachine
+        Write-Verbose -Message $script:localizedData.RemoveAppMachine
     }
     else
     {
@@ -116,7 +116,7 @@ function Set-TargetResource
         }
         catch
         {
-            Write-Verbose -Message $LocalizedData.FailedRemove
+            Write-Verbose -Message $script:localizedData.FailedRemove
         }
 
         if ($null -eq $Roles)
@@ -126,7 +126,7 @@ function Set-TargetResource
 
         $null = New-OfficeWebAppsMachine -MachineToJoin $MachineToJoin -Roles $Roles
 
-        Write-Verbose -Message $LocalizedData.SetAppMachine
+        Write-Verbose -Message $script:localizedData.SetAppMachine
     }
 }
 

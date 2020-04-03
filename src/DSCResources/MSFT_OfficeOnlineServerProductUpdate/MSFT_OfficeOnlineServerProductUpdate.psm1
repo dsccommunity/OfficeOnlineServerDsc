@@ -3,7 +3,7 @@ $script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPat
 $script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
 Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
 
-$script:LocalizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerProductUpdate'
+$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerProductUpdate'
 
 $script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
 
@@ -38,7 +38,7 @@ function Get-TargetResource
 
     Write-Verbose -Message "Getting install status of OOS binaries"
 
-    Write-Verbose -Message $LocalizedData.CheckIfFileExists
+    Write-Verbose -Message $script:localizedData.CheckIfFileExists
     if (-not(Test-Path -Path $SetupFile))
     {
         throw "Setup file cannot be found: {$SetupFile}"
@@ -61,23 +61,23 @@ function Get-TargetResource
         {
             if ($volume.DriveType -ne "CD-ROM")
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsFixedDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsFixedDrive
             }
             else
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsCDDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsCDDrive
                 $checkBlockedFile = $false
             }
         }
         else
         {
-            Write-Verbose -Message $LocalizedData.VolumeNotFound
+            Write-Verbose -Message $script:localizedData.VolumeNotFound
         }
     }
 
     if ($checkBlockedFile -eq $true)
     {
-        Write-Verbose -Message $LocalizedData.CheckingStatus
+        Write-Verbose -Message $script:localizedData.CheckingStatus
         $zone = Get-Item -Path $SetupFile -Stream "Zone.Identifier" -EA SilentlyContinue
 
         if ($null -ne $zone)
@@ -85,17 +85,17 @@ function Get-TargetResource
             throw ("Setup file is blocked! Please use 'Unblock-File -Path $SetupFile' " + `
                     "to unblock the file before continuing.")
         }
-        Write-Verbose -Message $LocalizedData.FileNotBlocked
+        Write-Verbose -Message $script:localizedData.FileNotBlocked
     }
 
-    Write-Verbose -Message $LocalizedData.GetFileInfo
+    Write-Verbose -Message $script:localizedData.GetFileInfo
     $setupFileInfo = Get-ItemProperty -Path $SetupFile
     $fileVersion = $setupFileInfo.VersionInfo.FileVersion
 
     Write-Verbose -Message "Update has version $fileVersion"
     $fileVersionInfo = New-Object -TypeName System.Version -ArgumentList $fileVersion
 
-    Write-Verbose -Message $LocalizedData.GetOOSInfo
+    Write-Verbose -Message $script:localizedData.GetOOSInfo
     $OfficeVersionInfoFile = "C:\ProgramData\Microsoft\OfficeWebApps\Data\local\OfficeVersion.inc"
     if ((Test-Path -Path $OfficeVersionInfoFile) -eq $false)
     {
@@ -200,23 +200,23 @@ function Set-TargetResource
         {
             if ($volume.DriveType -ne "CD-ROM")
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsFixedDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsFixedDrive
             }
             else
             {
-                Write-Verbose -Message $LocalizedData.VolumeIsCDDrive
+                Write-Verbose -Message $script:localizedData.VolumeIsCDDrive
                 $checkBlockedFile = $false
             }
         }
         else
         {
-            Write-Verbose -Message $LocalizedData.VolumeNotFound
+            Write-Verbose -Message $script:localizedData.VolumeNotFound
         }
     }
 
     if ($checkBlockedFile -eq $true)
     {
-        Write-Verbose -Message $LocalizedData.CheckingStatus
+        Write-Verbose -Message $script:localizedData.CheckingStatus
         $zone = Get-Item -Path $SetupFile -Stream "Zone.Identifier" -EA SilentlyContinue
 
         if ($null -ne $zone)
@@ -224,17 +224,17 @@ function Set-TargetResource
             throw ("Setup file is blocked! Please use 'Unblock-File -Path $SetupFile' " + `
                     "to unblock the file before continuing.")
         }
-        Write-Verbose -Message $LocalizedData.FileNotBlocked
+        Write-Verbose -Message $script:localizedData.FileNotBlocked
     }
 
-    Write-Verbose -Message $LocalizedData.GetFileInfo
+    Write-Verbose -Message $script:localizedData.GetFileInfo
     $setupFileInfo = Get-ItemProperty -Path $SetupFile
     $fileVersion = $setupFileInfo.VersionInfo.FileVersion
 
     Write-Verbose -Message "Update has version $fileVersion"
     $PatchVersion = New-Object -TypeName System.Version -ArgumentList $fileVersion
 
-    Write-Verbose -Message $LocalizedData.GetOOSInfo
+    Write-Verbose -Message $script:localizedData.GetOOSInfo
     $serversInfo = Get-ServerInfo -Servers $Servers
 
     # Get current server info
@@ -633,11 +633,11 @@ function Install-OOSDscPatch
 
     Write-Verbose -Message "Beginning installation of the OOS update"
 
-    Write-Verbose -Message $LocalizedData.CheckIfUNC
+    Write-Verbose -Message $script:localizedData.CheckIfUNC
     $uncInstall = $false
     if ($SetupFile.StartsWith("\\"))
     {
-        Write-Verbose -Message $LocalizedData.PathIsUNC
+        Write-Verbose -Message $script:localizedData.PathIsUNC
 
         $uncInstall = $true
 
@@ -660,7 +660,7 @@ function Install-OOSDscPatch
 
     if ($uncInstall -eq $true)
     {
-        Write-Verbose -Message $LocalizedData.RemoveUNCPath
+        Write-Verbose -Message $script:localizedData.RemoveUNCPath
         Remove-OosDscZoneMap -ServerName $serverName
     }
 
@@ -669,15 +669,15 @@ function Install-OOSDscPatch
     {
         0
         {
-            Write-Verbose -Message $LocalizedData.InstallSucceeded
+            Write-Verbose -Message $script:localizedData.InstallSucceeded
         }
         17022
         {
-            Write-Verbose -Message $LocalizedData.RebootRequired
+            Write-Verbose -Message $script:localizedData.RebootRequired
         }
         17025
         {
-            Write-Verbose -Message $LocalizedData.AlreadyInstalled
+            Write-Verbose -Message $script:localizedData.AlreadyInstalled
         }
         Default
         {
