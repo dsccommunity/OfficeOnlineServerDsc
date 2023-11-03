@@ -72,7 +72,7 @@ try
                 }
             }
 
-            Context "Add new domain to an empty allowlist" {
+            Context "Add new domain to allowlist" {
                 $testParams = @{
                     AllowList        = "oos1.contoso.com"
                     IsSingleInstance = "Yes"
