@@ -59,15 +59,15 @@ try
                     $Name -eq "OfficeWebApps"
                 }
 
-                It "Throws an exception from the get method" {
+                It "Throws an exception from 'Get-TargetResource'" {
                     { Get-TargetResource $testParams } | Should throw
                 }
 
-                It "Throws an exception from the test method" {
+                It "Throws an exception from 'Test-TargetResource'" {
                     { Test-TargetResource $testParams } | Should throw
                 }
 
-                It "Throws an exception from the set method" {
+                It "Throws an exception from 'Set-TargetResource'" {
                     { Set-TargetResource $testParams } | Should throw
                 }
             }
@@ -144,6 +144,33 @@ try
                 It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
                     Assert-MockCalled -CommandName Remove-OfficeWebAppsHost
+                }
+            }
+
+            Context "Remove existing domain from allowlist with multiple entries" {
+                $testParams = @{
+                    AllowList        = "oos1.contoso.com"
+                    IsSingleInstance = "Yes"
+                    Ensure           = "Absent"
+                }
+
+                Mock -CommandName Get-OfficeWebAppsHost -MockWith {
+                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                        allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
+                    }
+                    $OfficeWebAppsHostObject.allowList.Add("oos1.contoso.com")
+                    $OfficeWebAppsHostObject.allowList.Add("oos2.contoso.com")
+                    $OfficeWebAppsHostObject.allowList.Add("oos3.contoso.com")
+                    return $OfficeWebAppsHostObject
+                }
+
+                It "Should return 'False' from 'Test-TargetResource'" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource' exactly 1 time" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
                 }
             }
 
