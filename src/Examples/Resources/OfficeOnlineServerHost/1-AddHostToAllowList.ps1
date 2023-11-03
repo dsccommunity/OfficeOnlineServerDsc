@@ -40,14 +40,14 @@ Updated author, copyright notice, and URLs.
 
 Configuration Example
 {
-    Param()
+        Param()
 
-    Import-DscResource -ModuleName OfficeOnlineServerDsc
+        Import-DscResource -ModuleName OfficeOnlineServerDsc
 
-    OfficeOnlineServerHost 'HostsAllowList'
-    {
-        IsSingleInstance = 'Yes'
-        Domains          = 'example.contoso.com'
-        DependsOn        = "[OfficeOnlineServerFarm]LocalFarm"
-    }
+        OfficeOnlineServerHost 'HostsAllowList'
+        {
+                IsSingleInstance = 'Yes'
+                Domains          = 'example.contoso.com'
+                DependsOn        = "[OfficeOnlineServerFarm]LocalFarm"
+        }
 }
