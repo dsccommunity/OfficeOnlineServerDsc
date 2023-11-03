@@ -41,14 +41,13 @@ function Get-TargetResource
     try
     {
         return @{
-            IsSingleInstance = 'Yes'
             Ensure           = 'Present'
-            AllowList        = [Array](Get-OfficeWebAppsHost).AllowList
+            IsSingleInstance = 'Yes'
+            AllowList        = [Array](Get-OfficeWebAppsHost -ErrorAction Stop).AllowList
         }
     }
     catch
     {
-        Write-Error -ErrorRecord $_
         return $nullReturn
     }
 }
@@ -83,16 +82,15 @@ function Set-TargetResource
 
     forEach ($domain in $PSBoundParameters.AllowList)
     {
-
         if ($Ensure -eq 'Present' -and $domain -notin $CurrentValues.AllowList)
         {
             Write-Verbose -Message "Adding domain '$domain'"
-            New-OfficeWebAppsHost -Domain $domain
+            New-OfficeWebAppsHost -Domain $domain | Out-Null
         }
         elseif ($Ensure -eq 'Absent' -and $domain -in $CurrentValues.AllowList)
         {
             Write-Verbose -Message "Removing domain '$domain'"
-            Remove-OfficeWebAppsHost -Domain $domain
+            Remove-OfficeWebAppsHost -Domain $domain | Out-Null
         }
     }
 }
@@ -131,10 +129,8 @@ function Test-TargetResource
     Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
     Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
-
     forEach ($domain in $PSBoundParameters.AllowList)
     {
-
         if ($Ensure -eq 'Present' -and $domain -notin $CurrentValues.AllowList)
         {
             return $false
@@ -145,7 +141,6 @@ function Test-TargetResource
             return $false
         }
     }
-
     return $true
 }
 
