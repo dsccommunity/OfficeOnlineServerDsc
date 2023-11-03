@@ -38,16 +38,19 @@ function Get-TargetResource
     $nullReturn.Ensure = 'Absent'
     $nullReturn.AllowList = @()
 
-    if($officeWebAppsHost = Get-OfficeWebAppsHost -ErrorAction Stop) {
-        
+    try
+    {
         return @{
             IsSingleInstance = 'Yes'
             Ensure           = 'Present'
-            AllowList        = $officeWebAppsHost.AllowList.ToArray()
+            AllowList        = [Array](Get-OfficeWebAppsHost).AllowList
         }
     }
-    
-    return $nullReturn
+    catch
+    {
+        Write-Error -ErrorRecord $_
+        return $nullReturn
+    }
 }
 
 function Set-TargetResource
@@ -78,8 +81,9 @@ function Set-TargetResource
 
     $CurrentValues = Get-TargetResource @PSBoundParameters
 
-    forEach($domain in $PSBoundParameters.AllowList) {
-        
+    forEach ($domain in $PSBoundParameters.AllowList)
+    {
+
         if ($Ensure -eq 'Present' -and $domain -notin $CurrentValues.AllowList)
         {
             Write-Verbose -Message "Adding domain '$domain'"
@@ -127,9 +131,10 @@ function Test-TargetResource
     Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
     Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
 
-  
-    forEach($domain in $PSBoundParameters.AllowList) {
-        
+
+    forEach ($domain in $PSBoundParameters.AllowList)
+    {
+
         if ($Ensure -eq 'Present' -and $domain -notin $CurrentValues.AllowList)
         {
             return $false
