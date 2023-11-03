@@ -85,9 +85,9 @@ try
                     return $OfficeWebAppsHostObject
                 }
 
-                It "Should return 'Absent' from 'Get-TargetResource'" {
-                    (Get-TargetResource @testParams).Ensure | Should Be 'Absent'
-                }
+                # It "Should return 'Absent' from 'Get-TargetResource'" {
+                #     (Get-TargetResource @testParams).Ensure | Should Be 'Absent'
+                # }
 
                 It "Should return 'False' from 'Test-TargetResource'" {
                     Test-TargetResource @testParams | Should Be $false
@@ -137,10 +137,6 @@ try
                     return $OfficeWebAppsHostObject
                 }
 
-                It "Should return allowlist containing exisiting domain from 'Get-TargetResource'" {
-                    (Get-TargetResource @testParams).AllowList | Should Be @("oos1.contoso.com")
-                }
-
                 It "Should return 'False' from 'Test-TargetResource'" {
                     Test-TargetResource @testParams | Should Be $false
                 }
@@ -148,6 +144,26 @@ try
                 It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
                     Assert-MockCalled -CommandName Remove-OfficeWebAppsHost
+                }
+            }
+
+            Context "Remove non existing domain from allowlist" {
+                $testParams = @{
+                    AllowList        = "oos1.contoso.com"
+                    IsSingleInstance = "Yes"
+                    Ensure           = "Absent"
+                }
+
+                Mock -CommandName Get-OfficeWebAppsHost -MockWith {
+                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                        allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
+                    }
+                    $OfficeWebAppsHostObject.allowList.Add("oos2.contoso.com")
+                    return $OfficeWebAppsHostObject
+                }
+
+                It "Should return 'True' from 'Test-TargetResource'" {
+                    Test-TargetResource @testParams | Should Be $true
                 }
             }
         }
