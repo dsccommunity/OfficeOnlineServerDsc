@@ -99,4 +99,11 @@ Configuration Example
         EditingEnabled = $true
         DependsOn      = "[OfficeOnlineServerInstall]InstallBinaries"
     }
+
+    OfficeOnlineServerHost 'HostsAllowList'
+    {
+        IsSingleInstance = 'Yes'
+        AllowList        = 'example.contoso.com'
+        DependsOn        = "[OfficeOnlineServerFarm]LocalFarm"
+    }
 }
