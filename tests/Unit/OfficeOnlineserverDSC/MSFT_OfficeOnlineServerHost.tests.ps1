@@ -40,6 +40,13 @@ try
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
+            # # Mock OfficeWebAppsHost .net object
+            # $OfficeWebAppsHostObject = [scriptblock]::Create({
+            #         New-Object -TypeName PSCustomObject -Property @{
+            #             allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
+            #         }
+            #     })
+
             Mock -CommandName Get-OfficeWebAppsHost -MockWith {}
             Mock -CommandName Remove-OfficeWebAppsHost -MockWith {}
             Mock -CommandName New-OfficeWebAppsHost -MockWith {}
@@ -79,15 +86,11 @@ try
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
-                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                    $instance = [PSCustomObject] @{
                         allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
                     }
-                    return $OfficeWebAppsHostObject
+                    return $instance
                 }
-
-                # It "Should return 'Absent' from 'Get-TargetResource'" {
-                #     (Get-TargetResource @testParams).Ensure | Should Be 'Absent'
-                # }
 
                 It "Should return 'False' from 'Test-TargetResource'" {
                     Test-TargetResource @testParams | Should Be $false
@@ -106,11 +109,11 @@ try
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
-                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                    $instance = [PSCustomObject] @{
                         allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
                     }
-                    $OfficeWebAppsHostObject.allowList.Add("oos1.contoso.com")
-                    return $OfficeWebAppsHostObject
+                    $instance.allowList.Add("oos1.contoso.com")
+                    return $instance
                 }
 
                 It "Should return 'Present' from 'Get-TargetResource'" {
@@ -130,11 +133,11 @@ try
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
-                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                    $instance = [PSCustomObject] @{
                         allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
                     }
-                    $OfficeWebAppsHostObject.allowList.Add("oos1.contoso.com")
-                    return $OfficeWebAppsHostObject
+                    $instance.allowList.Add("oos1.contoso.com")
+                    return $instance
                 }
 
                 It "Should return 'False' from 'Test-TargetResource'" {
@@ -155,13 +158,13 @@ try
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
-                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                    $instance = [PSCustomObject] @{
                         allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
                     }
-                    $OfficeWebAppsHostObject.allowList.Add("oos1.contoso.com")
-                    $OfficeWebAppsHostObject.allowList.Add("oos2.contoso.com")
-                    $OfficeWebAppsHostObject.allowList.Add("oos3.contoso.com")
-                    return $OfficeWebAppsHostObject
+                    $instance.allowList.Add("oos1.contoso.com")
+                    $instance.allowList.Add("oos2.contoso.com")
+                    $instance.allowList.Add("oos3.contoso.com")
+                    return $instance
                 }
 
                 It "Should return 'False' from 'Test-TargetResource'" {
@@ -182,11 +185,11 @@ try
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
-                    $OfficeWebAppsHostObject = New-Object -TypeName PSCustomObject -Property @{
+                    $instance = [PSCustomObject] @{
                         allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
                     }
-                    $OfficeWebAppsHostObject.allowList.Add("oos2.contoso.com")
-                    return $OfficeWebAppsHostObject
+                    $instance.allowList.Add("oos2.contoso.com")
+                    return $instance
                 }
 
                 It "Should return 'True' from 'Test-TargetResource'" {
