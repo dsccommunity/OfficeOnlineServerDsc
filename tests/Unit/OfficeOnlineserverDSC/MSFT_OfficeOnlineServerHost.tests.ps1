@@ -89,6 +89,7 @@ try
                     }
                 }
 
+                <<<<<<< HEAD
                 Context "Add new domain" {
                     $testParams = @{
                         Domains = "oos1.contoso.com"
@@ -116,6 +117,11 @@ try
                             It "Should return 'Absent' from 'Get-TargetResource'" {
                     (Get-TargetResource @testParams).Ensure | Should Be 'Absent'
                             }
+                            =======
+                            # It "Should return 'Absent' from 'Get-TargetResource'" {
+                            #     (Get-TargetResource @testParams).Ensure | Should Be 'Absent'
+                            # }
+                            >>>>>>> c157201 (First draft of unit tests created)
 
                             It "Should return 'False' from 'Test-TargetResource'" {
                                 Test-TargetResource @testParams | Should Be $false
