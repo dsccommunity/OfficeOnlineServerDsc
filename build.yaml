@@ -58,9 +58,9 @@ Pester:
     - TestQuality
   Tag:
   CodeCoverageThreshold: 50
-  # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
-  # CodeCoverageOutputFileEncoding: ascii
-  # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
+  CodeCoverageOutputFile: JaCoCo_Coverage.xml
+  CodeCoverageOutputFileEncoding: ascii
+  CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
 
 DscTest:
   OutputFormat: NUnitXML
