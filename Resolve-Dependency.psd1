@@ -1,6 +1,10 @@
 @{
-    Gallery = 'PSGallery'
+    Gallery         = 'PSGallery'
     AllowPrerelease = $false
-    WithYAML        = $true # Will also bootstrap PowerShell-Yaml to read other config files
-}
+    WithYAML        = $true
 
+    UsePSResourceGet = $true
+    PSResourceGetVersion = '1.0.0'
+    UsePowerShellGetCompatibilityModule = $true
+    UsePowerShellGetCompatibilityModuleVersion = '3.0.22-beta22'
+}
