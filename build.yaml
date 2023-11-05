@@ -57,7 +57,7 @@ Pester:
     - FunctionalQuality
     - TestQuality
   Tag:
-  CodeCoverageThreshold: 50
+  CodeCoverageThreshold: 78
 
 CodeCoverage:
   # Filename of the file that will be outputted by the task Merge_CodeCoverage_Files.
