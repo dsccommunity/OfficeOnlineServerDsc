@@ -4,7 +4,7 @@ trigger:
     - master
   paths:
     include:
-    - source/*
+    - src/*
   tags:
     include:
     - "v*"
@@ -16,7 +16,7 @@ variables:
   buildArtifactName: output
   testResultFolderName: testResults
   testArtifactName: testResults
-  sourceFolderName: source
+  sourceFolderName: src
   defaultBranch: master
 
 stages:
