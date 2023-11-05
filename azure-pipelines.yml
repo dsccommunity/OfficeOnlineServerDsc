@@ -149,23 +149,6 @@ stages:
               artifactName: 'CodeCoverage_2016'
               parallel: true
 
-      - job: MergeCodeCoverage
-        dependsOn:
-        - 'Test_Unit_2013'
-        - 'Test_Unit_2016'
-        displayName: 'Merge Code Coverage'
-        pool:
-          vmImage: 'windows-latest'
-        timeoutInMinutes: 0
-        steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
-            inputs:
-              buildType: 'current'
-              artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
-
-
       - job: Code_Coverage
         displayName: 'Publish Code Coverage'
         condition: succeededOrFailed()
@@ -187,13 +170,13 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'CodeCoverage_2013'
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)'
           - task: DownloadPipelineArtifact@2
             displayName: 'Download Test Artifact OOS 2016'
             inputs:
               buildType: 'current'
               artifactName: 'CodeCoverage_2016'
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)'
           - task: PowerShell@2
             name: merge
             displayName: 'Merge Code Coverage files'
@@ -209,7 +192,7 @@ stages:
               summaryFileLocation: '$(Build.SourcesDirectory)/$(buildFolderName)/CodeCov_Merged.xml'
               pathToSources: '$(Build.SourcesDirectory)/$(sourceFolderName)/'
           - script: |
-              bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/$(testResultFolderName)/CodeCov_Merged.xml"
+              bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/CodeCov_Merged.xml"
             displayName: 'Publish Code Coverage to Codecov.io'
             condition: succeededOrFailed()
 
