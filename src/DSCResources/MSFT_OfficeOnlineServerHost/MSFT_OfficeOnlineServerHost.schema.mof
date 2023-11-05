@@ -2,6 +2,7 @@
 class MSFT_OfficeOnlineServerHost : OMI_BaseResource
 {
     [Key, Description("Specifies the resource is a single instance, the value must be 'Yes'"),ValueMap{"Yes"},Values{"Yes"}] String IsSingleInstance;
-    [Write, Description("Ensure Present or Absent"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
-    [Write, Description("Host domains to which Office Online Server allows file operations requests")] String AllowList[];
+    [Write, Description("Host domains to which Office Online Server allows file operations requests. Already existing ones, that are not included in this list, will be removed.")] String Domains[];
+    [Write, Description("Host domains that should be added to the Office Online Server hosts allow list.")] String DomainsToInclude[];
+    [Write, Description("Host domains that should be removed from the Office Online Server hosts allow list.")] String DomainsToExclude[];
 };
