@@ -5,9 +5,9 @@ Param
     $WACCmdletModule = (Join-Path $PSScriptRoot "..\Stubs\15.0.4569.1506\OfficeWebApps.psm1" -Resolve)
 )
 
-$Script:DSCModuleName = 'OfficeOnlineServerDsc'
-$Script:DSCResourceName = 'MSFT_OfficeOnlineServerProductUpdate'
-$Global:CurrentWACCmdletModule = $WACCmdletModule
+$script:DSCModuleName = 'OfficeOnlineServerDsc'
+$script:DSCResourceName = 'MSFT_OfficeOnlineServerProductUpdate'
+$global:CurrentWACCmdletModule = $WACCmdletModule
 
 function Invoke-TestSetup
 {
@@ -39,7 +39,6 @@ try
     InModuleScope $Script:DSCResourceName {
         Describe "OfficeOnlineServerInstall [WAC server version $((Get-Item $Global:CurrentWACCmdletModule).Directory.BaseName)]" {
 
-            Import-Module (Join-Path $PSScriptRoot "..\..\..\Modules\OfficeOnlineServerDsc" -Resolve)
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
