@@ -1,10 +1,9 @@
 @{
-    # Set up a mini virtual environment...
     PSDependOptions             = @{
         AddToPath  = $true
         Target     = 'output\RequiredModules'
         Parameters = @{
-           Repository = ''
+            Repository = 'PSGallery'
         }
     }
 
@@ -15,18 +14,11 @@
     ModuleBuilder               = 'latest'
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
+    'Sampler.GitHubTasks'       = 'latest'
     MarkdownLinkCheck           = 'latest'
     'DscResource.Test'          = 'latest'
     'DscResource.AnalyzerRules' = 'latest'
     xDscResourceDesigner        = 'latest'
     'DscResource.DocGenerator'  = 'latest'
     PSDscResources              = 'latest'
-
-
-    # PSPKI                       = 'latest'
-    # 'DscResource.Common' = @{
-    #     Target     = 'Source/Modules'
-    #     Version    = 'latest'
-    # }
 }
-
