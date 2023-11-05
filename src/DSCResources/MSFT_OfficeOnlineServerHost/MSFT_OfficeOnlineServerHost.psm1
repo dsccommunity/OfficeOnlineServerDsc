@@ -20,15 +20,7 @@ function Get-TargetResource
 
         [Parameter()]
         [System.String[]]
-        $Domains,
-
-        [Parameter()]
-        [System.String[]]
-        $DomainsToInclude,
-
-        [Parameter()]
-        [System.String[]]
-        $DomainsToExclude
+        $Domains
     )
 
     Write-Verbose -Message "Retrieving Office Online Server Farm host allow list"
@@ -80,29 +72,39 @@ function Set-TargetResource
 
     Write-Verbose -Message "Updating Office Online Server Farm host allow list"
 
-    $CurrentValues = Get-TargetResource @PSBoundParameters
+    Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
+
+    Confirm-OosDscEnvironmentVariables
+
+    Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
+
+    $CurrentValues = Get-TargetResource -Domains $Domains -IsSingleInstance 'Yes'
 
     if ($PSBoundParameters.ContainsKey('Domains'))
     {
         # Pass empty array, then all existing domains will be deleted
-        if($null -eq $Domains) {
+        if ($null -eq $Domains)
+        {
 
             $PSBoundParameters.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
 
-        # Compares current vs target domains and decided wich ones to keep
-        } else {
+            # Compares current vs target domains and decided wich ones to keep
+        }
+        else
+        {
 
             $PSBoundParameters.Add('DomainsToInclude', $Domains) | Out-Null
 
             $domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains }
-            
-            if($domainsToBeExcluded) {
+
+            if ($domainsToBeExcluded)
+            {
                 $PSBoundParameters.Add('DomainsToExclude', $domainsToBeExcluded) | Out-Null
             }
         }
     }
 
-    # Removes only the passed domains. 
+    # Removes only the passed domains.
     if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
     {
         forEach ($domain in $PSBoundParameters.DomainsToExclude)
@@ -155,7 +157,13 @@ function Test-TargetResource
 
     Write-Verbose -Message "Testing Office Online Server Farm host allow list"
 
-    $CurrentValues = Get-TargetResource @PSBoundParameters
+    Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
+
+    Confirm-OosDscEnvironmentVariables
+
+    Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
+
+    $CurrentValues = Get-TargetResource -Domains $Domains -IsSingleInstance 'Yes'
 
     $CurrentValues.Remove('Verbose') | Out-Null
     $PSBoundParameters.Remove('Verbose') | Out-Null
