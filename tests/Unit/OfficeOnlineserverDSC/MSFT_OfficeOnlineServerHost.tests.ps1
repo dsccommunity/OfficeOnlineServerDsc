@@ -56,7 +56,7 @@ try
 
             Context "The Office Online Server PowerShell module can not be found" {
                 $testParams = @{
-                    AllowList        = "oos1.contoso.com"
+                    Domain           = "oos1.contoso.com"
                     IsSingleInstance = "Yes"
                 }
 
@@ -79,9 +79,9 @@ try
                 }
             }
 
-            Context "Add new domain to allowlist" {
+            Context "Add new domain" {
                 $testParams = @{
-                    AllowList        = "oos1.contoso.com"
+                    Domains          = "oos1.contoso.com"
                     IsSingleInstance = "Yes"
                 }
 
@@ -98,13 +98,13 @@ try
 
                 It "Should call 'New-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName New-OfficeWebAppsHost
+                    Assert-MockCalled -CommandName New-OfficeWebAppsHost -Exactly -Times 1
                 }
             }
 
-            Context "Add existing domain to allowlist" {
+            Context "Add existing domain" {
                 $testParams = @{
-                    AllowList        = "oos1.contoso.com"
+                    Domains          = "oos1.contoso.com"
                     IsSingleInstance = "Yes"
                 }
 
@@ -116,20 +116,15 @@ try
                     return $instance
                 }
 
-                It "Should return 'Present' from 'Get-TargetResource'" {
-                    (Get-TargetResource @testParams).Ensure | Should Be "Present"
-                }
-
                 It "Should return 'True' from 'Test-TargetResource'" {
                     Test-TargetResource @testParams | Should Be $True
                 }
             }
 
-            Context "Remove existing domain from allowlist" {
+            Context "Remove existing domain" {
                 $testParams = @{
-                    AllowList        = "oos1.contoso.com"
+                    DomainsToExclude = "oos1.contoso.com"
                     IsSingleInstance = "Yes"
-                    Ensure           = "Absent"
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
@@ -150,38 +145,10 @@ try
                 }
             }
 
-            Context "Remove existing domain from allowlist with multiple entries" {
+            Context "Remove non existing domain" {
                 $testParams = @{
-                    AllowList        = "oos1.contoso.com"
+                    DomainsToExclude = "oos1.contoso.com"
                     IsSingleInstance = "Yes"
-                    Ensure           = "Absent"
-                }
-
-                Mock -CommandName Get-OfficeWebAppsHost -MockWith {
-                    $instance = [PSCustomObject] @{
-                        allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
-                    }
-                    $instance.allowList.Add("oos1.contoso.com")
-                    $instance.allowList.Add("oos2.contoso.com")
-                    $instance.allowList.Add("oos3.contoso.com")
-                    return $instance
-                }
-
-                It "Should return 'False' from 'Test-TargetResource'" {
-                    Test-TargetResource @testParams | Should Be $false
-                }
-
-                It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource' exactly 1 time" {
-                    Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
-                }
-            }
-
-            Context "Remove non existing domain from allowlist" {
-                $testParams = @{
-                    AllowList        = "oos1.contoso.com"
-                    IsSingleInstance = "Yes"
-                    Ensure           = "Absent"
                 }
 
                 Mock -CommandName Get-OfficeWebAppsHost -MockWith {
@@ -194,6 +161,85 @@ try
 
                 It "Should return 'True' from 'Test-TargetResource'" {
                     Test-TargetResource @testParams | Should Be $true
+                }
+
+                It "Should not call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 0
+                }
+            }
+
+            Context "Remove all existing domain" {
+                $testParams = @{
+                    Domains          = @()
+                    IsSingleInstance = "Yes"
+                }
+
+                Mock -CommandName Get-OfficeWebAppsHost -MockWith {
+                    $instance = [PSCustomObject] @{
+                        allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
+                    }
+                    $instance.allowList.Add("oos1.contoso.com")
+                    $instance.allowList.Add("oos2.contoso.com")
+                    return $instance
+                }
+
+                It "Should return 'False' from 'Test-TargetResource'" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                It "Should not call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 2
+                }
+            }
+
+            Context "Add 2 new domains and remove 1 existing domain" {
+                $testParams = @{
+                    DomainsToExclude = "oos1.contoso.com"
+                    DomainsToInclude = "oos10.contoso.com", "oos10.contoso.com"
+                    IsSingleInstance = "Yes"
+                }
+
+                Mock -CommandName Get-OfficeWebAppsHost -MockWith {
+                    $instance = [PSCustomObject] @{
+                        allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
+                    }
+                    $instance.allowList.Add("oos1.contoso.com")
+                    return $instance
+                }
+
+                It "Should return 'False' from 'Test-TargetResource'" {
+                    Test-TargetResource @testParams | Should Be $false
+                }
+
+                It "Should call 'New-OfficeWebAppsHost' within 'Set-TargetResource'" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
+                }
+
+                It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
+                    Set-TargetResource @testParams
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 2
+                }
+            }
+
+            Context "Add new domain and remove it at the same time" {
+                $testParams = @{
+                    DomainsToInclude = @("oos1.contoso.com")
+                    DomainsToExclude = @("oos1.contoso.com")
+                    IsSingleInstance = "Yes"
+                }
+
+                Mock -CommandName Get-OfficeWebAppsHost -MockWith {
+                    $instance = [PSCustomObject] @{
+                        allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
+                    }
+                    return $instance
+                }
+
+                It "Throws an exception from 'Test-TargetResource'" {
+                    { Test-TargetResource $testParams } | Should throw
                 }
             }
         }
