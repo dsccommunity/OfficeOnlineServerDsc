@@ -183,16 +183,16 @@ stages:
             inputs:
               filePath: './build.ps1'
               arguments: "-Tasks merge"
-              pwsh: false
+              pwsh: true
           - task: PublishCodeCoverageResults@1
             displayName: 'Publish Code Coverage to Azure DevOps'
             condition: succeededOrFailed()
             inputs:
               codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: '$(Build.SourcesDirectory)/$(buildFolderName)/CodeCov_Merged.xml'
+              summaryFileLocation: '$(Build.SourcesDirectory)/$(buildFolderName)/JaCoCo_Merged.xml'
               pathToSources: '$(Build.SourcesDirectory)/$(sourceFolderName)/'
           - script: |
-              bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/CodeCov_Merged.xml"
+              bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/JaCoCo_Merged.xml"
             displayName: 'Publish Code Coverage to Codecov.io'
             condition: succeededOrFailed()
 
