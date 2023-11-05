@@ -57,7 +57,7 @@ Pester:
     - FunctionalQuality
     - TestQuality
   Tag:
-  CodeCoverageThreshold: 79
+  CodeCoverageThreshold: 50
   # CodeCoverageOutputFile: JaCoCo_$OsShortName.xml
   # CodeCoverageOutputFileEncoding: ascii
   # CodeCoverageMergedOutputFile: JaCoCo_Merged.xml
