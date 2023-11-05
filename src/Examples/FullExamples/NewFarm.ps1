@@ -103,7 +103,7 @@ Configuration Example
     OfficeOnlineServerHost 'HostsAllowList'
     {
         IsSingleInstance = 'Yes'
-        AllowList        = 'example.contoso.com'
+        Domains          = 'example.contoso.com'
         DependsOn        = "[OfficeOnlineServerFarm]LocalFarm"
     }
 }
