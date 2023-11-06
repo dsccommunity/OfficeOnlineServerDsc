@@ -48,6 +48,5 @@ Configuration Example
     {
         IsSingleInstance = 'Yes'
         Domains          = 'example.contoso.com'
-        DependsOn        = "[OfficeOnlineServerFarm]LocalFarm"
     }
 }
