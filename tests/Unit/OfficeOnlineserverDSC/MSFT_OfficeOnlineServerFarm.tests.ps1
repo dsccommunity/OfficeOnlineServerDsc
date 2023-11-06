@@ -20,7 +20,7 @@ function Invoke-TestSetup
 
     $script:testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $script:dscModuleName `
-        -DSCResourceName $script:dscResourceName `
+        -DscResourceName $script:dscResourceName `
         -ResourceType 'Mof' `
         -TestType 'Unit'
 }
@@ -40,6 +40,7 @@ try
         $proxy = 'http://proxy.contoso.com'
 
         $mockWebFarm = @{
+            IsSingleInstance                            = 'Yes'
             FarmOU                                      = 'ldap://OU=Farm1'
             InternalURL                                 = [System.Uri]::new($internalURL.TrimEnd('/') + "/")
             ExternalURL                                 = [System.Uri]::new($externalURL.TrimEnd('/') + "/")
@@ -87,6 +88,7 @@ try
         }
 
         $mockWebFarmFalse = @{
+            IsSingleInstance                            = 'Yes'
             FarmOU                                      = 'Computers'
             InternalURL                                 = 'http://webfarm1.contoso.com/'
             ExternalURL                                 = 'http://webfarm1.contoso.com/'
@@ -135,20 +137,23 @@ try
         }
 
         $v16onlyParams = @("AllowOutboundHttp", "S2SCertificateName", "OnlinePictureEnabled", `
-                          "OnlineVideoEnabled", "OfficeAddinEnabled", `
-                          "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
-                          "ExcelMemoryCacheThreshold", "ExcelUnusedObjectAgeMax", `
-                          "ExcelCachingUnusedFiles", "ExcelAbortOnRefreshOnOpenFail", `
-                          "ExcelAutomaticVolatileFunctionCacheLifeTime", `
-                          "ExcelConcurrentDataRequestsPerSessionMax", `
-                          "ExcelDefaultWorkbookCalcMode", "ExcelRestExternalDataEnabled", `
-                          "ExcelChartAndImageSizeMax")
+                "OnlineVideoEnabled", "OfficeAddinEnabled", `
+                "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
+                "ExcelMemoryCacheThreshold", "ExcelUnusedObjectAgeMax", `
+                "ExcelCachingUnusedFiles", "ExcelAbortOnRefreshOnOpenFail", `
+                "ExcelAutomaticVolatileFunctionCacheLifeTime", `
+                "ExcelConcurrentDataRequestsPerSessionMax", `
+                "ExcelDefaultWorkbookCalcMode", "ExcelRestExternalDataEnabled", `
+                "ExcelChartAndImageSizeMax")
 
-        foreach ($param in $v16onlyParams) {
-            if ($mockWebFarm.ContainsKey($param) -eq $true) {
+        foreach ($param in $v16onlyParams)
+        {
+            if ($mockWebFarm.ContainsKey($param) -eq $true)
+            {
                 $mockWebFarm.Remove($param)
             }
-            if ($mockWebFarmFalse.ContainsKey($param) -eq $true) {
+            if ($mockWebFarmFalse.ContainsKey($param) -eq $true)
+            {
                 $mockWebFarmFalse.Remove($param)
             }
         }
@@ -181,7 +186,8 @@ try
 
             Context "A farm does not exist on the local machine, but should" {
                 $testParams = @{
-                    InternalUrl = $internalURL
+                    IsSingleInstance = 'Yes'
+                    InternalUrl      = $internalURL
                 }
 
                 Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
@@ -209,9 +215,9 @@ try
                 }
 
                 It "Returns the current values from the get method" {
-                    $getResult = Get-TargetResource -InternalURL $mockWebFarm.InternalUrl
+                    $getResult = Get-TargetResource -InternalURL $mockWebFarm.InternalUrl -IsSingleInstance $mockWebFarm.IsSingleInstance
 
-                    foreach($key in $mockWebFarm.Keys)
+                    foreach ($key in $mockWebFarm.Keys)
                     {
                         $getResult[$key] | Should Be $mockWebFarm[$key]
                     }
@@ -222,6 +228,16 @@ try
                 }
             }
 
+            Context "Try to create farm without passing URL Parameter" {
+                $thisContextMockWebFarm = $mockWebFarm.Clone()
+                $thisContextMockWebFarm.Remove('ExternalURL')
+                $thisContextMockWebFarm.Remove('InternalURL')
+
+                It "test method should throw" {
+                    { Test-TargetResource @thisContextMockWebFarm } | Should throw
+                }
+            }
+
             Context "An incorrectly configured farm is found locally" {
 
                 Mock -CommandName Get-OfficeWebAppsFarm -MockWith {
@@ -229,7 +245,7 @@ try
                 }
 
                 It "Returns the current values from the get method" {
-                    (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl).InternalUrl | Should Not BeNullOrEmpty
+                    (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl -IsSingleInstance $mockWebFarm.IsSingleInstance).InternalUrl | Should Not BeNullOrEmpty
                 }
 
                 It "Returns false from the test method" {
@@ -254,7 +270,7 @@ try
                 Mock Test-OosDscFarmOu { return $false }
 
                 It "Returns the current values from the get method" {
-                    (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl).InternalUrl | Should Not BeNullOrEmpty
+                    (Get-TargetResource -InternalURL $mockWebFarm.InternalUrl -IsSingleInstance 'Yes' ).InternalUrl | Should Not BeNullOrEmpty
                 }
 
                 It "Returns false from the test method" {
@@ -270,23 +286,31 @@ try
             if ($Global:CurrentWACCmdletModule.Contains("15") -eq $true)
             {
                 Context "Errors are thrown when incorrect parameters are used for Office Web Apps 2013" {
+
+                    $badParams = @{
+                        IsSingleInstance  = 'Yes'
+                        InternalUrl       = $internalURL
+                        AllowOutboundHttp = $true
+                    }
+
                     It "Throws in the get method" {
-                        { Get-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
+                        { Get-TargetResource @badParams } | Should Throw
                     }
 
                     It "Throws in the test method" {
-                        { Test-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
+                        { Test-TargetResource @badParams } | Should Throw
                     }
 
                     It "Throws in the set method" {
-                        { Set-TargetResource -InternalUrl $internalURL -AllowOutboundHttp:$true } | Should Throw
+                        { Set-TargetResource @badParams } | Should Throw
                     }
                 }
             }
 
             Context "Server is returning after a reboot after patching, do nothing" {
                 $testParams = @{
-                    InternalUrl = $internalURL
+                    InternalUrl      = $internalURL
+                    IsSingleInstance = 'Yes'
                 }
 
                 Mock -CommandName Test-Path -MockWith {
@@ -298,15 +322,15 @@ try
                     $returnval = $returnval | Add-Member -MemberType ScriptMethod `
                         -Name GetValue `
                         -Value {
-                            [CmdletBinding()]
-                            param(
-                                [Parameter(Mandatory = $true)]
-                                [System.String]
-                                $Input
-                            )
+                        [CmdletBinding()]
+                        param(
+                            [Parameter(Mandatory = $true)]
+                            [System.String]
+                            $Input
+                        )
 
-                            return "Patching"
-                        } -PassThru -Force
+                        return "Patching"
+                    } -PassThru -Force
 
                     return $returnval
                 } -ParameterFilter { $Path -eq 'HKLM:\SOFTWARE\OOSDsc' }
