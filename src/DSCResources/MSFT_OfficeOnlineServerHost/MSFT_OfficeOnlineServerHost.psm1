@@ -84,7 +84,6 @@ function Set-TargetResource
         # Pass empty array, then all existing domains will be deleted
         if ($null -eq $Domains)
         {
-
             $PSBoundParameters.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
 
             # Compares current vs target domains and decided wich ones to keep
@@ -106,7 +105,7 @@ function Set-TargetResource
     # Removes only the passed domains.
     if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
     {
-        forEach ($domain in $PSBoundParameters.DomainsToExclude)
+        foreach ($domain in $PSBoundParameters.DomainsToExclude)
         {
             if ($domain -in $CurrentValues.Domains)
             {
@@ -119,7 +118,7 @@ function Set-TargetResource
     # Adds the passed domains. Already existing ones stay unchanged.
     if ($PSBoundParameters.ContainsKey('DomainsToInclude'))
     {
-        forEach ($domain in $PSBoundParameters.DomainsToInclude)
+        foreach ($domain in $PSBoundParameters.DomainsToInclude)
         {
             if ($domain -notin $CurrentValues.Domains)
             {
@@ -177,7 +176,7 @@ function Test-TargetResource
 
     if ($PSBoundParameters.ContainsKey('DomainsToInclude'))
     {
-        forEach ($domain in $PSBoundParameters.DomainsToInclude)
+        foreach ($domain in $PSBoundParameters.DomainsToInclude)
         {
             if ($domain -notin $CurrentValues.Domains)
             {
@@ -188,7 +187,7 @@ function Test-TargetResource
 
     if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
     {
-        forEach ($domain in $PSBoundParameters.DomainsToExclude)
+        foreach ($domain in $PSBoundParameters.DomainsToExclude)
         {
             if ($domain -in $CurrentValues.Domains)
             {
