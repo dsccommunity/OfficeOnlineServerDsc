@@ -523,6 +523,8 @@ function Set-TargetResource
 
     Test-OosDscV16Support -Parameters $PSBoundParameters
 
+    $PSBoundParameters.Remove('IsSingleInstance') | Out-Null
+
     try
     {
         $officeWebAppsFarm = Get-OfficeWebAppsFarm -ErrorAction Stop
