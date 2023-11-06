@@ -47,7 +47,8 @@ Configuration Example
 
     OfficeOnlineServerFarm LocalFarm
     {
-        InternalURL    = "https://officeonline.contoso.com"
-        EditingEnabled = $true
+        IsSingleInstance = 'YES'
+        InternalURL      = "https://officeonline.contoso.com"
+        EditingEnabled   = $true
     }
 }
