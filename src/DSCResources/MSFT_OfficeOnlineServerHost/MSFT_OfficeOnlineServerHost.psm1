@@ -198,7 +198,7 @@ function Test-TargetResource
 
     if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
     {
-        forEach ($domain in $PSBoundParameters.DomainsToExclude)
+        foreach ($domain in $PSBoundParameters.DomainsToExclude)
         {
             if ($domain -in $CurrentValues.Domains)
             {
