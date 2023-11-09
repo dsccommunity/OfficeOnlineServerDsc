@@ -174,8 +174,6 @@ try
                     }
                     $instance.allowList.Add("oos1.contoso.com")
                     $instance.allowList.Add("oos2.contoso.com")
-                    $instance.allowList.Add("oos1.contoso.com")
-                    $instance.allowList.Add("oos2.contoso.com")
                     $instance.allowList.Add("oos3.contoso.com")
                     return $instance
                 }
@@ -184,16 +182,16 @@ try
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                It "Should not call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
+                It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 2
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 3
                 }
             }
 
-            Context "Add 2 new domains and remove 1 existing domain" {
+            Context "Add new domain and remove existing one" {
                 $testParams = @{
                     DomainsToExclude = "oos1.contoso.com"
-                    DomainsToInclude = "oos10.contoso.com", "oos10.contoso.com"
+                    DomainsToInclude = "oos10.contoso.com"
                     IsSingleInstance = "Yes"
                 }
 
@@ -212,12 +210,12 @@ try
 
                 It "Should call 'New-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
+                    Assert-MockCalled -CommandName New-OfficeWebAppsHost -Exactly -Times 1
                 }
 
                 It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 2
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
                 }
             }
 
@@ -264,16 +262,16 @@ try
                     Test-TargetResource @testParams | Should Be $false
                 }
 
-                It "Should not call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
+                It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
                     Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 2
                 }
             }
 
-            Context "Add 2 new domains and remove 1 existing domain" {
+            Context "Add new domain and remove 1 existing one" {
                 $testParams = @{
                     DomainsToExclude = "oos1.contoso.com"
-                    DomainsToInclude = "oos10.contoso.com", "oos10.contoso.com"
+                    DomainsToInclude = "oos10.contoso.com"
                     IsSingleInstance = "Yes"
                 }
 
@@ -291,12 +289,12 @@ try
 
                 It "Should call 'New-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
+                    Assert-MockCalled -CommandName New-OfficeWebAppsHost -Exactly -Times 1
                 }
 
                 It "Should call 'Remove-OfficeWebAppsHost' within 'Set-TargetResource'" {
                     Set-TargetResource @testParams
-                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 2
+                    Assert-MockCalled -CommandName Remove-OfficeWebAppsHost -Exactly -Times 1
                 }
             }
 

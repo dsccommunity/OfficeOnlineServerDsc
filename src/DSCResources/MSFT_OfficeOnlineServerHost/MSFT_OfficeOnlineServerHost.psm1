@@ -86,11 +86,10 @@ function Set-TargetResource
         {
             $PSBoundParameters.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
 
-            # Compares current vs target domains and decided wich ones to keep
         }
+        # Compares current vs target domains and decided wich ones to keep
         else
         {
-
             $PSBoundParameters.Add('DomainsToInclude', $Domains) | Out-Null
 
             $domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains }
