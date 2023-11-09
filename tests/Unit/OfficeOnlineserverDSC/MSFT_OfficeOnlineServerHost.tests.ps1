@@ -40,13 +40,6 @@ try
             Remove-Module -Name "OfficeWebApps" -Force -ErrorAction SilentlyContinue
             Import-Module $Global:CurrentWACCmdletModule -WarningAction SilentlyContinue
 
-            # # Mock OfficeWebAppsHost .net object
-            # $OfficeWebAppsHostObject = [scriptblock]::Create({
-            #         New-Object -TypeName PSCustomObject -Property @{
-            #             allowList = [System.Collections.Generic.List`1[[System.String, mscorlib, Version = 4.0.0.0, Culture = neutral, PublicKeyToken = b77a5c561934e089]]]::new()
-            #         }
-            #     })
-
             Mock -CommandName Get-OfficeWebAppsHost -MockWith {}
             Mock -CommandName Remove-OfficeWebAppsHost -MockWith {}
             Mock -CommandName New-OfficeWebAppsHost -MockWith {}
