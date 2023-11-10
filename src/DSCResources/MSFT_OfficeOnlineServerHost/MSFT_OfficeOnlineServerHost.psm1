@@ -14,12 +14,21 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
         [String]
         $IsSingleInstance,
 
         [Parameter()]
         [System.String[]]
-        $Domains
+        $Domains,
+
+        [Parameter()]
+        [System.String[]]
+        $DomainsToInclude,
+
+        [Parameter()]
+        [System.String[]]
+        $DomainsToExclude
     )
 
     Write-Verbose -Message "Retrieving Office Online Server Farm host allow list"
@@ -161,7 +170,7 @@ function Test-TargetResource
 
     Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
 
-    $CurrentValues = Get-TargetResource -Domains $Domains -IsSingleInstance 'Yes'
+    $CurrentValues = Get-TargetResource @PSBoundParameters
 
     $CurrentValues.Remove('Verbose') | Out-Null
     $PSBoundParameters.Remove('Verbose') | Out-Null
