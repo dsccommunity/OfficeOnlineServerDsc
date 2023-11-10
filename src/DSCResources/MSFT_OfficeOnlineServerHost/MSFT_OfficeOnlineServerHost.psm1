@@ -219,6 +219,13 @@ function Test-TargetResource
     return $true
 }
 
+<#
+    .SYNOPSIS
+        Validates the PSBoundParameters of Test-, Get- and Set-TargetResource
+
+    .EXAMPLE
+        Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
+#>
 function Test-OfficeOnlineServerHostPSBoundParameters
 {
     [CmdletBinding()]
