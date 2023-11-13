@@ -45,12 +45,13 @@ function Get-TargetResource
     try
     {
         $returnValues.Domains = [System.Array](Get-OfficeWebAppsHost -ErrorAction 'Stop').AllowList
-        return $returnValues
     }
     catch
     {
         throw $_
     }
+
+    return $returnValues
 }
 
 function Set-TargetResource
