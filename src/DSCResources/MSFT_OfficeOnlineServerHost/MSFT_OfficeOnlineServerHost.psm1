@@ -39,20 +39,17 @@ function Get-TargetResource
 
     Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
 
-    # Cast PSBoundParameters to hastable
-    $nullReturn = @{} + $PSBoundParameters
-    $nullReturn.Domains = @()
+    $returnValues = @{} + $PSBoundParameters
+    $returnValues.IsSingleInstance = 'Yes'
 
     try
     {
-        return @{
-            IsSingleInstance = 'Yes'
-            Domains          = [Array](Get-OfficeWebAppsHost -ErrorAction 'Stop').AllowList
-        }
+        $returnValues.Domains = [System.Array](Get-OfficeWebAppsHost -ErrorAction 'Stop').AllowList
+        return $returnValues
     }
     catch
     {
-        return $nullReturn
+        throw $_
     }
 }
 
