@@ -31,7 +31,7 @@ function Get-TargetResource
         $DomainsToExclude
     )
 
-    Write-Verbose -Message "Retrieving Office Online Server Farm host allow list"
+    Write-Verbose -Message $script:localizedData.GetAllowList
 
     Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
 
@@ -77,7 +77,7 @@ function Set-TargetResource
         $DomainsToExclude
     )
 
-    Write-Verbose -Message "Updating Office Online Server Farm host allow list"
+    Write-Verbose -Message $script:localizedData.GetAllowList
 
     Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
 
@@ -98,7 +98,6 @@ function Set-TargetResource
         }
         else
         {
-
             $PSBoundParameters.Add('DomainsToInclude', $Domains) | Out-Null
 
             $domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains }
@@ -117,7 +116,7 @@ function Set-TargetResource
         {
             if ($domain -in $CurrentValues.Domains)
             {
-                Write-Verbose -Message "Removing domain '$domain'"
+                Write-Verbose -Message "$($script:localizedData.RemoveDomain) '$domain'"
                 Remove-OfficeWebAppsHost -Domain $domain | Out-Null
             }
         }
@@ -130,7 +129,7 @@ function Set-TargetResource
         {
             if ($domain -notin $CurrentValues.Domains)
             {
-                Write-Verbose -Message "Adding domain '$domain'"
+                Write-Verbose -Message "$($script:localizedData.AddDomain) '$domain'"
                 New-OfficeWebAppsHost -Domain $domain | Out-Null
             }
         }
@@ -161,7 +160,7 @@ function Test-TargetResource
         $DomainsToExclude
     )
 
-    Write-Verbose -Message "Testing Office Online Server Farm host allow list"
+    Write-Verbose -Message $script:localizedData.TestAllowList
 
     Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
 
