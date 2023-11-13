@@ -86,33 +86,34 @@ function Set-TargetResource
     Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
 
     $CurrentValues = Get-TargetResource -Domains $Domains -IsSingleInstance 'Yes'
+    $TargetValues = @{} + $PSBoundParameters
 
     if ($PSBoundParameters.ContainsKey('Domains'))
     {
         # Pass empty array, then all existing domains will be deleted
         if ($null -eq $Domains)
         {
-            $PSBoundParameters.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
+            $TargetValues.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
 
             # Compares current vs target domains and decided wich ones to keep
         }
         else
         {
-            $PSBoundParameters.Add('DomainsToInclude', $Domains) | Out-Null
+            $TargetValues.Add('DomainsToInclude', $Domains) | Out-Null
 
             $domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains }
 
             if ($domainsToBeExcluded)
             {
-                $PSBoundParameters.Add('DomainsToExclude', $domainsToBeExcluded) | Out-Null
+                $TargetValues.Add('DomainsToExclude', $domainsToBeExcluded) | Out-Null
             }
         }
     }
 
     # Removes only the passed domains.
-    if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
+    if ($TargetValues.ContainsKey('DomainsToExclude'))
     {
-        foreach ($domain in $PSBoundParameters.DomainsToExclude)
+        foreach ($domain in $TargetValues.DomainsToExclude)
         {
             if ($domain -in $CurrentValues.Domains)
             {
@@ -123,9 +124,9 @@ function Set-TargetResource
     }
 
     # Adds the passed domains. Already existing ones stay unchanged.
-    if ($PSBoundParameters.ContainsKey('DomainsToInclude'))
+    if ($TargetValues.ContainsKey('DomainsToInclude'))
     {
-        foreach ($domain in $PSBoundParameters.DomainsToInclude)
+        foreach ($domain in $TargetValues.DomainsToInclude)
         {
             if ($domain -notin $CurrentValues.Domains)
             {
