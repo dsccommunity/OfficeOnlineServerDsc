@@ -39,7 +39,8 @@ function Get-TargetResource
 
     Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
 
-    $nullReturn = $PSBoundParameters
+    # Cast PSBoundParameters to hastable
+    $nullReturn = @{} + $PSBoundParameters
     $nullReturn.Domains = @()
 
     try
