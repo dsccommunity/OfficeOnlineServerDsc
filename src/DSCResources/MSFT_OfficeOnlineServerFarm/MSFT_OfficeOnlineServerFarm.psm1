@@ -1,21 +1,22 @@
-$script:resourceModulePath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-$script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPath 'Modules'
-$script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
-Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
+$script:resourceHelperModulePath = @(
+    (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\OfficeOnlineServerDsc.Util'),
+    (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common')
+)
+Import-Module -Name $script:resourceHelperModulePath
 
-$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerFarm'
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 $script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
 
 $script:v16onlyParams = @("AllowOutboundHttp", "S2SCertificateName", "OnlinePictureEnabled", `
-                          "OnlineVideoEnabled", "OfficeAddinEnabled", `
-                          "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
-                          "ExcelMemoryCacheThreshold", "ExcelUnusedObjectAgeMax", `
-                          "ExcelCachingUnusedFiles", "ExcelAbortOnRefreshOnOpenFail", `
-                          "ExcelAutomaticVolatileFunctionCacheLifeTime", `
-                          "ExcelConcurrentDataRequestsPerSessionMax", `
-                          "ExcelDefaultWorkbookCalcMode", "ExcelRestExternalDataEnabled", `
-                          "ExcelChartAndImageSizeMax")
+        "OnlineVideoEnabled", "OfficeAddinEnabled", `
+        "ExcelUseEffectiveUserName", "ExcelUdfsAllowed", `
+        "ExcelMemoryCacheThreshold", "ExcelUnusedObjectAgeMax", `
+        "ExcelCachingUnusedFiles", "ExcelAbortOnRefreshOnOpenFail", `
+        "ExcelAutomaticVolatileFunctionCacheLifeTime", `
+        "ExcelConcurrentDataRequestsPerSessionMax", `
+        "ExcelDefaultWorkbookCalcMode", "ExcelRestExternalDataEnabled", `
+        "ExcelChartAndImageSizeMax")
 
 function Get-TargetResource
 {
@@ -240,56 +241,56 @@ function Get-TargetResource
     }
 
     $returnValue = @{
-        AllowCEIP = $officeWebAppsFarm.AllowCEIP
-        AllowHttp = $officeWebAppsFarm.AllowHTTP
-        AllowHttpSecureStoreConnections = $officeWebAppsFarm.AllowHttpSecureStoreConnections
-        CacheLocation = $officeWebAppsFarm.CacheLocation
-        CacheSizeInGB = $officeWebAppsFarm.CacheSizeInGB
-        CertificateName = $officeWebAppsFarm.CertificateName
-        ClipartEnabled = $officeWebAppsFarm.ClipartEnabled
-        DocumentInfoCacheSize = $officeWebAppsFarm.DocumentInfoCacheSize
-        EditingEnabled = $officeWebAppsFarm.EditingEnabled
-        ExcelAllowExternalData = $officeWebAppsFarm.ExcelAllowExternalData
-        ExcelConnectionLifetime = $officeWebAppsFarm.ExcelConnectionLifetime
-        ExcelExternalDataCacheLifetime = $officeWebAppsFarm.ExcelExternalDataCacheLifetime
-        ExcelPrivateBytesMax = $officeWebAppsFarm.ExcelPrivateBytesMax
-        ExcelRequestDurationMax = $officeWebAppsFarm.ExcelRequestDurationMax
-        ExcelSessionTimeout = $officeWebAppsFarm.ExcelSessionTimeout
-        ExcelUdfsAllowed = $officeWebAppsFarm.ExcelUdfsAllowed
-        ExcelWarnOnDataRefresh = $officeWebAppsFarm.ExcelWarnOnDataRefresh
-        ExcelWorkbookSizeMax = $officeWebAppsFarm.ExcelWorkbookSizeMax
-        ExcelMemoryCacheThreshold = $officeWebAppsFarm.ExcelMemoryCacheThreshold
-        ExcelUnusedObjectAgeMax = $officeWebAppsFarm.ExcelUnusedObjectAgeMax
-        ExcelCachingUnusedFiles = $officeWebAppsFarm.ExcelCachingUnusedFiles
-        ExcelAbortOnRefreshOnOpenFail = $officeWebAppsFarm.ExcelAbortOnRefreshOnOpenFail
+        AllowCEIP                                   = $officeWebAppsFarm.AllowCEIP
+        AllowHttp                                   = $officeWebAppsFarm.AllowHTTP
+        AllowHttpSecureStoreConnections             = $officeWebAppsFarm.AllowHttpSecureStoreConnections
+        CacheLocation                               = $officeWebAppsFarm.CacheLocation
+        CacheSizeInGB                               = $officeWebAppsFarm.CacheSizeInGB
+        CertificateName                             = $officeWebAppsFarm.CertificateName
+        ClipartEnabled                              = $officeWebAppsFarm.ClipartEnabled
+        DocumentInfoCacheSize                       = $officeWebAppsFarm.DocumentInfoCacheSize
+        EditingEnabled                              = $officeWebAppsFarm.EditingEnabled
+        ExcelAllowExternalData                      = $officeWebAppsFarm.ExcelAllowExternalData
+        ExcelConnectionLifetime                     = $officeWebAppsFarm.ExcelConnectionLifetime
+        ExcelExternalDataCacheLifetime              = $officeWebAppsFarm.ExcelExternalDataCacheLifetime
+        ExcelPrivateBytesMax                        = $officeWebAppsFarm.ExcelPrivateBytesMax
+        ExcelRequestDurationMax                     = $officeWebAppsFarm.ExcelRequestDurationMax
+        ExcelSessionTimeout                         = $officeWebAppsFarm.ExcelSessionTimeout
+        ExcelUdfsAllowed                            = $officeWebAppsFarm.ExcelUdfsAllowed
+        ExcelWarnOnDataRefresh                      = $officeWebAppsFarm.ExcelWarnOnDataRefresh
+        ExcelWorkbookSizeMax                        = $officeWebAppsFarm.ExcelWorkbookSizeMax
+        ExcelMemoryCacheThreshold                   = $officeWebAppsFarm.ExcelMemoryCacheThreshold
+        ExcelUnusedObjectAgeMax                     = $officeWebAppsFarm.ExcelUnusedObjectAgeMax
+        ExcelCachingUnusedFiles                     = $officeWebAppsFarm.ExcelCachingUnusedFiles
+        ExcelAbortOnRefreshOnOpenFail               = $officeWebAppsFarm.ExcelAbortOnRefreshOnOpenFail
         ExcelAutomaticVolatileFunctionCacheLifetime = $officeWebAppsFarm.ExcelAutomaticVolatileFunctionCacheLifeTime
-        ExcelConcurrentDataRequestsPerSessionMax = $officeWebAppsFarm.ExcelConcurrentDataRequestsPerSessionMax
-        ExcelDefaultWorkbookCalcMode = $officeWebAppsFarm.ExcelDefaultWorkbookCalcMode
-        ExcelRestExternalDataEnabled = $officeWebAppsFarm.ExcelRestExternalDataEnabled
-        ExcelChartAndImageSizeMax = $officeWebAppsFarm.ExcelChartAndImageSizeMax
-        ExternalURL = $officeWebAppsFarm.ExternalURL
-        FarmOU = $officeWebAppsFarm.FarmOU
-        InternalURL = $officeWebAppsFarm.InternalURL
-        LogLocation = $officeWebAppsFarm.LogLocation
-        LogRetentionInDays = $officeWebAppsFarm.LogRetentionInDays
-        LogVerbosity = $officeWebAppsFarm.LogVerbosity
-        MaxMemoryCacheSizeInMB = $officeWebAppsFarm.MaxMemoryCacheSizeInMB
-        MaxTranslationCharacterCount = $officeWebAppsFarm.MaxTranslationCharacterCount
-        OpenFromUncEnabled = $officeWebAppsFarm.OpenFromUncEnabled
-        OpenFromUrlEnabled = $officeWebAppsFarm.OpenFromUrlEnabled
-        OpenFromUrlThrottlingEnabled = $officeWebAppsFarm.OpenFromUrlThrottlingEnabled
-        PicturePasteDisabled = $officeWebAppsFarm.PicturePasteDisabled
-        Proxy = $officeWebAppsFarm.Proxy
-        RecycleActiveProcessCount = $officeWebAppsFarm.RecycleActiveProcessCount
-        RenderingLocalCacheLocation = $officeWebAppsFarm.RenderingLocalCacheLocation
-        SSLOffloaded = $officeWebAppsFarm.SSLOffloaded
-        TranslationEnabled = $officeWebAppsFarm.TranslationEnabled
-        TranslationServiceAddress = $officeWebAppsFarm.TranslationServiceAddress
-        TranslationServiceAppId = $officeWebAppsFarm.TranslationServiceAppId
-        RemovePersonalInformationFromLogs = $officeWebAppsFarm.RemovePersonalInformationFromLogs
-        ExcelUseEffectiveUserName = $officeWebAppsFarm.ExcelUseEffectiveUserName
-        AllowOutboundHttp = $officeWebAppsFarm.AllowOutboundHttp
-        S2SCertificateName = $officeWebAppsFarm.S2SCertificateName
+        ExcelConcurrentDataRequestsPerSessionMax    = $officeWebAppsFarm.ExcelConcurrentDataRequestsPerSessionMax
+        ExcelDefaultWorkbookCalcMode                = $officeWebAppsFarm.ExcelDefaultWorkbookCalcMode
+        ExcelRestExternalDataEnabled                = $officeWebAppsFarm.ExcelRestExternalDataEnabled
+        ExcelChartAndImageSizeMax                   = $officeWebAppsFarm.ExcelChartAndImageSizeMax
+        ExternalURL                                 = $officeWebAppsFarm.ExternalURL
+        FarmOU                                      = $officeWebAppsFarm.FarmOU
+        InternalURL                                 = $officeWebAppsFarm.InternalURL
+        LogLocation                                 = $officeWebAppsFarm.LogLocation
+        LogRetentionInDays                          = $officeWebAppsFarm.LogRetentionInDays
+        LogVerbosity                                = $officeWebAppsFarm.LogVerbosity
+        MaxMemoryCacheSizeInMB                      = $officeWebAppsFarm.MaxMemoryCacheSizeInMB
+        MaxTranslationCharacterCount                = $officeWebAppsFarm.MaxTranslationCharacterCount
+        OpenFromUncEnabled                          = $officeWebAppsFarm.OpenFromUncEnabled
+        OpenFromUrlEnabled                          = $officeWebAppsFarm.OpenFromUrlEnabled
+        OpenFromUrlThrottlingEnabled                = $officeWebAppsFarm.OpenFromUrlThrottlingEnabled
+        PicturePasteDisabled                        = $officeWebAppsFarm.PicturePasteDisabled
+        Proxy                                       = $officeWebAppsFarm.Proxy
+        RecycleActiveProcessCount                   = $officeWebAppsFarm.RecycleActiveProcessCount
+        RenderingLocalCacheLocation                 = $officeWebAppsFarm.RenderingLocalCacheLocation
+        SSLOffloaded                                = $officeWebAppsFarm.SSLOffloaded
+        TranslationEnabled                          = $officeWebAppsFarm.TranslationEnabled
+        TranslationServiceAddress                   = $officeWebAppsFarm.TranslationServiceAddress
+        TranslationServiceAppId                     = $officeWebAppsFarm.TranslationServiceAppId
+        RemovePersonalInformationFromLogs           = $officeWebAppsFarm.RemovePersonalInformationFromLogs
+        ExcelUseEffectiveUserName                   = $officeWebAppsFarm.ExcelUseEffectiveUserName
+        AllowOutboundHttp                           = $officeWebAppsFarm.AllowOutboundHttp
+        S2SCertificateName                          = $officeWebAppsFarm.S2SCertificateName
     }
 
     return $returnValue
@@ -771,8 +772,8 @@ function Test-TargetResource
         if ((Test-OosDscFarmOu -ExistingOU $officeWebAppsFarm.FarmOU -DesiredOU $FarmOU) -ne $true)
         {
             Write-Verbose -Message ("FarmOU not in a desired state. " + `
-                                    "Expected: '$($PSBoundParameters['FarmOU'])'. " + `
-                                    "Actual: '$($officeWebAppsFarm.FarmOU)'.")
+                    "Expected: '$($PSBoundParameters['FarmOU'])'. " + `
+                    "Actual: '$($officeWebAppsFarm.FarmOU)'.")
             return $false
         }
     }
@@ -795,58 +796,58 @@ function Test-TargetResource
         $Proxy += "/"
     }
     return Test-OosDscParameterState -CurrentValues $CurrentValues `
-                                   -DesiredValues $PSBoundParameters `
-                                   -ValuesToCheck @(
-                                       "InternalURL",
-                                       "ExternalURL",
-                                       "Proxy",
-                                       "AllowHTTP",
-                                       "AllowOutboundHttp",
-                                       "SSLOffloaded",
-                                       "CertificateName",
-                                       "S2SCertificateName",
-                                       "EditingEnabled",
-                                       "LogLocation",
-                                       "LogRetentionInDays",
-                                       "LogVerbosity",
-                                       "CacheLocation",
-                                       "MaxMemoryCacheSizeInMB",
-                                       "DocumentInfoCacheSize",
-                                       "CacheSizeInGB",
-                                       "ClipartEnabled",
-                                       "TranslationEnabled",
-                                       "MaxTranslationCharacterCount",
-                                       "TranslationServiceAppId",
-                                       "TranslationServiceAddress",
-                                       "RenderingLocalCacheLocation",
-                                       "RecycleActiveProcessCount",
-                                       "AllowCEIP",
-                                       "ExcelRequestDurationMax",
-                                       "ExcelSessionTimeout",
-                                       "ExcelWorkbookSizeMax",
-                                       "ExcelPrivateBytesMax",
-                                       "ExcelConnectionLifetime",
-                                       "ExcelExternalDataCacheLifetime",
-                                       "ExcelAllowExternalData",
-                                       "ExcelUseEffectiveUserName",
-                                       "ExcelWarnOnDataRefresh",
-                                       "ExcelUdfsAllowed",
-                                       "ExcelMemoryCacheThreshold",
-                                       "ExcelUnusedObjectAgeMax",
-                                       "ExcelCachingUnusedFiles",
-                                       "ExcelAbortOnRefreshOnOpenFail",
-                                       "ExcelAutomaticVolatileFunctionCacheLifeTime",
-                                       "ExcelConcurrentDataRequestsPerSessionMax",
-                                       "ExcelDefaultWorkbookCalcMode",
-                                       "ExcelRestExternalDataEnabled",
-                                       "ExcelChartAndImageSizeMax",
-                                       "OpenFromUrlEnabled",
-                                       "OpenFromUncEnabled",
-                                       "OpenFromUrlThrottlingEnabled",
-                                       "PicturePasteDisabled",
-                                       "RemovePersonalInformationFromLogs",
-                                       "AllowHttpSecureStoreConnections"
-                                    )
+        -DesiredValues $PSBoundParameters `
+        -ValuesToCheck @(
+        "InternalURL",
+        "ExternalURL",
+        "Proxy",
+        "AllowHTTP",
+        "AllowOutboundHttp",
+        "SSLOffloaded",
+        "CertificateName",
+        "S2SCertificateName",
+        "EditingEnabled",
+        "LogLocation",
+        "LogRetentionInDays",
+        "LogVerbosity",
+        "CacheLocation",
+        "MaxMemoryCacheSizeInMB",
+        "DocumentInfoCacheSize",
+        "CacheSizeInGB",
+        "ClipartEnabled",
+        "TranslationEnabled",
+        "MaxTranslationCharacterCount",
+        "TranslationServiceAppId",
+        "TranslationServiceAddress",
+        "RenderingLocalCacheLocation",
+        "RecycleActiveProcessCount",
+        "AllowCEIP",
+        "ExcelRequestDurationMax",
+        "ExcelSessionTimeout",
+        "ExcelWorkbookSizeMax",
+        "ExcelPrivateBytesMax",
+        "ExcelConnectionLifetime",
+        "ExcelExternalDataCacheLifetime",
+        "ExcelAllowExternalData",
+        "ExcelUseEffectiveUserName",
+        "ExcelWarnOnDataRefresh",
+        "ExcelUdfsAllowed",
+        "ExcelMemoryCacheThreshold",
+        "ExcelUnusedObjectAgeMax",
+        "ExcelCachingUnusedFiles",
+        "ExcelAbortOnRefreshOnOpenFail",
+        "ExcelAutomaticVolatileFunctionCacheLifeTime",
+        "ExcelConcurrentDataRequestsPerSessionMax",
+        "ExcelDefaultWorkbookCalcMode",
+        "ExcelRestExternalDataEnabled",
+        "ExcelChartAndImageSizeMax",
+        "OpenFromUrlEnabled",
+        "OpenFromUncEnabled",
+        "OpenFromUrlThrottlingEnabled",
+        "PicturePasteDisabled",
+        "RemovePersonalInformationFromLogs",
+        "AllowHttpSecureStoreConnections"
+    )
 }
 
 function Test-OosDscV16Support
@@ -855,7 +856,7 @@ function Test-OosDscV16Support
     [OutputType([System.Boolean])]
     param
     (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [Object]
         $Parameters
     )
@@ -863,7 +864,8 @@ function Test-OosDscV16Support
     $version = Get-OosDscInstalledProductVersion
     switch ($version.Major)
     {
-        15 {
+        15
+        {
             Write-Verbose -Message $script:localizedData.OWA2013Detected
             foreach ($param in $script:v16onlyParams)
             {
@@ -873,12 +875,14 @@ function Test-OosDscV16Support
                 }
             }
         }
-        16 {
+        16
+        {
             Write-Verbose -Message $script:localizedData.OOS2016Detected
         }
-        Default {
+        Default
+        {
             throw ("This module only supports Office Web Apps 2013 (v15) and Office " + `
-                   "Online Server 2016 (v16). Detected version was $($version.Major)")
+                    "Online Server 2016 (v16). Detected version was $($version.Major)")
         }
     }
 }
