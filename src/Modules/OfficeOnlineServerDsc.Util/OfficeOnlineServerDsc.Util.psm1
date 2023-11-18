@@ -154,47 +154,47 @@ function Convert-OOSDscCIMInstanceToString
         be first in the file, before Get-LocalizedData is used by itself to load
         localized data for this helper module (see directly after this function).
 #>
-function Get-LocalizedData
-{
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [System.String]
-        $ResourceName,
+# function Get-LocalizedData
+# {
+#     [CmdletBinding()]
+#     param
+#     (
+#         [Parameter(Mandatory = $true)]
+#         [ValidateNotNullOrEmpty()]
+#         [System.String]
+#         $ResourceName,
 
-        [Parameter()]
-        [ValidateNotNullOrEmpty()]
-        [System.String]
-        $ScriptRoot
-    )
+#         [Parameter()]
+#         [ValidateNotNullOrEmpty()]
+#         [System.String]
+#         $ScriptRoot
+#     )
 
-    if (-not $ScriptRoot)
-    {
-        $dscResourcesFolder = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'DSCResources'
-        $resourceDirectory = Join-Path -Path $dscResourcesFolder -ChildPath $ResourceName
-    }
-    else
-    {
-        $resourceDirectory = $ScriptRoot
-    }
+#     if (-not $ScriptRoot)
+#     {
+#         $dscResourcesFolder = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'DSCResources'
+#         $resourceDirectory = Join-Path -Path $dscResourcesFolder -ChildPath $ResourceName
+#     }
+#     else
+#     {
+#         $resourceDirectory = $ScriptRoot
+#     }
 
-    $localizedStringFileLocation = Join-Path -Path $resourceDirectory -ChildPath $PSUICulture
+#     $localizedStringFileLocation = Join-Path -Path $resourceDirectory -ChildPath $PSUICulture
 
-    if (-not (Test-Path -Path $localizedStringFileLocation))
-    {
-        # Fallback to en-US
-        $localizedStringFileLocation = Join-Path -Path $resourceDirectory -ChildPath 'en-US'
-    }
+#     if (-not (Test-Path -Path $localizedStringFileLocation))
+#     {
+#         # Fallback to en-US
+#         $localizedStringFileLocation = Join-Path -Path $resourceDirectory -ChildPath 'en-US'
+#     }
 
-    Import-LocalizedData `
-        -BindingVariable 'localizedData' `
-        -FileName "$ResourceName.strings.psd1" `
-        -BaseDirectory $localizedStringFileLocation
+#     Import-LocalizedData `
+#         -BindingVariable 'localizedData' `
+#         -FileName "$ResourceName.strings.psd1" `
+#         -BaseDirectory $localizedStringFileLocation
 
-    return $localizedData
-}
+#     return $localizedData
+# }
 
 <#
 .SYNOPSIS
@@ -209,13 +209,13 @@ function Get-OosDscInstalledProductVersion
     param ()
 
     return Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | `
-        Select-Object DisplayName, DisplayVersion | `
-        Where-Object {
-        $_.DisplayName -eq "Microsoft Office Web Apps Server 2013" -or `
-            $_.DisplayName -eq "Microsoft Office Online Server"
-    } | ForEach-Object -Process {
-        return [Version]::Parse($_.DisplayVersion)
-    } | Select-Object -First 1
+            Select-Object DisplayName, DisplayVersion | `
+                Where-Object {
+                $_.DisplayName -eq "Microsoft Office Web Apps Server 2013" -or `
+                    $_.DisplayName -eq "Microsoft Office Online Server"
+            } | ForEach-Object -Process {
+                return [Version]::Parse($_.DisplayVersion)
+            } | Select-Object -First 1
 }
 
 
