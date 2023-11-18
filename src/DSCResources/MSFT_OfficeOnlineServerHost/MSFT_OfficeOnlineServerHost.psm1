@@ -77,7 +77,7 @@ function Set-TargetResource
         $DomainsToExclude
     )
 
-    Write-Verbose -Message $script:localizedData.GetAllowList
+    Write-Verbose -Message $script:localizedData.UpdateAllowList
 
     Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
 
