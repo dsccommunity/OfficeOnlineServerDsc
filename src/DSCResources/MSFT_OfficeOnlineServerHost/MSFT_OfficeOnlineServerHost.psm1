@@ -94,16 +94,13 @@ function Set-TargetResource
         if ($null -eq $Domains)
         {
             $TargetValues.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
-
-            # Compares current vs target domains and decided wich ones to keep
         }
+        # Compares current vs target domains and decided wich ones to keep
         else
         {
             $TargetValues.Add('DomainsToInclude', $Domains) | Out-Null
 
-            $domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains }
-
-            if ($domainsToBeExcluded)
+            if ($domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains })
             {
                 $TargetValues.Add('DomainsToExclude', $domainsToBeExcluded) | Out-Null
             }
