@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - OfficeOnlineServerDsc
--   Imports DscResource.Common module
+  - Imports DscResource.Common module
 
 ### Changed
 
 - OfficeOnlineServerDsc
-  - Updated to latest pipeline files.
+  - Updated to latest pipeline files
+  - Update the README so that it says that this module should also support
+    to configure Office Online Server.
 - All resources
   - Get-LocalizedData from DscResource.Common is now used
 

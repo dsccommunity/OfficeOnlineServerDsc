@@ -6,8 +6,7 @@
 [![PowerShell Gallery (with prereleases)](https://img.shields.io/powershellgallery/vpre/OfficeOnlineServerDsc?label=OfficeOnlineServerDsc%20Preview)](https://www.powershellgallery.com/packages/OfficeOnlineServerDsc/)
 [![PowerShell Gallery](https://img.shields.io/powershellgallery/v/OfficeOnlineServerDsc?label=OfficeOnlineServerDsc)](https://www.powershellgallery.com/packages/OfficeOnlineServerDsc/)
 
-The OfficeOnlineServerDsc module provides the ability to install Office Online
-Server (formerly known as Office Web App Server).
+This module contains DSC resources for deployment and configuration of Office Online Server (formerly known as Office Web App Server).
 
 ## Contributing
 
