@@ -36,7 +36,7 @@ documentation on each PR merge.
 
 ### Examples
 
-You can review the [Examples](/source/Examples) directory
+You can review the [Examples](/src/Examples) directory
 for some general use scenarios for all of the resources that are in the module.
 
 The resource examples are also available in the [OfficeOnlineServerDsc Wiki](https://github.com/dsccommunity/SqlServerDsc/wiki).
