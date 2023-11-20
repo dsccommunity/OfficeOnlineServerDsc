@@ -1,10 +1,10 @@
-$script:resourceModulePath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-$script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPath 'Modules'
-$script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
-Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
+$script:resourceHelperModulePath = @(
+    (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\OfficeOnlineServerDsc.Util'),
+    (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common')
+)
+Import-Module -Name $script:resourceHelperModulePath
 
-$script:localizedData = Get-LocalizedData -ResourceName (Get-Item -Path $MyInvocation.MyCommand.Path).BaseName
-
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 $script:OOSDscRegKey = "HKLM:\SOFTWARE\OOSDsc"
 
 function Get-TargetResource
@@ -37,21 +37,20 @@ function Get-TargetResource
 
     Confirm-OosDscEnvironmentVariables
 
-    Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
+    $currentValues = Remove-CommonParameter $PSBoundParameters
 
-    $returnValues = @{} + $PSBoundParameters
-    $returnValues.IsSingleInstance = 'Yes'
+    Test-OfficeOnlineServerHostBoundParameter @currentValues
 
     try
     {
-        $returnValues.Domains = [System.Array](Get-OfficeWebAppsHost -ErrorAction 'Stop').AllowList
+        $currentValues.Domains = [System.Array](Get-OfficeWebAppsHost -ErrorAction 'Stop').AllowList
     }
     catch
     {
         throw $_
     }
 
-    return $returnValues
+    return $currentValues
 }
 
 function Set-TargetResource
@@ -79,40 +78,34 @@ function Set-TargetResource
 
     Write-Verbose -Message $script:localizedData.UpdateAllowList
 
-    Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
-
-    Confirm-OosDscEnvironmentVariables
-
-    Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
-
-    $CurrentValues = Get-TargetResource -Domains $Domains -IsSingleInstance 'Yes'
-    $TargetValues = @{} + $PSBoundParameters
+    $currentValues = Get-TargetResource -Domains $Domains -IsSingleInstance 'Yes'
+    $targetValues = Remove-CommonParameter $PSBoundParameters
 
     if ($PSBoundParameters.ContainsKey('Domains'))
     {
         # Pass empty array, then all existing domains will be deleted
         if ($null -eq $Domains)
         {
-            $TargetValues.Add('DomainsToExclude', $CurrentValues.Domains) | Out-Null
+            $targetValues.Add('DomainsToExclude', $currentValues.Domains) | Out-Null
         }
         # Compares current vs target domains and decided wich ones to keep
         else
         {
-            $TargetValues.Add('DomainsToInclude', $Domains) | Out-Null
+            $targetValues.Add('DomainsToInclude', $Domains) | Out-Null
 
-            if ($domainsToBeExcluded = $CurrentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains })
+            if ($domainsToBeExcluded = $currentValues.Domains | Where-Object -FilterScript { $_ -notin $Domains })
             {
-                $TargetValues.Add('DomainsToExclude', $domainsToBeExcluded) | Out-Null
+                $targetValues.Add('DomainsToExclude', $domainsToBeExcluded) | Out-Null
             }
         }
     }
 
     # Removes only the passed domains.
-    if ($TargetValues.ContainsKey('DomainsToExclude'))
+    if ($targetValues.ContainsKey('DomainsToExclude'))
     {
-        foreach ($domain in $TargetValues.DomainsToExclude)
+        foreach ($domain in $targetValues.DomainsToExclude)
         {
-            if ($domain -in $CurrentValues.Domains)
+            if ($domain -in $currentValues.Domains)
             {
                 Write-Verbose -Message "$($script:localizedData.RemoveDomain) '$domain'"
                 Remove-OfficeWebAppsHost -Domain $domain | Out-Null
@@ -121,11 +114,11 @@ function Set-TargetResource
     }
 
     # Adds the passed domains. Already existing ones stay unchanged.
-    if ($TargetValues.ContainsKey('DomainsToInclude'))
+    if ($targetValues.ContainsKey('DomainsToInclude'))
     {
-        foreach ($domain in $TargetValues.DomainsToInclude)
+        foreach ($domain in $targetValues.DomainsToInclude)
         {
-            if ($domain -notin $CurrentValues.Domains)
+            if ($domain -notin $currentValues.Domains)
             {
                 Write-Verbose -Message "$($script:localizedData.AddDomain) '$domain'"
                 New-OfficeWebAppsHost -Domain $domain | Out-Null
@@ -160,52 +153,33 @@ function Test-TargetResource
 
     Write-Verbose -Message $script:localizedData.TestAllowList
 
-    Import-Module -Name 'OfficeWebApps' -ErrorAction 'Stop' -Verbose:$false
+    $currentValues = Get-TargetResource @PSBoundParameters
+    $targetValues = Remove-CommonParameter -Hashtable $PSBoundParameters
 
-    Confirm-OosDscEnvironmentVariables
+    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $currentValues)"
+    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $targetValues)"
 
-    Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
-
-    $CurrentValues = Get-TargetResource @PSBoundParameters
-
-    $CurrentValues.Remove('Verbose') | Out-Null
-    $PSBoundParameters.Remove('Verbose') | Out-Null
-
-    Write-Verbose -Message "Current Values: $(Convert-OosDscHashtableToString -Hashtable $CurrentValues)"
-    Write-Verbose -Message "Target Values: $(Convert-OosDscHashtableToString -Hashtable $PSBoundParameters)"
-
-    if ($PSBoundParameters.ContainsKey('Domains'))
+    if ($targetValues.ContainsKey('Domains'))
     {
-        return Test-OosDscParameterState -CurrentValues $CurrentValues -DesiredValues $PSBoundParameters -ValuesToCheck 'Domains'
+        return Test-DscParameterState -CurrentValues $currentValues -DesiredValues $targetValues -Properties 'Domains' -TurnOffTypeChecking
     }
 
-    if ($PSBoundParameters.ContainsKey('DomainsToInclude'))
+    if ($targetValues.ContainsKey('DomainsToInclude'))
     {
-        foreach ($domain in $PSBoundParameters.DomainsToInclude)
+        foreach ($domain in $targetValues.DomainsToInclude)
         {
-            if ($domain -notin $CurrentValues.Domains)
+            if ($domain -notin $currentValues.Domains)
             {
                 return $false
             }
         }
     }
 
-    if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
+    if ($targetValues.ContainsKey('DomainsToExclude'))
     {
-        foreach ($domain in $PSBoundParameters.DomainsToExclude)
+        foreach ($domain in $targetValues.DomainsToExclude)
         {
-            if ($domain -in $CurrentValues.Domains)
-            {
-                return $false
-            }
-        }
-    }
-
-    if ($PSBoundParameters.ContainsKey('DomainsToExclude'))
-    {
-        foreach ($domain in $PSBoundParameters.DomainsToExclude)
-        {
-            if ($domain -in $CurrentValues.Domains)
+            if ($domain -in $currentValues.Domains)
             {
                 return $false
             }
@@ -217,12 +191,12 @@ function Test-TargetResource
 
 <#
     .SYNOPSIS
-        Validates the PSBoundParameters of Test-, Get- and Set-TargetResource
+        Validates the PSBoundParameters of OfficeOnlineServerHost
 
     .EXAMPLE
-        Test-OfficeOnlineServerHostPSBoundParameters @PSBoundParameters
+        Test-OfficeOnlineServerHostBoundParameter @PSBoundParameters
 #>
-function Test-OfficeOnlineServerHostPSBoundParameters
+function Test-OfficeOnlineServerHostBoundParameter
 {
     [CmdletBinding()]
     [OutputType()]
@@ -246,17 +220,13 @@ function Test-OfficeOnlineServerHostPSBoundParameters
         $DomainsToExclude
     )
 
-    if ($PSBoundParameters.ContainsKey('Domains') -and
-    ($PSBoundParameters.ContainsKey('DomainsToInclude') -or $PSBoundParameters.ContainsKey('DomainsToExclude')))
-    {
-        throw "Cannot use the Domains parameter together with the DomainsToInclude or DomainsToExclude parameters"
-    }
+    Assert-BoundParameter -BoundParameterList $PSBoundParameters -MutuallyExclusiveList1 'Domains' -MutuallyExclusiveList2 'DomainsToInclude', 'DomainsToExclude'
 
     if (($PSBoundParameters.ContainsKey('DomainsToInclude') -and $PSBoundParameters.ContainsKey('DomainsToExclude')))
     {
-        if ($comparison = Compare-Object -ReferenceObject $DomainsToInclude -DifferenceObject $DomainsToExclude -IncludeEqual -ExcludeDifferent)
+        if (Compare-Object -ReferenceObject $DomainsToInclude -DifferenceObject $DomainsToExclude -IncludeEqual -ExcludeDifferent)
         {
-            throw "DomainsToInclude and DomainsToExclude contains one or more identical values. Please resolve"
+            New-InvalidOperationException -Message $script:localizedData.DuplicateDomains
         }
     }
 }
