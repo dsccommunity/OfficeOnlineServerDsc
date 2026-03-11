@@ -1,15 +1,15 @@
 trigger:
   branches:
     include:
-    - master
+      - master
   paths:
     include:
-    - src/*
+      - src/*
   tags:
     include:
-    - "v*"
+      - "v*"
     exclude:
-    - "*-*"
+      - "*-*"
 
 variables:
   buildFolderName: output
@@ -23,12 +23,12 @@ stages:
   - stage: Build
     jobs:
       - job: Package_Module
-        displayName: 'Package Module'
+        displayName: "Package Module"
         pool:
-          vmImage: 'windows-latest'
+          vmImage: "windows-latest"
         steps:
           - pwsh: |
-              dotnet tool install --global GitVersion.Tool
+              dotnet tool install --global GitVersion.Tool --version 5.*
               $gitVersionObject = dotnet-gitversion | ConvertFrom-Json
               $gitVersionObject.PSObject.Properties.ForEach{
                   Write-Host -Object "Setting Task Variable '$($_.Name)' with value '$($_.Value)'."
@@ -38,164 +38,164 @@ stages:
             displayName: Calculate ModuleVersion (GitVersion)
           - task: PowerShell@2
             name: package
-            displayName: 'Build & Package Module'
+            displayName: "Build & Package Module"
             inputs:
-              filePath: './build.ps1'
-              arguments: '-ResolveDependency -tasks pack'
+              filePath: "./build.ps1"
+              arguments: "-ResolveDependency -tasks pack"
               pwsh: true
             env:
               ModuleVersion: $(NuGetVersionV2)
           - task: PublishPipelineArtifact@1
-            displayName: 'Publish Build Artifact'
+            displayName: "Publish Build Artifact"
             inputs:
-              targetPath: '$(buildFolderName)/'
+              targetPath: "$(buildFolderName)/"
               artifact: $(buildArtifactName)
-              publishLocation: 'pipeline'
+              publishLocation: "pipeline"
               parallel: true
 
   - stage: Test
     dependsOn: Build
     jobs:
       - job: Test_HQRM
-        displayName: 'HQRM'
+        displayName: "HQRM"
         pool:
-          vmImage: 'windows-latest'
+          vmImage: "windows-latest"
         timeoutInMinutes: 0
         steps:
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
+            displayName: "Download Build Artifact"
             inputs:
-              buildType: 'current'
+              buildType: "current"
               artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)"
           - task: PowerShell@2
             name: test
-            displayName: 'Run HQRM Test'
+            displayName: "Run HQRM Test"
             inputs:
-              filePath: './build.ps1'
-              arguments: '-Tasks hqrmtest'
+              filePath: "./build.ps1"
+              arguments: "-Tasks hqrmtest"
               pwsh: false
           - task: PublishTestResults@2
-            displayName: 'Publish Test Results'
+            displayName: "Publish Test Results"
             condition: succeededOrFailed()
             inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: 'output/testResults/NUnit*.xml'
-              testRunTitle: 'HQRM'
+              testResultsFormat: "NUnit"
+              testResultsFiles: "output/testResults/NUnit*.xml"
+              testRunTitle: "HQRM"
 
       - job: Test_Unit_2013
-        displayName: 'Unit OWA 2013'
+        displayName: "Unit OWA 2013"
         pool:
-          vmImage: 'windows-latest'
+          vmImage: "windows-latest"
         timeoutInMinutes: 0
         steps:
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
+            displayName: "Download Build Artifact"
             inputs:
-              buildType: 'current'
+              buildType: "current"
               artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)"
           - task: PowerShell@2
             name: test
-            displayName: 'Run Unit Test for OWA 2013'
+            displayName: "Run Unit Test for OWA 2013"
             inputs:
-              filePath: './build.ps1'
+              filePath: "./build.ps1"
               arguments: "-Tasks test -PesterScript @(@{ Path = '$(Build.SourcesDirectory)/Tests/Unit'; Parameters = @{WACCmdletModule = '$(Build.SourcesDirectory)/Tests/Unit/Stubs/15.0.4569.1506/OfficeWebApps.psm1' }})"
               pwsh: false
           - task: PublishTestResults@2
-            displayName: 'Publish Test Results'
+            displayName: "Publish Test Results"
             condition: succeededOrFailed()
             inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Unit OWA 2013'
+              testResultsFormat: "NUnit"
+              testResultsFiles: "$(buildFolderName)/$(testResultFolderName)/NUnit*.xml"
+              testRunTitle: "Unit OWA 2013"
           - task: PublishPipelineArtifact@1
-            displayName: 'Publish Test Artifact'
+            displayName: "Publish Test Artifact"
             condition: succeededOrFailed()
             inputs:
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/'
-              artifactName: 'CodeCoverage_2013'
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/"
+              artifactName: "CodeCoverage_2013"
               parallel: true
 
       - job: Test_Unit_2016
-        displayName: 'Unit OOS 2016'
+        displayName: "Unit OOS 2016"
         pool:
-          vmImage: 'windows-latest'
+          vmImage: "windows-latest"
         timeoutInMinutes: 0
         steps:
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
+            displayName: "Download Build Artifact"
             inputs:
-              buildType: 'current'
+              buildType: "current"
               artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)"
           - task: PowerShell@2
             name: test
-            displayName: 'Run Unit Test for OOS 2016'
+            displayName: "Run Unit Test for OOS 2016"
             inputs:
-              filePath: './build.ps1'
+              filePath: "./build.ps1"
               arguments: "-Tasks test -PesterScript @(@{ Path = '$(Build.SourcesDirectory)/Tests/Unit'; Parameters = @{WACCmdletModule = '$(Build.SourcesDirectory)/Tests/Unit/Stubs/16.0.6814.2226/OfficeWebApps.psm1' }})"
               pwsh: false
           - task: PublishTestResults@2
-            displayName: 'Publish Test Results'
+            displayName: "Publish Test Results"
             condition: succeededOrFailed()
             inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: '$(buildFolderName)/$(testResultFolderName)/NUnit*.xml'
-              testRunTitle: 'Unit OOS 2016'
+              testResultsFormat: "NUnit"
+              testResultsFiles: "$(buildFolderName)/$(testResultFolderName)/NUnit*.xml"
+              testRunTitle: "Unit OOS 2016"
           - task: PublishPipelineArtifact@1
-            displayName: 'Publish Test Artifact'
+            displayName: "Publish Test Artifact"
             condition: succeededOrFailed()
             inputs:
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/'
-              artifactName: 'CodeCoverage_2016'
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/"
+              artifactName: "CodeCoverage_2016"
               parallel: true
 
       - job: Code_Coverage
-        displayName: 'Publish Code Coverage'
+        displayName: "Publish Code Coverage"
         condition: succeededOrFailed()
         dependsOn:
-          - 'Test_Unit_2013'
-          - 'Test_Unit_2016'
+          - "Test_Unit_2013"
+          - "Test_Unit_2016"
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: "ubuntu-latest"
         timeoutInMinutes: 0
         steps:
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Build Artifact'
+            displayName: "Download Build Artifact"
             inputs:
-              buildType: 'current'
+              buildType: "current"
               artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)'
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)"
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Test Artifact OWA 2013'
+            displayName: "Download Test Artifact OWA 2013"
             inputs:
-              buildType: 'current'
-              artifactName: 'CodeCoverage_2013'
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/CodeCoverage_2013'
+              buildType: "current"
+              artifactName: "CodeCoverage_2013"
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/CodeCoverage_2013"
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Test Artifact OOS 2016'
+            displayName: "Download Test Artifact OOS 2016"
             inputs:
-              buildType: 'current'
-              artifactName: 'CodeCoverage_2016'
-              targetPath: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/CodeCoverage_2016'
+              buildType: "current"
+              artifactName: "CodeCoverage_2016"
+              targetPath: "$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/CodeCoverage_2016"
           - task: PowerShell@2
             name: merge
-            displayName: 'Merge Code Coverage files'
+            displayName: "Merge Code Coverage files"
             inputs:
-              filePath: './build.ps1'
+              filePath: "./build.ps1"
               arguments: "-Tasks merge"
               pwsh: true
           - task: PublishCodeCoverageResults@1
-            displayName: 'Publish Code Coverage to Azure DevOps'
+            displayName: "Publish Code Coverage to Azure DevOps"
             condition: succeededOrFailed()
             inputs:
-              codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: '$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/JaCoCo_Merged.xml'
-              pathToSources: '$(Build.SourcesDirectory)/$(sourceFolderName)/'
+              codeCoverageTool: "JaCoCo"
+              summaryFileLocation: "$(Build.SourcesDirectory)/$(buildFolderName)/$(testResultFolderName)/JaCoCo_Merged.xml"
+              pathToSources: "$(Build.SourcesDirectory)/$(sourceFolderName)/"
           - script: |
               bash <(curl -s https://codecov.io/bash) -f "./$(buildFolderName)/$(testResultFolderName)/JaCoCo_Merged.xml"
-            displayName: 'Publish Code Coverage to Codecov.io'
+            displayName: "Publish Code Coverage to Codecov.io"
             condition: succeededOrFailed()
 
       ## DISABLE due to integration tests are not yet converted to the new pipeline module (the continuous delivery pipeline)
@@ -246,22 +246,22 @@ stages:
       )
     jobs:
       - job: Deploy_Module
-        displayName: 'Deploy Module'
+        displayName: "Deploy Module"
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: "ubuntu-latest"
         steps:
           - task: DownloadPipelineArtifact@2
-            displayName: 'Download Pipeline Artifact'
+            displayName: "Download Pipeline Artifact"
             inputs:
-              buildType: 'current'
+              buildType: "current"
               artifactName: $(buildArtifactName)
-              targetPath: '$(Build.SourcesDirectory)/$(buildArtifactName)'
+              targetPath: "$(Build.SourcesDirectory)/$(buildArtifactName)"
           - task: PowerShell@2
             name: publishRelease
-            displayName: 'Publish Release'
+            displayName: "Publish Release"
             inputs:
-              filePath: './build.ps1'
-              arguments: '-tasks publish'
+              filePath: "./build.ps1"
+              arguments: "-tasks publish"
               pwsh: true
             env:
               GitHubToken: $(GitHubToken)
@@ -270,10 +270,10 @@ stages:
               MainGitBranch: $(defaultBranch)
           - task: PowerShell@2
             name: sendChangelogPR
-            displayName: 'Send Changelog PR'
+            displayName: "Send Changelog PR"
             inputs:
-              filePath: './build.ps1'
-              arguments: '-tasks Create_ChangeLog_GitHub_PR'
+              filePath: "./build.ps1"
+              arguments: "-tasks Create_ChangeLog_GitHub_PR"
               pwsh: true
             env:
               GitHubToken: $(GitHubToken)
