@@ -192,7 +192,8 @@ function Set-TargetResource
     $installer = Start-Process -FilePath $Path `
         -ArgumentList '/config .\files\setupsilent\config.xml' `
         -Wait `
-        -PassThru
+        -PassThru `
+        -WorkingDirectory (Split-Path -Path $Path -Parent)
 
     if ($uncInstall -eq $true)
     {

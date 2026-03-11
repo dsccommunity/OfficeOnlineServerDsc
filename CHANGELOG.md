@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All resources
   - Get-LocalizedData from DscResource.Common is now used
 
+### Fixed
+
+- OfficeOnlineServerInstall
+  - Added `-WorkingDirectory` to `Start-Process` in `Set-TargetResource`
+    ([issue #73](https://github.com/dsccommunity/OfficeOnlineServerDsc/issues/73)).
+- OfficeOnlineServerInstallLanguagePack
+  - Added `-WorkingDirectory` to `Start-Process` in `Set-TargetResource`
+    ([issue #73](https://github.com/dsccommunity/OfficeOnlineServerDsc/issues/73)).
+
 ## [1.5.0] - 2020-04-03
 
 ## Added

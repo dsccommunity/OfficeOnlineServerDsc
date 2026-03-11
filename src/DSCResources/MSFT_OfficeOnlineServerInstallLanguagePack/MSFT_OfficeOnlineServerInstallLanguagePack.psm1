@@ -192,7 +192,8 @@ function Set-TargetResource
     $installer = Start-Process -FilePath $setupExe `
         -ArgumentList '/config .\files\setupsilent\config.xml' `
         -Wait `
-        -PassThru
+        -PassThru `
+        -WorkingDirectory $BinaryDir
 
     if ($uncInstall -eq $true)
     {
