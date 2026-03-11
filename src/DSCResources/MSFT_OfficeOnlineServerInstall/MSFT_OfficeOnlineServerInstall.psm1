@@ -1,9 +1,10 @@
-$script:resourceModulePath = Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent
-$script:modulesFolderPath = Join-Path -Path $script:resourceModulePath -ChildPath 'Modules'
-$script:resourceHelperModulePath = Join-Path -Path $script:modulesFolderPath -ChildPath 'OfficeOnlineServerDsc.Util'
-Import-Module -Name (Join-Path -Path $script:resourceHelperModulePath -ChildPath 'OfficeOnlineServerDsc.Util.psm1')
+$script:resourceHelperModulePath = @(
+    (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\OfficeOnlineServerDsc.Util'),
+    (Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common')
+)
+Import-Module -Name $script:resourceHelperModulePath
 
-$script:localizedData = Get-LocalizedData -ResourceName 'MSFT_OfficeOnlineServerInstall'
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 $Script:UninstallPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 $script:InstallKeyPattern = "Office1(5)|(6).WacServer"

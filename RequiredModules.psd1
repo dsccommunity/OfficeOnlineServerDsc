@@ -21,4 +21,7 @@
     xDscResourceDesigner        = 'latest'
     'DscResource.DocGenerator'  = 'latest'
     PSDscResources              = 'latest'
+
+    # Build dependencies needed for using the module
+    'DscResource.Common'        = 'latest'
 }
