@@ -1,23 +1,25 @@
 $webAppsFarm = @{
-    InternalURL = 'http://webfarm.contoso.com/'
-    ExternalURL = 'http://externalfarm.contoso.com/'
-    AllowHttp = $true
-    EditingEnabled = $true
-    SSLOffloaded = $false
-    LogLocation = 'C:\Logs'
+    IsSingleInstance   = 'Yes'
+    InternalURL        = 'http://webfarm.contoso.com/'
+    ExternalURL        = 'http://externalfarm.contoso.com/'
+    AllowHttp          = $true
+    EditingEnabled     = $true
+    SSLOffloaded       = $false
+    LogLocation        = 'C:\Logs'
     LogRetentionInDays = 7
-    LogVerbosity = 'Verbose'
-    Proxy = 'http://proxy.contoso.com/'
-    AllowCEIP = $true    
+    LogVerbosity       = 'Verbose'
+    Proxy              = 'http://proxy.contoso.com/'
+    AllowCEIP          = $true
 }
 
 configuration MSFT_OfficeOnlineServerFarm_config {
-    
+
     Import-DscResource -ModuleName OfficeOnlineServerDsc
     node localhost {
-        
+
         OfficeOnlineServerFarm Integration_Test
         {
+            IsSingleInstance   = 'Yes'
             InternalURL        = $webAppsFarm.InternalURL
             ExternalURL        = $webAppsFarm.ExternalURL
             AllowHttp          = $webAppsFarm.AllowHttp
@@ -27,7 +29,7 @@ configuration MSFT_OfficeOnlineServerFarm_config {
             LogRetentionInDays = $webAppsFarm.LogRetentionInDays
             LogVerbosity       = $webAppsFarm.LogVerbosity
             Proxy              = $webAppsFarm.Proxy
-            AllowCEIP          = $webAppsFarm.AllowCEIP    
+            AllowCEIP          = $webAppsFarm.AllowCEIP
         }
     }
 }

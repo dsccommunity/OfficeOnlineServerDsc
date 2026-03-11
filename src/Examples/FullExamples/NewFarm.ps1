@@ -95,8 +95,9 @@ Configuration Example
 
     OfficeOnlineServerFarm 'LocalFarm'
     {
-        InternalURL    = "https://officeonline.contoso.com"
-        EditingEnabled = $true
-        DependsOn      = "[OfficeOnlineServerInstall]InstallBinaries"
+        IsSingleInstance = 'Yes'
+        InternalURL      = "https://officeonline.contoso.com"
+        EditingEnabled   = $true
+        DependsOn        = "[OfficeOnlineServerInstall]InstallBinaries"
     }
 }

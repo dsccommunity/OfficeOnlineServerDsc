@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- OfficeOnlineServerFarm
+  - Added parameter 'IsSingleInstance'
 - OfficeOnlineServerDsc
   - Imports DscResource.Common module
 

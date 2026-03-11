@@ -24,6 +24,11 @@ function Get-TargetResource
     [OutputType([System.Collections.Hashtable])]
     param
     (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [String]
+        $IsSingleInstance,
+
         [Parameter()]
         [System.Boolean]
         $AllowCEIP,
@@ -140,7 +145,7 @@ function Get-TargetResource
         [System.String]
         $FarmOU,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [System.String]
         $InternalURL,
 
@@ -227,6 +232,8 @@ function Get-TargetResource
 
     Write-Verbose -Message "Getting settings for local Office Online Server"
 
+    Test-OfficeOnlineServerFarmPSBoundParameters @PSBoundParameters
+
     Confirm-OosDscEnvironmentVariables
 
     Test-OosDscV16Support -Parameters $PSBoundParameters
@@ -241,6 +248,7 @@ function Get-TargetResource
     }
 
     $returnValue = @{
+        IsSingleInstance                            = 'Yes'
         AllowCEIP                                   = $officeWebAppsFarm.AllowCEIP
         AllowHttp                                   = $officeWebAppsFarm.AllowHTTP
         AllowHttpSecureStoreConnections             = $officeWebAppsFarm.AllowHttpSecureStoreConnections
@@ -302,6 +310,11 @@ function Set-TargetResource
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [String]
+        $IsSingleInstance,
+
         [Parameter()]
         [System.Boolean]
         $AllowCEIP,
@@ -418,7 +431,7 @@ function Set-TargetResource
         [System.String]
         $FarmOU,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [System.String]
         $InternalURL,
 
@@ -505,9 +518,13 @@ function Set-TargetResource
 
     Write-Verbose -Message "Updating settings for local Office Online Server"
 
+    Test-OfficeOnlineServerFarmPSBoundParameters @PSBoundParameters
+
     Confirm-OosDscEnvironmentVariables
 
     Test-OosDscV16Support -Parameters $PSBoundParameters
+
+    $PSBoundParameters.Remove('IsSingleInstance') | Out-Null
 
     try
     {
@@ -537,6 +554,11 @@ function Test-TargetResource
     [OutputType([System.Boolean])]
     param
     (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [String]
+        $IsSingleInstance,
+
         [Parameter()]
         [System.Boolean]
         $AllowCEIP,
@@ -653,7 +675,7 @@ function Test-TargetResource
         [System.String]
         $FarmOU,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [System.String]
         $InternalURL,
 
@@ -739,6 +761,8 @@ function Test-TargetResource
     )
 
     Write-Verbose -Message "Testing settings for local Office Online Server"
+
+    Test-OfficeOnlineServerFarmPSBoundParameters @PSBoundParameters
 
     Confirm-OosDscEnvironmentVariables
 
@@ -884,6 +908,230 @@ function Test-OosDscV16Support
             throw ("This module only supports Office Web Apps 2013 (v15) and Office " + `
                     "Online Server 2016 (v16). Detected version was $($version.Major)")
         }
+    }
+}
+<#
+    .SYNOPSIS
+        Helper function to validate passed parameters to Get-, Test- and Set-TargetResource.
+        So you don't have to rewrite the same checks in each of one of them.
+
+    .EXAMPLE
+        Test-OfficeOnlineServerFarmPSBoundParameters @PSBoundParameters
+#>
+function Test-OfficeOnlineServerFarmPSBoundParameters
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [String]
+        $IsSingleInstance,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowCEIP,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowHttp,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowHttpSecureStoreConnections,
+
+        [Parameter()]
+        [System.String]
+        $CacheLocation,
+
+        [Parameter()]
+        [System.Int32]
+        $CacheSizeInGB,
+
+        [Parameter()]
+        [System.String]
+        $CertificateName,
+
+        [Parameter()]
+        [System.Boolean]
+        $ClipartEnabled,
+
+        [Parameter()]
+        [System.Int32]
+        $DocumentInfoCacheSize,
+
+        [Parameter()]
+        [System.Boolean]
+        $EditingEnabled,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelAllowExternalData,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelConnectionLifetime,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelExternalDataCacheLifetime,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelPrivateBytesMax,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelRequestDurationMax,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelSessionTimeout,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelUdfsAllowed,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelWarnOnDataRefresh,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelWorkbookSizeMax,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelMemoryCacheThreshold,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelUnusedObjectAgeMax,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelCachingUnusedFiles,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelAbortOnRefreshOnOpenFail,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelAutomaticVolatileFunctionCacheLifetime,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelConcurrentDataRequestsPerSessionMax,
+
+        [Parameter()]
+        [System.String]
+        $ExcelDefaultWorkbookCalcMode,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelRestExternalDataEnabled,
+
+        [Parameter()]
+        [System.Int32]
+        $ExcelChartAndImageSizeMax,
+
+        [Parameter()]
+        [System.String]
+        $ExternalURL,
+
+        [Parameter()]
+        [System.String]
+        $FarmOU,
+
+        [Parameter()]
+        [System.String]
+        $InternalURL,
+
+        [Parameter()]
+        [System.String]
+        $LogLocation,
+
+        [Parameter()]
+        [System.Int32]
+        $LogRetentionInDays,
+
+        [Parameter()]
+        [System.String]
+        $LogVerbosity,
+
+        [Parameter()]
+        [System.Int32]
+        $MaxMemoryCacheSizeInMB,
+
+        [Parameter()]
+        [System.Int32]
+        $MaxTranslationCharacterCount,
+
+        [Parameter()]
+        [System.Boolean]
+        $OpenFromUncEnabled,
+
+        [Parameter()]
+        [System.Boolean]
+        $OpenFromUrlEnabled,
+
+        [Parameter()]
+        [System.Boolean]
+        $OpenFromUrlThrottlingEnabled,
+
+        [Parameter()]
+        [System.String]
+        $Proxy,
+
+        [Parameter()]
+        [System.Int32]
+        $RecycleActiveProcessCount,
+
+        [Parameter()]
+        [System.String]
+        $RenderingLocalCacheLocation,
+
+        [Parameter()]
+        [System.Boolean]
+        $SSLOffloaded,
+
+        [Parameter()]
+        [System.Boolean]
+        $TranslationEnabled,
+
+        [Parameter()]
+        [System.String]
+        $TranslationServiceAddress,
+
+        [Parameter()]
+        [System.String]
+        $TranslationServiceAppId,
+
+        [Parameter()]
+        [System.Boolean]
+        $AllowOutboundHttp,
+
+        [Parameter()]
+        [System.Boolean]
+        $ExcelUseEffectiveUserName,
+
+        [Parameter()]
+        [System.String]
+        $S2SCertificateName,
+
+        [Parameter()]
+        [System.Boolean]
+        $RemovePersonalInformationFromLogs,
+
+        [Parameter()]
+        [System.Boolean]
+        $PicturePasteDisabled
+    )
+
+    if ($PSBoundParameters.ContainsKey('InternalURL') -eq $false -and $PSBoundParameters.ContainsKey('ExternalURL') -eq $false)
+    {
+        throw "An Office Online Server farm requires at least one URL, set using either ExternalURL or InternalURL. You can also set both internal and external URLs."
     }
 }
 
